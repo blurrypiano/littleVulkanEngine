@@ -1,6 +1,6 @@
 # Little Vulkan Engine
 
-A vieo tutorial series introducing computer graphics for [Vulkan®](https://www.khronos.org/vulkan/), the new generation graphics and compute API from Khronos.
+A video tutorial series introducing computer graphics for [Vulkan®](https://www.khronos.org/vulkan/), the new generation graphics and compute API from Khronos.
 
 Currently this repository is more for use as a reference and for my own use to track the progress of this series, rather than something that can be cloned and used as a starting point, at least until I make a more robust build system.
 
