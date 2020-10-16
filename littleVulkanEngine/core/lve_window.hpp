@@ -20,21 +20,12 @@
 namespace lve {
 
 class LveWindow {
- private:
-  const uint32_t mWidth;
-  const uint32_t mHeight;
-
-  std::string mWindowName;
-
-  bool framebufferResized = false;
-
  public:
   GLFWwindow *window;
 
   LveWindow(int width, int height) : LveWindow(width, height, "Vulkan Application") {}
 
-  LveWindow(int width, int height, std::string windowName)
-      : mWidth{static_cast<uint32_t>(width)}, mHeight{static_cast<uint32_t>(height)} {
+  LveWindow(int width, int height, std::string windowName) : mWidth{width}, mHeight{height} {
     mWindowName = windowName;
     initWindow();
   }
@@ -51,6 +42,13 @@ class LveWindow {
  private:
   void initWindow();
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
+
+  const int mWidth;
+  const int mHeight;
+
+  std::string mWindowName;
+
+  bool framebufferResized = false;
 };
 
 }  // namespace lve
