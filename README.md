@@ -20,7 +20,16 @@ This repository is still in the early stages and doesn't contain everything you 
 
 ### <a name="Basics"></a> Basics
 
-#### 01 - Opening a window
+#### [00 - Starting Point](littleVulkanEngine/tutorial00/)
+
+This is the staring point to the tutorial series. It is equivalent to where you'd be at if you completed the linux section of 
+setting up your development environment as described by [Vulkan Tutorial](https://vulkan-tutorial.com/Development_environment) 
+with just a few small changes.
+
+#### [01 - Opening a window](littleVulkanEngine/tutorial01/)
+
+In the very first tutorial of this series we will be creating a class to encapsulate a glfw window, and a class to run our application.
+
 Video not yet released (October 22nd, 2020)
 
 #### 02 - Shaders & the graphics pipeline
