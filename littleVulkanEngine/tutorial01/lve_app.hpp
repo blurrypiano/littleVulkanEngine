@@ -6,10 +6,6 @@ namespace lve {
 
 class LveApp {
  public:
-  LveApp() = default;
-  LveApp(const LveApp &) = delete;
-  LveApp &operator=(const LveApp &) = delete;
-
   void run();
 
   static constexpr int WIDTH = 800;
