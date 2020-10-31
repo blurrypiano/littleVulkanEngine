@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "lve_device.hpp"
 #include "lve_window.hpp"
 
 namespace lve {
@@ -23,6 +24,7 @@ class LveApp {
 
  private:
   LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"};
+  LveDevice lveDevice{lveWindow};
 };
 
 }  // namespace lve

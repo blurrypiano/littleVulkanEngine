@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 
 // std lib headers
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -21,8 +22,6 @@ namespace lve {
 
 class LveWindow {
  public:
-  GLFWwindow *window;
-
   LveWindow(int width, int height) : LveWindow(width, height, "Vulkan Application") {}
 
   LveWindow(int width, int height, std::string windowName) : mWidth{width}, mHeight{height} {
@@ -39,13 +38,19 @@ class LveWindow {
   bool wasWindowResized() { return framebufferResized; }
   void resetWindowResized() { framebufferResized = false; }
 
+  void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
+    if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
+      throw std::runtime_error("failed to create window surface!");
+    }
+  }
+
  private:
   void initWindow();
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 
+  GLFWwindow *window;
   const int mWidth;
   const int mHeight;
-
   std::string mWindowName;
 
   bool framebufferResized = false;

@@ -11,7 +11,13 @@ SRCS = $(shell find littleVulkanEngine -type f -name "*.cpp")
 coreSources = $(shell find littleVulkanEngine/core -type f -name "*.cpp")
 coreObjFiles = $(patsubst %.cpp, $(ODIR)/%.o, $(coreSources))
 
+vertSources = $(shell find littleVulkanEngine/core -type f -name "*.vert")
+vertObjFiles = $(patsubst %.vert, %.vert.spv, $(vertSources))
+fragSources = $(shell find littleVulkanEngine/core -type f -name "*.frag")
+fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragSources))
+
 TARGET = a.out
+$(TARGET): $(vertObjFiles) $(fragObjFiles)
 ${TARGET}: $(coreObjFiles)
 	g++ $(CFLAGS) -o ${TARGET} $(coreObjFiles) $(LDFLAGS)
 
@@ -25,6 +31,13 @@ $(ODIR)/%.o : %.cpp $(DEPDIR)/%.d | $(DEPDIR)
 
 $(DEPFILES):
 include $(wildcard $(DEPFILES))
+
+# make shader targets
+%.vert.spv: %.vert
+	${GLSLC} $< -o $@
+
+%.frag.spv: %.frag
+	${GLSLC} $< -o $@
 
 .PHONY: test clean
 

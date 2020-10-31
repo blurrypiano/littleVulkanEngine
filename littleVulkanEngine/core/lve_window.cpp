@@ -15,6 +15,7 @@ void LveWindow::initWindow() {
   glfwInit();
 
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
   window = glfwCreateWindow(mWidth, mHeight, mWindowName.c_str(), nullptr, nullptr);
   glfwSetWindowUserPointer(window, this);
