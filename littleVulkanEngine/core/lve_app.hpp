@@ -11,6 +11,7 @@
 #pragma once
 
 #include "lve_device.hpp"
+#include "lve_pipeline.hpp"
 #include "lve_window.hpp"
 
 namespace lve {
@@ -25,6 +26,7 @@ class LveApp {
  private:
   LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"};
   LveDevice lveDevice{lveWindow};
+  LvePipeline lvePipeline{"littleVulkanEngine/core/simple_shader"};
 };
 
 }  // namespace lve

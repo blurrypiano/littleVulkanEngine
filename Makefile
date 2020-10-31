@@ -46,3 +46,5 @@ test: ${TARGET}
 
 clean:
 	rm -f ${TARGET}
+	find build -name '*.o' -delete
+	find build -name '*.d' -delete
