@@ -31,6 +31,9 @@ class LveSwapChain {
     cleanupSyncObjects();
   }
 
+  LveSwapChain(const LveSwapChain &) = delete;
+  void operator=(const LveSwapChain &) = delete;
+
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
   void recreateSwapChain();
@@ -42,8 +45,7 @@ class LveSwapChain {
   VkFormat findDepthFormat();
 
   VkResult acquireNextImage(uint32_t *imageIndex);
-  VkResult submitCommandBuffers(
-      const VkCommandBuffer *buffers, uint32_t *imageIndex, const VkSemaphore shadowpassSemaphore);
+  VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
  private:
   void init();

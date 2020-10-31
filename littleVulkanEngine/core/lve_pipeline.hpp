@@ -24,6 +24,7 @@ class LvePipeline {
  public:
   LvePipeline(std::string filePrefix, LveDevice& device, LveSwapChain& swapChain);
   ~LvePipeline();
+  void bind(VkCommandBuffer commandBuffer);
 
  private:
   static std::vector<char> readFile(const std::string& filename);

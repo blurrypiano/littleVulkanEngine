@@ -28,6 +28,10 @@ LvePipeline::~LvePipeline() {
   vkDestroyPipelineLayout(device_.device(), pipelineLayout_, nullptr);
 }
 
+void LvePipeline::bind(VkCommandBuffer commandBuffer) {
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_);
+}
+
 std::vector<char> LvePipeline::readFile(const std::string& filename) {
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
