@@ -57,14 +57,14 @@ void LveDevice::init() {
 }
 
 void LveDevice::cleanup() {
-  vkDestroyCommandPool(device, commandPool, nullptr);
-  vkDestroyDevice(device, nullptr);
+  vkDestroyCommandPool(device_, commandPool, nullptr);
+  vkDestroyDevice(device_, nullptr);
 
   if (enableValidationLayers) {
     DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
   }
 
-  vkDestroySurfaceKHR(instance, surface, nullptr);
+  vkDestroySurfaceKHR(instance, surface_, nullptr);
   vkDestroyInstance(instance, nullptr);
 }
 
@@ -173,12 +173,12 @@ void LveDevice::createLogicalDevice() {
     createInfo.enabledLayerCount = 0;
   }
 
-  if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+  if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
   }
 
-  vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
-  vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
+  vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
+  vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
 }
 
 void LveDevice::createCommandPool() {
@@ -190,12 +190,12 @@ void LveDevice::createCommandPool() {
   poolInfo.flags =
       VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-  if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+  if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
     throw std::runtime_error("failed to create command pool!");
   }
 }
 
-void LveDevice::createSurface() { window.createWindowSurface(instance, &surface); }
+void LveDevice::createSurface() { window.createWindowSurface(instance, &surface_); }
 
 bool LveDevice::isDeviceSuitable(VkPhysicalDevice device) {
   QueueFamilyIndices indices = findQueueFamilies(device);
@@ -337,7 +337,7 @@ QueueFamilyIndices LveDevice::findQueueFamilies(VkPhysicalDevice device) {
       indices.graphicsFamilyHasValue = true;
     }
     VkBool32 presentSupport = false;
-    vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+    vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
     if (queueFamily.queueCount > 0 && presentSupport) {
       indices.presentFamily = i;
       indices.presentFamilyHasValue = true;
@@ -354,24 +354,24 @@ QueueFamilyIndices LveDevice::findQueueFamilies(VkPhysicalDevice device) {
 
 SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device) {
   SwapChainSupportDetails details;
-  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
   uint32_t formatCount;
-  vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+  vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
 
   if (formatCount != 0) {
     details.formats.resize(formatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
   }
 
   uint32_t presentModeCount;
-  vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+  vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, nullptr);
 
   if (presentModeCount != 0) {
     details.presentModes.resize(presentModeCount);
     vkGetPhysicalDeviceSurfacePresentModesKHR(
         device,
-        surface,
+        surface_,
         &presentModeCount,
         details.presentModes.data());
   }
@@ -419,12 +419,12 @@ void LveDevice::createBuffer(
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+  if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to create vertex buffer!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+  vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -435,11 +435,11 @@ void LveDevice::createBuffer(
   // maxMemoryAllocationCount for a physical device. Should create a custom
   // allocator that batches together a large number of objects at once. See
   // https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
-  if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+  if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate vertex buffer memory!");
   }
 
-  vkBindBufferMemory(device, buffer, bufferMemory, 0);
+  vkBindBufferMemory(device_, buffer, bufferMemory, 0);
 }
 
 VkCommandBuffer LveDevice::beginSingleTimeCommands() {
@@ -455,7 +455,7 @@ VkCommandBuffer LveDevice::beginSingleTimeCommands() {
   allocInfo.commandBufferCount = 1;
 
   VkCommandBuffer commandBuffer;
-  vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+  vkAllocateCommandBuffers(device_, &allocInfo, &commandBuffer);
 
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -473,10 +473,10 @@ void LveDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
 
-  vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-  vkQueueWaitIdle(graphicsQueue);
+  vkQueueSubmit(graphicsQueue_, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueWaitIdle(graphicsQueue_);
 
-  vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+  vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
 }
 
 void LveDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
@@ -630,23 +630,23 @@ void LveDevice::createImage(
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   imageInfo.flags = flags;
 
-  if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
+  if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
     throw std::runtime_error("failed to create image!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetImageMemoryRequirements(device, image, &memRequirements);
+  vkGetImageMemoryRequirements(device_, image, &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;
   allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
+  if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate image memory!");
   }
 
-  vkBindImageMemory(device, image, imageMemory, 0);
+  vkBindImageMemory(device_, image, imageMemory, 0);
 }
 
 VkImageView LveDevice::createImageView(
@@ -667,7 +667,7 @@ VkImageView LveDevice::createImageView(
   viewInfo.subresourceRange.layerCount = viewType == VK_IMAGE_VIEW_TYPE_CUBE ? 6 : 1;
 
   VkImageView imageView;
-  if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+  if (vkCreateImageView(device_, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
     throw std::runtime_error("failed to create texture image view!");
   }
 

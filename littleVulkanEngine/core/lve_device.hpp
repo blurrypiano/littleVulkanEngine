@@ -48,6 +48,11 @@ class LveDevice {
   ~LveDevice() { cleanup(); }
 
   VkCommandPool getCommandPool() { return commandPool; }
+  VkDevice device() { return device_; }
+  VkSurfaceKHR surface() { return surface_; }
+  VkQueue graphicsQueue() { return graphicsQueue_; }
+  VkQueue presentQueue() { return presentQueue_; }
+
   SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
   uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
   QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
@@ -123,10 +128,10 @@ class LveDevice {
   LveWindow &window;
   VkCommandPool commandPool;
 
-  VkDevice device;
-  VkSurfaceKHR surface;
-  VkQueue graphicsQueue;
-  VkQueue presentQueue;
+  VkDevice device_;
+  VkSurfaceKHR surface_;
+  VkQueue graphicsQueue_;
+  VkQueue presentQueue_;
 
   const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
   const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};

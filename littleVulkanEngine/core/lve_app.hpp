@@ -12,6 +12,7 @@
 
 #include "lve_device.hpp"
 #include "lve_pipeline.hpp"
+#include "lve_swap_chain.hpp"
 #include "lve_window.hpp"
 
 namespace lve {
@@ -26,7 +27,8 @@ class LveApp {
  private:
   LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
   LveDevice device_{window_};
-  LvePipeline pipeline_{"littleVulkanEngine/core/simple_shader"};
+  LveSwapChain swapChain_{window_, device_};
+  LvePipeline pipeline_{"littleVulkanEngine/core/simple_shader", device_, swapChain_};
 };
 
 }  // namespace lve

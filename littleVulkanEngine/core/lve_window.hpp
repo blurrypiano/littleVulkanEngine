@@ -38,6 +38,9 @@ class LveWindow {
   bool wasWindowResized() { return framebufferResized_; }
   void resetWindowResized() { framebufferResized_ = false; }
 
+  int height() { return height_; }
+  int width() { return width_; }
+
   void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
     if (glfwCreateWindowSurface(instance, window_, nullptr, surface) != VK_SUCCESS) {
       throw std::runtime_error("failed to create window surface!");
@@ -49,8 +52,8 @@ class LveWindow {
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 
   GLFWwindow *window_;
-  const int width_;
-  const int height_;
+  int width_;
+  int height_;
   std::string windowName_;
 
   bool framebufferResized_ = false;
