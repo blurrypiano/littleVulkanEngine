@@ -60,6 +60,9 @@ class LveModel {
   LveModel(LveDevice& device, Builder& builder);
   ~LveModel() { cleanup(); }
 
+  LveModel(const LveModel&) = delete;
+  void operator=(const LveModel&) = delete;
+
   void draw(VkCommandBuffer commandBuffer);
   void bind(VkCommandBuffer commandBuffer);
   void swapChainReset(){};

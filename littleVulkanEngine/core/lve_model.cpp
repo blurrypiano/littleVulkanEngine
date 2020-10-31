@@ -7,6 +7,7 @@
 #include <glm/gtx/hash.hpp>
 
 // std
+#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
@@ -33,8 +34,8 @@ LveModel::LveModel(LveDevice& device, Builder& builder) : device_{device} {
 void LveModel::createVertexBuffer(Builder& builder) {
   auto& vertices = builder.vertices;
   vertexCount_ = static_cast<uint32_t>(vertices.size());
+  assert(vertexCount_ >= 3 && "Vertex count must be at least 3");
   VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount_;
-
   VkBuffer stagingBuffer;
   VkDeviceMemory stagingBufferMemory;
   device_.createBuffer(

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "lve_device.hpp"
+#include "lve_model.hpp"
 #include "lve_swap_chain.hpp"
 
 // libs
@@ -20,9 +21,22 @@
 
 namespace lve {
 
+struct ShaderLayout {
+  const std::string vertFilePath;
+  const std::string fragFilePath;
+  const std::vector<LveModel::VertexAttribute> vertexAttributes;
+
+  static const ShaderLayout simple() {
+    return {
+        "littleVulkanEngine/core/simple_shader.vert.spv",
+        "littleVulkanEngine/core/simple_shader.frag.spv",
+        {LveModel::VertexAttribute::POSITION}};
+  }
+};
+
 class LvePipeline {
  public:
-  LvePipeline(std::string filePrefix, LveDevice& device, LveSwapChain& swapChain);
+  LvePipeline(ShaderLayout shaderLayout, LveDevice& device, LveSwapChain& swapChain);
   ~LvePipeline();
   void bind(VkCommandBuffer commandBuffer);
 
@@ -32,7 +46,7 @@ class LvePipeline {
   void createGraphicsPipeline();
   VkShaderModule createShaderModule(const std::vector<char>& code);
 
-  std::string filePrefix_;
+  ShaderLayout shaderLayout_;
   LveDevice& device_;
   LveSwapChain& swapChain_;
 

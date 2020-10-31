@@ -10,11 +10,18 @@
 
 #include "lve_app.hpp"
 
+// std
 #include <array>
 
 namespace lve {
 
-LveApp::LveApp() { createCommandBuffers(); }
+LveApp::LveApp() {
+  LveModel::Builder builder{};
+  builder.vertices = {{{0.0f, -0.5f, 0.0f}}, {{0.5f, 0.5f, 0.0f}}, {{-0.5f, 0.5f, 0.0f}}};
+  builder.indices = {0, 1, 2};
+  model_ = std::make_unique<LveModel>(device_, builder);
+  createCommandBuffers();
+}
 
 LveApp::~LveApp() {
   vkFreeCommandBuffers(
@@ -72,7 +79,8 @@ void LveApp::createCommandBuffers() {
 
     pipeline_.bind(commandBuffers_[i]);
 
-    vkCmdDraw(commandBuffers_[i], 3, 1, 0, 0);
+    model_->bind(commandBuffers_[i]);
+    model_->draw(commandBuffers_[i]);
 
     vkCmdEndRenderPass(commandBuffers_[i]);
     if (vkEndCommandBuffer(commandBuffers_[i]) != VK_SUCCESS) {

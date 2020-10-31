@@ -18,8 +18,8 @@
 
 namespace lve {
 
-LvePipeline::LvePipeline(std::string filePrefix, LveDevice& device, LveSwapChain& swapChain)
-    : device_{device}, filePrefix_{filePrefix}, swapChain_{swapChain} {
+LvePipeline::LvePipeline(ShaderLayout shaderLayout, LveDevice& device, LveSwapChain& swapChain)
+    : device_{device}, shaderLayout_{shaderLayout}, swapChain_{swapChain} {
   createGraphicsPipeline();
 }
 
@@ -51,8 +51,8 @@ std::vector<char> LvePipeline::readFile(const std::string& filename) {
 }
 
 void LvePipeline::createGraphicsPipeline() {
-  auto vertCode = readFile(filePrefix_ + ".vert.spv");
-  auto fragCode = readFile(filePrefix_ + ".frag.spv");
+  auto vertCode = readFile(shaderLayout_.vertFilePath);
+  auto fragCode = readFile(shaderLayout_.fragFilePath);
 
   VkShaderModule vertShaderModule = createShaderModule(vertCode);
   VkShaderModule fragShaderModule = createShaderModule(fragCode);
@@ -62,12 +62,10 @@ void LvePipeline::createGraphicsPipeline() {
       initializers::shaderStage(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT);
   VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
-  VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-  vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-  vertexInputInfo.vertexBindingDescriptionCount = 0;
-  vertexInputInfo.pVertexBindingDescriptions = nullptr;  // Optional
-  vertexInputInfo.vertexAttributeDescriptionCount = 0;
-  vertexInputInfo.pVertexAttributeDescriptions = nullptr;  // Optional
+  auto bindingDescription = LveModel::Vertex::getBindingDescription();
+  auto attributeDescriptions =
+      LveModel::Vertex::getAttributeDescriptions(shaderLayout_.vertexAttributes);
+  auto vertexInputInfo = initializers::vertexInputState(bindingDescription, attributeDescriptions);
 
   auto inputAssembly = initializers::inputAssemblyState();
   VkExtent2D swapChainExtent = swapChain_.getSwapChainExtent();

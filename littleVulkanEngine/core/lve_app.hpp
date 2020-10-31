@@ -11,11 +11,13 @@
 #pragma once
 
 #include "lve_device.hpp"
+#include "lve_model.hpp"
 #include "lve_pipeline.hpp"
 #include "lve_swap_chain.hpp"
 #include "lve_window.hpp"
 
 // std
+#include <memory>
 #include <vector>
 
 namespace lve {
@@ -37,9 +39,11 @@ class LveApp {
   LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
   LveDevice device_{window_};
   LveSwapChain swapChain_{window_, device_};
-  LvePipeline pipeline_{"littleVulkanEngine/core/simple_shader", device_, swapChain_};
+  LvePipeline pipeline_{ShaderLayout::simple(), device_, swapChain_};
 
   std::vector<VkCommandBuffer> commandBuffers_;
+
+  std::unique_ptr<LveModel> model_;
 };
 
 }  // namespace lve
