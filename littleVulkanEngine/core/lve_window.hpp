@@ -24,22 +24,22 @@ class LveWindow {
  public:
   LveWindow(int width, int height) : LveWindow(width, height, "Vulkan Application") {}
 
-  LveWindow(int width, int height, std::string windowName) : mWidth{width}, mHeight{height} {
-    mWindowName = windowName;
+  LveWindow(int width, int height, std::string windowName) : width_{width}, height_{height} {
+    windowName_ = windowName;
     initWindow();
   }
 
   ~LveWindow() {
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(window_);
     glfwTerminate();
   }
 
-  bool shouldClose() { return glfwWindowShouldClose(window); }
-  bool wasWindowResized() { return framebufferResized; }
-  void resetWindowResized() { framebufferResized = false; }
+  bool shouldClose() { return glfwWindowShouldClose(window_); }
+  bool wasWindowResized() { return framebufferResized_; }
+  void resetWindowResized() { framebufferResized_ = false; }
 
   void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
-    if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(instance, window_, nullptr, surface) != VK_SUCCESS) {
       throw std::runtime_error("failed to create window surface!");
     }
   }
@@ -48,12 +48,12 @@ class LveWindow {
   void initWindow();
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 
-  GLFWwindow *window;
-  const int mWidth;
-  const int mHeight;
-  std::string mWindowName;
+  GLFWwindow *window_;
+  const int width_;
+  const int height_;
+  std::string windowName_;
 
-  bool framebufferResized = false;
+  bool framebufferResized_ = false;
 };
 
 }  // namespace lve

@@ -13,7 +13,7 @@
 namespace lve {
 
 void LveApp::run() {
-  while (!lveWindow.shouldClose()) {
+  while (!window_.shouldClose()) {
     glfwPollEvents();
   }
 }

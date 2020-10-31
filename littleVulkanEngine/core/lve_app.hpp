@@ -24,9 +24,9 @@ class LveApp {
   static constexpr int HEIGHT = 600;
 
  private:
-  LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"};
-  LveDevice lveDevice{lveWindow};
-  LvePipeline lvePipeline{"littleVulkanEngine/core/simple_shader"};
+  LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
+  LveDevice device_{window_};
+  LvePipeline pipeline_{"littleVulkanEngine/core/simple_shader"};
 };
 
 }  // namespace lve

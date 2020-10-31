@@ -37,15 +37,6 @@ struct QueueFamilyIndices {
 
 class LveDevice {
  public:
-  VkDevice device;
-  VkSurfaceKHR surface;
-
-  VkQueue graphicsQueue;
-  VkQueue presentQueue;
-
-  const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-  const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-
 #ifdef NDEBUG
   const bool enableValidationLayers = false;
 #else
@@ -131,6 +122,14 @@ class LveDevice {
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   LveWindow &window;
   VkCommandPool commandPool;
+
+  VkDevice device;
+  VkSurfaceKHR surface;
+  VkQueue graphicsQueue;
+  VkQueue presentQueue;
+
+  const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+  const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 };
 
 }  // namespace lve
