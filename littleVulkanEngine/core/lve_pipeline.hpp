@@ -28,8 +28,8 @@ struct ShaderLayout {
 
   static const ShaderLayout simple() {
     return {
-        "littleVulkanEngine/core/simple_shader.vert.spv",
-        "littleVulkanEngine/core/simple_shader.frag.spv",
+        "shaders/simple.vert.spv",
+        "shaders/simple.frag.spv",
         {LveModel::VertexAttribute::POSITION}};
   }
 };

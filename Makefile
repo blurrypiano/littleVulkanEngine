@@ -11,9 +11,9 @@ SRCS = $(shell find littleVulkanEngine -type f -name "*.cpp")
 coreSources = $(shell find littleVulkanEngine/core -type f -name "*.cpp")
 coreObjFiles = $(patsubst %.cpp, $(ODIR)/%.o, $(coreSources))
 
-vertSources = $(shell find littleVulkanEngine/core -type f -name "*.vert")
+vertSources = $(shell find shaders -type f -name "*.vert")
 vertObjFiles = $(patsubst %.vert, %.vert.spv, $(vertSources))
-fragSources = $(shell find littleVulkanEngine/core -type f -name "*.frag")
+fragSources = $(shell find shaders -type f -name "*.frag")
 fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragSources))
 
 TARGET = a.out
