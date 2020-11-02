@@ -129,6 +129,16 @@ inline VkPipelineDepthStencilStateCreateInfo depthStencilState() {
   return depthStencil;
 }
 
+inline VkPipelineLayoutCreateInfo pipelineLayoutInfo() {
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 0;
+  pipelineLayoutInfo.pSetLayouts = nullptr;
+  pipelineLayoutInfo.pushConstantRangeCount = 0;
+  pipelineLayoutInfo.pPushConstantRanges = nullptr;
+  return pipelineLayoutInfo;
+}
+
 inline VkPipelineLayoutCreateInfo pipelineLayoutInfo(
     std::vector<VkDescriptorSetLayout>& descriptorSetLayouts,
     std::vector<VkPushConstantRange>& pushConstants) {
@@ -139,6 +149,120 @@ inline VkPipelineLayoutCreateInfo pipelineLayoutInfo(
   pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(pushConstants.size());
   pipelineLayoutInfo.pPushConstantRanges = pushConstants.data();
   return pipelineLayoutInfo;
+}
+
+inline VkPipelineLayoutCreateInfo pipelineLayoutInfo(
+    const VkDescriptorSetLayout* pSetLayouts, uint32_t setLayoutCount = 1) {
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = setLayoutCount;
+  pipelineLayoutInfo.pSetLayouts = pSetLayouts;
+  pipelineLayoutInfo.pushConstantRangeCount = 0;
+  pipelineLayoutInfo.pPushConstantRanges = nullptr;
+  return pipelineLayoutInfo;
+}
+
+inline VkDescriptorSetLayoutBinding descriptorSetLayoutBinding(
+    VkDescriptorType type,
+    VkShaderStageFlags stageFlags,
+    uint32_t binding,
+    uint32_t descriptorCount = 1) {
+  VkDescriptorSetLayoutBinding layoutBinding{};
+  layoutBinding.binding = binding;
+  layoutBinding.descriptorType = type;
+  layoutBinding.descriptorCount = descriptorCount;
+  layoutBinding.stageFlags = stageFlags;
+  layoutBinding.pImmutableSamplers = nullptr;  // Optional
+  return layoutBinding;
+}
+
+inline VkDescriptorSetLayoutCreateInfo descriptorSetLayout(
+    const std::vector<VkDescriptorSetLayoutBinding>& bindings) {
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+  layoutInfo.pBindings = bindings.data();
+  return layoutInfo;
+}
+
+inline VkDescriptorSetLayoutCreateInfo descriptorSetLayout(
+    const VkDescriptorSetLayoutBinding* pBindings, uint32_t bindingCount) {
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = bindingCount;
+  layoutInfo.pBindings = pBindings;
+  return layoutInfo;
+}
+
+inline VkDescriptorPoolCreateInfo descriptorPool(
+    const std::vector<VkDescriptorPoolSize>& poolSizes, uint32_t maxSets) {
+  VkDescriptorPoolCreateInfo descriptorPoolInfo{};
+  descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+  descriptorPoolInfo.pPoolSizes = poolSizes.data();
+  descriptorPoolInfo.maxSets = maxSets;
+  return descriptorPoolInfo;
+}
+
+inline VkDescriptorPoolSize descriptorPoolSize(VkDescriptorType type, uint32_t descriptorCount) {
+  VkDescriptorPoolSize descriptorPoolSize{};
+  descriptorPoolSize.type = type;
+  descriptorPoolSize.descriptorCount = descriptorCount;
+  return descriptorPoolSize;
+}
+
+inline VkDescriptorSetAllocateInfo descriptorSetAllocateInfo(
+    VkDescriptorPool descriptorPool,
+    const VkDescriptorSetLayout* pSetLayouts,
+    uint32_t descriptorSetCount) {
+  VkDescriptorSetAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  allocInfo.descriptorPool = descriptorPool;
+  allocInfo.pSetLayouts = pSetLayouts;
+  allocInfo.descriptorSetCount = descriptorSetCount;
+  return allocInfo;
+}
+
+inline VkDescriptorSetAllocateInfo descriptorSetAllocateInfo(
+    VkDescriptorPool descriptorPool, const std::vector<VkDescriptorSetLayout>& layouts) {
+  VkDescriptorSetAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  allocInfo.descriptorPool = descriptorPool;
+  allocInfo.pSetLayouts = layouts.data();
+  allocInfo.descriptorSetCount = static_cast<uint32_t>(layouts.size());
+  return allocInfo;
+}
+
+inline VkWriteDescriptorSet writeDescriptorSet(
+    VkDescriptorSet dstSet,
+    VkDescriptorType type,
+    uint32_t binding,
+    VkDescriptorBufferInfo* bufferInfo,
+    uint32_t descriptorCount = 1) {
+  VkWriteDescriptorSet writeDescriptorSet{};
+  writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeDescriptorSet.dstSet = dstSet;
+  writeDescriptorSet.descriptorType = type;
+  writeDescriptorSet.dstBinding = binding;
+  writeDescriptorSet.pBufferInfo = bufferInfo;
+  writeDescriptorSet.descriptorCount = descriptorCount;
+  return writeDescriptorSet;
+}
+
+inline VkWriteDescriptorSet writeDescriptorSet(
+    VkDescriptorSet dstSet,
+    VkDescriptorType type,
+    uint32_t binding,
+    VkDescriptorImageInfo* imageInfo,
+    uint32_t descriptorCount = 1) {
+  VkWriteDescriptorSet writeDescriptorSet{};
+  writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeDescriptorSet.dstSet = dstSet;
+  writeDescriptorSet.descriptorType = type;
+  writeDescriptorSet.dstBinding = binding;
+  writeDescriptorSet.pImageInfo = imageInfo;
+  writeDescriptorSet.descriptorCount = descriptorCount;
+  return writeDescriptorSet;
 }
 
 }  // namespace initializers

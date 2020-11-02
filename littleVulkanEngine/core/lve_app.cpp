@@ -10,6 +10,8 @@
 
 #include "lve_app.hpp"
 
+#include "lve_initializers.hpp"
+
 // std
 #include <array>
 
@@ -20,10 +22,14 @@ LveApp::LveApp() {
   builder.vertices = {{{0.0f, -0.5f, 0.0f}}, {{0.5f, 0.5f, 0.0f}}, {{-0.5f, 0.5f, 0.0f}}};
   builder.indices = {0, 1, 2};
   model_ = std::make_unique<LveModel>(device_, builder);
+
+  createGraphicsPipeline();
   createCommandBuffers();
 }
 
 LveApp::~LveApp() {
+  vkDestroyPipelineLayout(device_.device(), pipelineLayout_, nullptr);
+
   vkFreeCommandBuffers(
       device_.device(),
       device_.getCommandPool(),
@@ -37,6 +43,20 @@ void LveApp::run() {
     drawFrame();
   }
   vkDeviceWaitIdle(device_.device());
+}
+
+void LveApp::createGraphicsPipeline() {
+  auto layoutInfo = initializers::pipelineLayoutInfo();
+  if (vkCreatePipelineLayout(device_.device(), &layoutInfo, nullptr, &pipelineLayout_) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("failed to create pipeline layout!");
+  }
+
+  pipeline_ = std::make_unique<lve::LvePipeline>(
+      lve::ShaderLayout::simple("shaders"),
+      device_,
+      swapChain_,
+      pipelineLayout_);
 }
 
 void LveApp::createCommandBuffers() {
@@ -77,7 +97,7 @@ void LveApp::createCommandBuffers() {
 
     vkCmdBeginRenderPass(commandBuffers_[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    pipeline_.bind(commandBuffers_[i]);
+    pipeline_->bind(commandBuffers_[i]);
 
     model_->bind(commandBuffers_[i]);
     model_->draw(commandBuffers_[i]);

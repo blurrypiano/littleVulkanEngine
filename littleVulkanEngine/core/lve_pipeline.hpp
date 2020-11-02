@@ -36,7 +36,11 @@ struct ShaderLayout {
 
 class LvePipeline {
  public:
-  LvePipeline(ShaderLayout shaderLayout, LveDevice& device, LveSwapChain& swapChain);
+  LvePipeline(
+      ShaderLayout shaderLayout,
+      LveDevice& device,
+      LveSwapChain& swapChain,
+      VkPipelineLayout& pipelineLayout_);
   ~LvePipeline();
   void bind(VkCommandBuffer commandBuffer);
 
@@ -49,8 +53,8 @@ class LvePipeline {
   ShaderLayout shaderLayout_;
   LveDevice& device_;
   LveSwapChain& swapChain_;
+  VkPipelineLayout& pipelineLayout_;
 
-  VkPipelineLayout pipelineLayout_;
   VkPipeline graphicsPipeline_;
 };
 

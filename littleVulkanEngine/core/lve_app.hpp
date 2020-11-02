@@ -33,17 +33,18 @@ class LveApp {
   static constexpr int HEIGHT = 600;
 
  private:
+  void createGraphicsPipeline();
   void createCommandBuffers();
   void drawFrame();
 
   LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
   LveDevice device_{window_};
   LveSwapChain swapChain_{window_, device_};
-  LvePipeline pipeline_{ShaderLayout::simple("shaders"), device_, swapChain_};
-
   std::vector<VkCommandBuffer> commandBuffers_;
+  VkPipelineLayout pipelineLayout_;
 
   std::unique_ptr<LveModel> model_;
+  std::unique_ptr<LvePipeline> pipeline_;
 };
 
 }  // namespace lve
