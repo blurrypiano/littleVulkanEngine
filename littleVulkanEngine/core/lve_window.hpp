@@ -43,6 +43,7 @@ class LveWindow {
 
   int height() { return height_; }
   int width() { return width_; }
+  GLFWwindow *window() { return window_; }
 
   void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
     if (glfwCreateWindowSurface(instance, window_, nullptr, surface) != VK_SUCCESS) {

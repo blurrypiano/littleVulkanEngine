@@ -32,6 +32,13 @@ struct ShaderLayout {
         shaderDirPath + "/simple.frag.spv",
         {LveModel::VertexAttribute::POSITION}};
   }
+
+  static const ShaderLayout diffuse(std::string shaderDirPath) {
+    return {
+        shaderDirPath + "/diffuse.vert.spv",
+        shaderDirPath + "/diffuse.frag.spv",
+        {LveModel::VertexAttribute::POSITION, LveModel::VertexAttribute::NORMAL}};
+  }
 };
 
 class LvePipeline {
