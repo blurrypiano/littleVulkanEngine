@@ -39,7 +39,7 @@ class LveApp {
   LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
   LveDevice device_{window_};
   LveSwapChain swapChain_{window_, device_};
-  LvePipeline pipeline_{ShaderLayout::simple(), device_, swapChain_};
+  LvePipeline pipeline_{ShaderLayout::simple("shaders"), device_, swapChain_};
 
   std::vector<VkCommandBuffer> commandBuffers_;
 

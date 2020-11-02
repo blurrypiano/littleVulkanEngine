@@ -29,6 +29,11 @@ COMPILE.c = g++ $(DEPFLAGS) $(CFLAGS) -c
 $(ODIR)/%.o : %.cpp $(DEPDIR)/%.d | $(DEPDIR)
 	g++ $(DEPFLAGS) $(CFLAGS) -c $<
 
+
+lib: $(TARGET)
+	ar rvs lvecore.a $(coreObjFiles)
+
+
 $(DEPFILES):
 include $(wildcard $(DEPFILES))
 

@@ -3,3 +3,5 @@ build/**
 .vscode
 **/.env
 *.spv
+littleVulkanEngine/sandbox/**
+lvecore.a

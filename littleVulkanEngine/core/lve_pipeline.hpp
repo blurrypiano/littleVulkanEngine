@@ -26,10 +26,10 @@ struct ShaderLayout {
   const std::string fragFilePath;
   const std::vector<LveModel::VertexAttribute> vertexAttributes;
 
-  static const ShaderLayout simple() {
+  static const ShaderLayout simple(std::string shaderDirPath) {
     return {
-        "shaders/simple.vert.spv",
-        "shaders/simple.frag.spv",
+        shaderDirPath + "/simple.vert.spv",
+        shaderDirPath + "/simple.frag.spv",
         {LveModel::VertexAttribute::POSITION}};
   }
 };
