@@ -37,21 +37,27 @@ struct ShaderLayout {
     return {
         shaderDirPath + "/diffuse.vert.spv",
         shaderDirPath + "/diffuse.frag.spv",
-        {LveModel::VertexAttribute::POSITION, LveModel::VertexAttribute::NORMAL}};
+        {LveModel::VertexAttribute::POSITION,
+         LveModel::VertexAttribute::NORMAL,
+         LveModel::VertexAttribute::COLOR}};
   }
 
   static const ShaderLayout phong(std::string shaderDirPath) {
     return {
         shaderDirPath + "/phong.vert.spv",
         shaderDirPath + "/phong.frag.spv",
-        {LveModel::VertexAttribute::POSITION, LveModel::VertexAttribute::NORMAL}};
+        {LveModel::VertexAttribute::POSITION,
+         LveModel::VertexAttribute::NORMAL,
+         LveModel::VertexAttribute::COLOR}};
   }
 
   static const ShaderLayout toon(std::string shaderDirPath) {
     return {
         shaderDirPath + "/toon.vert.spv",
         shaderDirPath + "/toon.frag.spv",
-        {LveModel::VertexAttribute::POSITION, LveModel::VertexAttribute::NORMAL}};
+        {LveModel::VertexAttribute::POSITION,
+         LveModel::VertexAttribute::NORMAL,
+         LveModel::VertexAttribute::COLOR}};
   }
 };
 
