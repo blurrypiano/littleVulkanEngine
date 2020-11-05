@@ -4,6 +4,6 @@ build/**
 **/.env
 *.spv
 littleVulkanEngine/sandbox/**
-lvecore.a
+*.a
 textures_
 models/viking_room.obj

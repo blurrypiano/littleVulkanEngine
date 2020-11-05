@@ -41,7 +41,9 @@ class LveSwapChain {
   size_t imageCount() { return swapChainImages.size(); }
   VkFormat getSwapChainImageFormat() { return swapChainImageFormat; }
   VkExtent2D getSwapChainExtent() { return swapChainExtent; }
-  float extentAspectRatio() { return swapChainExtent.width / (float)swapChainExtent.height; }
+  float extentAspectRatio() {
+    return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);
+  }
   VkFormat findDepthFormat();
 
   VkResult acquireNextImage(uint32_t *imageIndex);

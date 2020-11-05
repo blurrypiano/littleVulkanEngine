@@ -11,6 +11,9 @@ SRCS = $(shell find littleVulkanEngine -type f -name "*.cpp")
 coreSources = $(shell find littleVulkanEngine/core -type f -name "*.cpp")
 coreObjFiles = $(patsubst %.cpp, $(ODIR)/%.o, $(coreSources))
 
+generateSources = $(shell find littleVulkanEngine/generate -type f -name "*.cpp")
+generateObjFiles = $(patsubst %.cpp, $(ODIR)/%.o, $(generateSources))
+
 vertSources = $(shell find shaders -type f -name "*.vert")
 vertObjFiles = $(patsubst %.vert, %.vert.spv, $(vertSources))
 fragSources = $(shell find shaders -type f -name "*.frag")
@@ -19,7 +22,8 @@ fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragSources))
 TARGET = a.out
 $(TARGET): $(vertObjFiles) $(fragObjFiles)
 ${TARGET}: $(coreObjFiles)
-	g++ $(CFLAGS) -o ${TARGET} $(coreObjFiles) $(LDFLAGS)
+${TARGET}: $(generateObjFiles)
+	g++ $(CFLAGS) -o ${TARGET} $(coreObjFiles) $(generateObjFiles) $(LDFLAGS)
 
 $(DEPDIR): ; @mkdir -p $@
 DEPFILES := $(SRCS:%.cpp=$(DEPDIR)/%.d)
@@ -30,9 +34,9 @@ $(ODIR)/%.o : %.cpp $(DEPDIR)/%.d | $(DEPDIR)
 	g++ $(DEPFLAGS) $(CFLAGS) -c $<
 
 
-lib: $(TARGET)
+libs: $(TARGET)
 	ar rvs lvecore.a $(coreObjFiles)
-
+	ar rvs lvegenerate.a $(generateObjFiles)
 
 $(DEPFILES):
 include $(wildcard $(DEPFILES))

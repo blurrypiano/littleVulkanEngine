@@ -36,7 +36,7 @@ class Camera {
   float fovDegrees_{45.0f};
   float near_{0.1f};
   float far_{1000.0f};
-  float speed_{2.0f};
+  float speed_{5.0f};
 };
 
 }  // namespace lve
