@@ -129,10 +129,8 @@ void LveDevice::pickPhysicalDevice() {
     throw std::runtime_error("failed to find a suitable GPU!");
   }
 
-  VkPhysicalDeviceProperties pProperties;
-  vkGetPhysicalDeviceProperties(physicalDevice, &pProperties);
-
-  std::cout << "physical device: " << pProperties.deviceName << std::endl;
+  vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+  std::cout << "physical device: " << properties.deviceName << std::endl;
 }
 
 void LveDevice::createLogicalDevice() {

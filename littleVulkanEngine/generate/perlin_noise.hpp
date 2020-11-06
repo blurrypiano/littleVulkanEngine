@@ -18,7 +18,13 @@
 #include <vector>
 
 namespace lve {
-class PerlinNoise {
+
+namespace generate {
+
+float cubicWeight(float t);
+float randFloat();
+
+class Perlin {
   std::vector<int> permutations{
       151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,   225, 140, 36,  103,
       30,  69,  142, 8,   99,  37,  240, 21,  10,  23,  190, 6,   148, 247, 120, 234, 75,  0,   26,
@@ -40,15 +46,15 @@ class PerlinNoise {
   glm::vec3 genRandUnitSphereVec();
   glm::vec3 getPseudoRand(int i, int j, int k);
   float weightedNoise(glm::vec3 v, int i, int j, int k);
-  float cubicWeight(float t);
-  float randFloat();
   float noise(glm::vec3 v);
 
  public:
-  PerlinNoise() : PerlinNoise{static_cast<unsigned int>(time(NULL))} {}
-  PerlinNoise(unsigned int generatorSeed);
+  Perlin() : Perlin{static_cast<unsigned int>(time(NULL))} {}
+  Perlin(unsigned int generatorSeed);
 
   float perlinNoise(glm::vec3 v, int octaves, float lacunarity, float persistence);
 };
+
+}  // namespace generate
 
 }  // namespace lve

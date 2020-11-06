@@ -8,32 +8,42 @@
 
 #pragma once
 
-#include <littleVulkanEngine/core/lve_device.hpp>
+#include "lattice.hpp"
+
+// core
 #include <littleVulkanEngine/core/lve_model.hpp>
 
 // std
 #include <memory>
 
 namespace lve {
-using HeightMap = std::vector<std::vector<float>>;
 
 class Terrain {
  public:
   Terrain(LveDevice& device);
   std::unique_ptr<LveModel> model{};
 
+  std::unique_ptr<generate::GridLattice2D> heights;
+
+  float sampleHeight(glm::vec2 s);
+  glm::vec2 sampleGradient(glm::vec2 point);
+  float nearestHeight(glm::vec2 p);
+  glm::vec3 nearestNormal(glm::vec2 p);
+
  private:
   void generateTerrainModel(int vertexCount, float size, float textureScaleFactor);
 
-  static HeightMap generateHeightMap(int vertexCount, float size, float minHeight, float maxHeight);
-  static glm::vec3 calculateNormal(const HeightMap& heightMap, float delta, int i, int k);
-  static glm::vec4 calculateTangent(const HeightMap& heightMap, int i, int k);
+  void generateHeightMap(int vertexCount, float size, float minHeight, float maxHeight);
+  static glm::vec3 calculateNormal(
+      const generate::GridLattice2D& heightMap, float delta, int i, int k);
+  static glm::vec4 calculateTangent(const generate::GridLattice2D& heightMap, int i, int k);
 
-  static constexpr float SIZE = 800.0f;
-  static constexpr int VERTEX_COUNT = 120;
+  static constexpr float SIZE = 400.0f;
+  static constexpr int VERTEX_COUNT = 200;
 
   float x;
   float z;
+  float size_;
   LveDevice& device_;
 };
 

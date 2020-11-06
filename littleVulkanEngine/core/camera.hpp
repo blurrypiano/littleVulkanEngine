@@ -29,7 +29,7 @@ class Camera {
   glm::mat4 perspective(float aspectRatio);
 
  private:
-  glm::vec3 position_{0.0f, 0.0f, -10.0f};
+  glm::vec3 position_{0.0f, 40.0f, -10.0f};
   float roll_{};
   float yaw_{static_cast<float>(M_PI)};
   float pitch_{};

@@ -104,6 +104,8 @@ class LveDevice {
   void generateMipmaps(
       VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 
+  VkPhysicalDeviceProperties properties;
+
  private:
   void init();
   void cleanup();
