@@ -27,9 +27,9 @@ class Camera {
   void update(GLFWwindow* window);
   glm::mat4 viewing();
   glm::mat4 perspective(float aspectRatio);
+  glm::vec3 position_{5.0f, 40.0f, 5.0f};
 
  private:
-  glm::vec3 position_{0.0f, 40.0f, -10.0f};
   float roll_{};
   float yaw_{static_cast<float>(M_PI)};
   float pitch_{};

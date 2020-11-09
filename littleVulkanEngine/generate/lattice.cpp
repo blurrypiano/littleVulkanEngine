@@ -47,7 +47,7 @@ float GridLattice2D::nearestValue(glm::vec2 p) {
  * Defined on lattice with bounds [0,]
  */
 glm::vec2 GridLattice2D::sampleGradient(glm::vec2 p) {
-  p *= values.size();
+  p *= vertexCount;
   glm::vec2 p0 = glm::floor(p);
   glm::vec2 p1 = p0 + glm::vec2(1.0f, 0.0f);
   glm::vec2 p2 = p0 + glm::vec2(0.0f, 1.0f);
@@ -70,7 +70,7 @@ glm::vec2 GridLattice2D::nearestGradient(glm::vec2 p) {
   float bottom = x - 1 >= 0 ? values[y][x - 1] : values[y][x];
   float top = x + 1 < vertexCount ? values[y][x + 1] : values[y][x];
 
-  float dhdx = 0.5f * (bottom - top);
+  float dhdx = 0.5f * (top - bottom);
   float dhdy = 0.5f * (right - left);
   return {dhdx, dhdy};
 }

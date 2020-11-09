@@ -25,7 +25,7 @@ void main() {
     vec3 diffuse = cr * min(ca + cl * max(dot(N, L), 0.0), vec3(1.0));
     vec3 specular = cl * cp * pow(max(dot(R, V), 0.0), p);
 
-	  outColor = vec4(diffuse + specular, 1.0);
+	outColor = vec4(diffuse + specular, 1.0);
 
     float intensity = dot(N,L);
     float shade = 1.0;

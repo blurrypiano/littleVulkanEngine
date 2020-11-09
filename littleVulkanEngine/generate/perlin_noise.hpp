@@ -11,6 +11,9 @@
 // libs
 #define _USE_MATH_DEFINES
 #include <cmath>
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE  // open gl uses -1 to 1, vk is 0 to 1
 #include <glm/glm.hpp>
 
 // std

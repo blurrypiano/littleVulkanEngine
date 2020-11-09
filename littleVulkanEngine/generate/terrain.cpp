@@ -84,7 +84,7 @@ void Terrain::generateHeightMap(int vertexCount, float size, float minHeight, fl
   heights = std::make_unique<generate::GridLattice2D>(vertexCount);
 
   float amplitude = maxHeight - minHeight;
-  float scale = 2.0f / static_cast<float>(vertexCount);
+  float scale = 1.0f / static_cast<float>(vertexCount);
   for (int i = 0; i < vertexCount; i++) {
     for (int j = 0; j < vertexCount; j++) {
       // by increasing the samples we can smooth out the noise of our generated texture?
@@ -108,8 +108,8 @@ glm::vec3 Terrain::calculateNormal(
   float bottom = k - 1 >= 0 ? values[i][k - 1] : values[i][k];
   float top = k + 1 < vertexCount ? values[i][k + 1] : values[i][k];
 
-  float dhdx = 0.5f * (right - left);
-  float dhdz = 0.5f * (bottom - top);
+  float dhdx = 0.5f * (top - bottom);
+  float dhdz = 0.5f * (right - left);
 
   // gradient
   // auto tangent = glm::vec3(1.0f, dhdx, 0.0f);
