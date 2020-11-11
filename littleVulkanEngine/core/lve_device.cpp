@@ -628,6 +628,14 @@ void LveDevice::createImage(
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   imageInfo.flags = flags;
 
+  createImageWithInfo(imageInfo, properties, image, imageMemory);
+}
+
+void LveDevice::createImageWithInfo(
+    const VkImageCreateInfo &imageInfo,
+    VkMemoryPropertyFlags properties,
+    VkImage &image,
+    VkDeviceMemory &imageMemory) {
   if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
     throw std::runtime_error("failed to create image!");
   }
@@ -644,7 +652,9 @@ void LveDevice::createImage(
     throw std::runtime_error("failed to allocate image memory!");
   }
 
-  vkBindImageMemory(device_, image, imageMemory, 0);
+  if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) {
+    throw std::runtime_error("failed to bind image memory!");
+  }
 }
 
 VkImageView LveDevice::createImageView(

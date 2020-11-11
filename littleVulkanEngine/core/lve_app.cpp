@@ -52,11 +52,10 @@ void LveApp::createGraphicsPipeline() {
     throw std::runtime_error("failed to create pipeline layout!");
   }
 
-  pipeline_ = std::make_unique<lve::LvePipeline>(
-      lve::ShaderLayout::simple("shaders"),
-      device_,
-      swapChain_,
-      pipelineLayout_);
+  auto configInfo = lve::LvePipeline::defaultFixedFunctionCreateInfo(swapChain_);
+  configInfo.pipelineLayout = pipelineLayout_;
+  pipeline_ =
+      std::make_unique<lve::LvePipeline>(device_, lve::ShaderLayout::simple("shaders"), configInfo);
 }
 
 void LveApp::createCommandBuffers() {

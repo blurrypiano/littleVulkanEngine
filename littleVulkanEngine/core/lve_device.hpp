@@ -101,6 +101,12 @@ class LveDevice {
       VkImageCreateFlags flags,
       uint32_t arrayLayers);
 
+  void createImageWithInfo(
+      const VkImageCreateInfo &imageInfo,
+      VkMemoryPropertyFlags properties,
+      VkImage &image,
+      VkDeviceMemory &imageMemory);
+
   void generateMipmaps(
       VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 

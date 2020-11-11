@@ -32,6 +32,7 @@ LveBuffer::LveBuffer(
   props.size = instanceCount * props.alignment;
   props.memoryPropertyFlags = memoryPropertyFlags;
   props.usageFlags = usageFlags;
+  props.instanceCount = instanceCount;
 }
 
 LveBuffer::~LveBuffer() { destroy(); }
@@ -106,6 +107,7 @@ void LveBuffer::setupDescriptor(VkDeviceSize size, VkDeviceSize offset) {
  * @return VkDescriptorBufferInfo corresponding to index
  */
 VkDescriptorBufferInfo LveBuffer::descriptorIndexed(int index) {
+  assert(index >= 0 && index < props.instanceCount);
   VkDescriptorBufferInfo bufferInfo{};
   bufferInfo.offset = index * props.alignment;
   bufferInfo.buffer = buffer;

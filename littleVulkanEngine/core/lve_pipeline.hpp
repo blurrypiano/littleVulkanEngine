@@ -61,28 +61,37 @@ struct ShaderLayout {
   }
 };
 
+struct PipelineConfigInfo {
+  VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+  VkViewport viewport;
+  VkRect2D scissor;
+  VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+  VkPipelineMultisampleStateCreateInfo multisampleInfo;
+  VkPipelineColorBlendAttachmentState colorBlendAttachment;
+  VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+  VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+  VkRenderPass renderPass;
+  VkPipelineLayout pipelineLayout;
+  uint32_t subpass = 0;
+};
+
 class LvePipeline {
  public:
-  LvePipeline(
-      ShaderLayout shaderLayout,
-      LveDevice& device,
-      LveSwapChain& swapChain,
-      VkPipelineLayout& pipelineLayout_);
+  LvePipeline(LveDevice& device, ShaderLayout shaderLayout, PipelineConfigInfo& configInfo);
   ~LvePipeline();
   void bind(VkCommandBuffer commandBuffer);
+
+  static PipelineConfigInfo defaultFixedFunctionCreateInfo(LveSwapChain& swapChain_);
 
  private:
   static std::vector<char> readFile(const std::string& filename);
 
-  void createGraphicsPipeline();
+  void createGraphicsPipeline(PipelineConfigInfo& configInfo);
   VkShaderModule createShaderModule(const std::vector<char>& code);
 
+  VkPipeline graphicsPipeline_;
   ShaderLayout shaderLayout_;
   LveDevice& device_;
-  LveSwapChain& swapChain_;
-  VkPipelineLayout& pipelineLayout_;
-
-  VkPipeline graphicsPipeline_;
 };
 
 }  // namespace lve

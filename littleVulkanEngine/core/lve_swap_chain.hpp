@@ -1,5 +1,6 @@
 /*
- * Encapsulates a vulkan swap chain, and provides easy synchronization
+ * Encapsulates a vulkan swap chain, and other functionality related to synchronization,
+ * image aquistion, presenting to the graphics queue, etc.
  *
  * Copyright (C) 2020 by Blurrypiano - https://github.com/blurrypiano/littleVulkanEngine
  *
@@ -36,6 +37,7 @@ class LveSwapChain {
 
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
+  VkImageView getImageView(int index) { return swapChainImageViews[index]; }
   void recreateSwapChain();
   void cleanupSwapChain();
   size_t imageCount() { return swapChainImages.size(); }
@@ -66,7 +68,6 @@ class LveSwapChain {
       const std::vector<VkPresentModeKHR> &availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
-  std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
 
@@ -76,12 +77,13 @@ class LveSwapChain {
   std::vector<VkImage> depthImages;
   std::vector<VkDeviceMemory> depthImageMemorys;
   std::vector<VkImageView> depthImageViews;
+  std::vector<VkImage> swapChainImages;
+  std::vector<VkImageView> swapChainImageViews;
 
   LveWindow &window_;
   LveDevice &device_;
 
   VkSwapchainKHR swapChain;
-  std::vector<VkImageView> swapChainImageViews;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

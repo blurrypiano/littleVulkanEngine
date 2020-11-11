@@ -28,6 +28,7 @@ class LveBuffer {
     VkDeviceSize instanceSize;
     VkBufferUsageFlags usageFlags;
     VkMemoryPropertyFlags memoryPropertyFlags;
+    int instanceCount;
   };
 
   LveBuffer(

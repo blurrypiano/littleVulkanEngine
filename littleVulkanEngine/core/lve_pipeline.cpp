@@ -11,6 +11,7 @@
 #include "lve_initializers.hpp"
 
 // std
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -19,15 +20,9 @@
 namespace lve {
 
 LvePipeline::LvePipeline(
-    ShaderLayout shaderLayout,
-    LveDevice& device,
-    LveSwapChain& swapChain,
-    VkPipelineLayout& pipelineLayout)
-    : device_{device},
-      shaderLayout_{shaderLayout},
-      swapChain_{swapChain},
-      pipelineLayout_{pipelineLayout} {
-  createGraphicsPipeline();
+    LveDevice& device, ShaderLayout shaderLayout, PipelineConfigInfo& configInfo)
+    : device_{device}, shaderLayout_{shaderLayout} {
+  createGraphicsPipeline(configInfo);
 }
 
 LvePipeline::~LvePipeline() { vkDestroyPipeline(device_.device(), graphicsPipeline_, nullptr); }
@@ -54,7 +49,12 @@ std::vector<char> LvePipeline::readFile(const std::string& filename) {
   return buffer;
 }
 
-void LvePipeline::createGraphicsPipeline() {
+void LvePipeline::createGraphicsPipeline(PipelineConfigInfo& configInfo) {
+  assert(configInfo.renderPass != nullptr && "Pipeline cannot be created with null render pass");
+  assert(
+      configInfo.pipelineLayout != nullptr &&
+      "Pipeline cannot be created with null pipeline layout");
+
   auto vertCode = readFile(shaderLayout_.vertFilePath);
   auto fragCode = readFile(shaderLayout_.fragFilePath);
 
@@ -71,17 +71,7 @@ void LvePipeline::createGraphicsPipeline() {
       LveModel::Vertex::getAttributeDescriptions(shaderLayout_.vertexAttributes);
   auto vertexInputInfo = initializers::vertexInputState(bindingDescription, attributeDescriptions);
 
-  auto inputAssembly = initializers::inputAssemblyState();
-  VkExtent2D swapChainExtent = swapChain_.getSwapChainExtent();
-  VkViewport viewport =
-      {0.0f, 0.0f, (float)swapChainExtent.width, (float)swapChainExtent.height, 0.0f, 1.0f};
-  VkRect2D scissor = {{0, 0}, swapChainExtent};
-  auto viewportState = initializers::viewportState(viewport, scissor);
-  auto rasterizer = initializers::rasterizationState();
-  auto multisampling = initializers::multisampleState();
-  auto colorBlendAttachment = initializers::colorBlendAttachmentState();
-  auto colorBlending = initializers::colorBlendingState(colorBlendAttachment);
-  auto depthStencil = initializers::depthStencilState();
+  auto viewportState = initializers::viewportState(configInfo.viewport, configInfo.scissor);
 
   VkGraphicsPipelineCreateInfo pipelineInfo = {};
   pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -89,18 +79,18 @@ void LvePipeline::createGraphicsPipeline() {
   pipelineInfo.pStages = shaderStages;
 
   pipelineInfo.pVertexInputState = &vertexInputInfo;
-  pipelineInfo.pInputAssemblyState = &inputAssembly;
+  pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
   pipelineInfo.pViewportState = &viewportState;
-  pipelineInfo.pRasterizationState = &rasterizer;
-  pipelineInfo.pMultisampleState = &multisampling;
+  pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
+  pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
   pipelineInfo.pDepthStencilState = nullptr;  // Optional
-  pipelineInfo.pColorBlendState = &colorBlending;
+  pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
   pipelineInfo.pDynamicState = nullptr;  // Optional
-  pipelineInfo.pDepthStencilState = &depthStencil;
+  pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
 
-  pipelineInfo.layout = pipelineLayout_;
-  pipelineInfo.renderPass = swapChain_.getRenderPass();
-  pipelineInfo.subpass = 0;
+  pipelineInfo.layout = configInfo.pipelineLayout;
+  pipelineInfo.renderPass = configInfo.renderPass;
+  pipelineInfo.subpass = configInfo.subpass;
 
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;  // Optional
   pipelineInfo.basePipelineIndex = -1;               // Optional
@@ -132,4 +122,27 @@ VkShaderModule LvePipeline::createShaderModule(const std::vector<char>& code) {
   return shaderModule;
 }
 
+/**
+ * Helper function to create default fixed function create info using swap chain
+ *
+ * @param swapChain Active swapchain
+ *
+ * @return FixedFunctionCreateInfo for default pipeline
+ */
+PipelineConfigInfo LvePipeline::defaultFixedFunctionCreateInfo(LveSwapChain& swapChain) {
+  VkExtent2D swapChainExtent = swapChain.getSwapChainExtent();
+  PipelineConfigInfo configInfo{};
+  configInfo.inputAssemblyInfo = initializers::inputAssemblyState();
+  configInfo.viewport =
+      {0.0f, 0.0f, (float)swapChainExtent.width, (float)swapChainExtent.height, 0.0f, 1.0f};
+  configInfo.scissor = {{0, 0}, swapChainExtent};
+  configInfo.rasterizationInfo = initializers::rasterizationState();
+  configInfo.multisampleInfo = initializers::multisampleState();
+  configInfo.colorBlendAttachment = initializers::colorBlendAttachmentState();
+  configInfo.colorBlendInfo = initializers::colorBlendingState(configInfo.colorBlendAttachment);
+  configInfo.depthStencilInfo = initializers::depthStencilState();
+  configInfo.subpass = 0;
+  configInfo.renderPass = swapChain.getRenderPass();
+  return configInfo;
+}
 }  // namespace lve

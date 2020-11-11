@@ -26,6 +26,57 @@ inline VkPipelineShaderStageCreateInfo shaderStage(
   return shaderStage;
 }
 
+inline VkAttachmentDescription dontCareAttachment(VkFormat format) {
+  VkAttachmentDescription attachment{};
+  attachment.format = format;
+  attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  attachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  attachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  attachment.finalLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  return attachment;
+}
+
+inline VkAttachmentDescription depthAttachment(VkFormat depthFormat) {
+  VkAttachmentDescription depthAttachment{};
+  depthAttachment.format = depthFormat;
+  depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+  return depthAttachment;
+}
+
+inline VkAttachmentDescription swapChainColorAttachment(VkFormat imageFormat) {
+  VkAttachmentDescription colorAttachment = {};
+  colorAttachment.format = imageFormat;
+  colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+  return colorAttachment;
+}
+
+inline VkImageCreateInfo imageCreateInfo() {
+  VkImageCreateInfo imageCreateInfo{};
+  imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+  return imageCreateInfo;
+}
+
+inline VkImageViewCreateInfo imageViewCreateInfo() {
+  VkImageViewCreateInfo imageViewCreateInfo{};
+  imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+  return imageViewCreateInfo;
+}
+
 inline VkPipelineVertexInputStateCreateInfo vertexInputState(
     VkVertexInputBindingDescription& bindingDescription,
     std::vector<VkVertexInputAttributeDescription>& attributeDescriptions) {
@@ -64,7 +115,7 @@ inline VkPipelineRasterizationStateCreateInfo rasterizationState() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_NONE;
+  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
   rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
   rasterizer.depthBiasConstantFactor = 0.0f;  // Optional
@@ -231,6 +282,15 @@ inline VkDescriptorSetAllocateInfo descriptorSetAllocateInfo(
   allocInfo.pSetLayouts = layouts.data();
   allocInfo.descriptorSetCount = static_cast<uint32_t>(layouts.size());
   return allocInfo;
+}
+
+inline VkDescriptorImageInfo descriptorImageInfo(
+    VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout) {
+  VkDescriptorImageInfo descriptorImageInfo{};
+  descriptorImageInfo.sampler = sampler;
+  descriptorImageInfo.imageView = imageView;
+  descriptorImageInfo.imageLayout = imageLayout;
+  return descriptorImageInfo;
 }
 
 inline VkWriteDescriptorSet writeDescriptorSet(
