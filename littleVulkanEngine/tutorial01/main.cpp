@@ -1,4 +1,4 @@
-#include "lve_app.hpp"
+#include "lve_app_base.hpp"
 
 // std
 #include <cstdlib>
@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 int main() {
-  lve::LveApp app{};
+  lve::LveAppBase app{};
 
   try {
     app.run();
