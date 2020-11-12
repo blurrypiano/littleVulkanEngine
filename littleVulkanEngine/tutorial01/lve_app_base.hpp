@@ -4,12 +4,12 @@
 
 namespace lve {
 
-class LveApp {
+class LveAppBase {
  public:
-  void run();
-
   static constexpr int WIDTH = 800;
   static constexpr int HEIGHT = 600;
+
+  void run();
 
  private:
   LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"};

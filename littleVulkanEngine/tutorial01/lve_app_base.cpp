@@ -1,9 +1,9 @@
 
-#include "lve_app.hpp"
+#include "lve_app_base.hpp"
 
 namespace lve {
 
-void LveApp::run() {
+void LveAppBase::run() {
   while (!lveWindow.shouldClose()) {
     glfwPollEvents();
   }
