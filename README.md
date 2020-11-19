@@ -26,23 +26,24 @@ This is the staring point to the tutorial series. It is equivalent to where you'
 setting up your development environment as described by [Vulkan Tutorial](https://vulkan-tutorial.com/Development_environment) 
 with just a few small changes.
 
+https://youtu.be/Y9U9IE0gVHA
+
 #### [01 - Opening a window](littleVulkanEngine/tutorial01/)
 
 In the very first tutorial of this series we will be creating a class to encapsulate a glfw window, and a class to run our application.
 
-Video not yet released (October 22nd, 2020)
 
 #### 02 - Shaders & the graphics pipeline
-Video not yet released (October 29th, 2020)
+Video not yet released
 
 #### 03 - Compiling Shaders
-Video not yet released (November 5th, 2020)
+Video not yet released
 
 #### 04 - Creating the Graphics Pipeline
-Video not yet released (November 12th, 2020)
+Video not yet released
 
 #### 05 - Drawing a triangle
-Video not yet released (November 19th, 2020)
+Video not yet released
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
