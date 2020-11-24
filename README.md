@@ -26,15 +26,18 @@ This is the staring point to the tutorial series. It is equivalent to where you'
 setting up your development environment as described by [Vulkan Tutorial](https://vulkan-tutorial.com/Development_environment) 
 with just a few small changes.
 
-https://youtu.be/Y9U9IE0gVHA
+  [Video Tutorial](https://youtu.be/Y9U9IE0gVHA)
 
 #### [01 - Opening a window](littleVulkanEngine/tutorial01/)
 
 In the very first tutorial of this series we will be creating a class to encapsulate a glfw window, and a class to run our application.
 
+  [Video Tutorial](https://youtu.be/lr93-_cC8v4)
 
-#### 02 - Shaders & the graphics pipeline
-Video not yet released
+#### [02 - Shaders & the graphics pipeline](littleVulkanEngine/tutorial02/)
+
+In this tutorial we create the most basic of vertex and fragment shaders files, go over how to compile them to SPIR-V, and read
+the compiled files into our c++ program, to later be used to create shader modules in the next tutorial.
 
 #### 03 - Compiling Shaders
 Video not yet released
