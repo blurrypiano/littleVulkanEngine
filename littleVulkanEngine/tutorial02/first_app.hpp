@@ -13,6 +13,6 @@ class FirstApp {
 
  private:
   LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"};
-  LvePipeline pipeline{"./simple_shader.vert.spv", "./simple_shader.frag.spv"};
+  LvePipeline pipeline{"shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv"};
 };
 }  // namespace lve
