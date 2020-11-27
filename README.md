@@ -37,7 +37,9 @@ In the very first tutorial of this series we will be creating a class to encapsu
 #### [02 - Shaders & the graphics pipeline](littleVulkanEngine/tutorial02/)
 
 In this tutorial we create the most basic of vertex and fragment shaders files, go over how to compile them to SPIR-V, and read
-the compiled files into our c++ program, to later be used to create shader modules in the next tutorial.
+the compiled files into our c++ program, to later be used to create shader modules in the next tutorial. 
+
+  [Video Tutorial](https://youtu.be/_riranMmtvI)
 
 #### 03 - Compiling Shaders
 Video not yet released
