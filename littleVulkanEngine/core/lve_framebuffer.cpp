@@ -129,7 +129,10 @@ void LveFramebuffer::createAttachment(
       throw std::runtime_error("failed to create sampler!");
     }
 
-    attachment->descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    VkImageLayout samplerImageLayout = imageLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+                                           ? VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+                                           : VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
+    attachment->descriptor.imageLayout = samplerImageLayout;
     attachment->descriptor.imageView = attachment->view;
     attachment->descriptor.sampler = attachment->sampler;
   }
