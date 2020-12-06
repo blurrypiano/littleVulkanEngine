@@ -122,6 +122,8 @@ void LvePipeline::createGraphicsPipeline(
 
   vkDestroyShaderModule(lveDevice.device(), fragShaderModule, nullptr);
   vkDestroyShaderModule(lveDevice.device(), vertShaderModule, nullptr);
+  fragShaderModule = VK_NULL_HANDLE;
+  vertShaderModule = VK_NULL_HANDLE;
 }
 
 void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {

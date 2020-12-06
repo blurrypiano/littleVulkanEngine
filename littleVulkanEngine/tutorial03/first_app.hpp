@@ -18,7 +18,7 @@ class FirstApp {
   LvePipeline lvePipeline{
       lveDevice,
       "shaders/simple_shader.vert.spv",
-      "shaders/simple_shader.vert.spv",
+      "shaders/simple_shader.frag.spv",
       LvePipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
 };
 }  // namespace lve
