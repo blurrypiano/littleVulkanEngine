@@ -41,11 +41,17 @@ the compiled files into our c++ program, to later be used to create shader modul
 
   [Video Tutorial](https://youtu.be/_riranMmtvI)
 
-#### 03 - Compiling Shaders
-Video not yet released
+#### [03 - Pipeline Creation & Vulkan Device](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial03)
 
-#### 04 - Creating the Graphics Pipeline
-Video not yet released
+In this tutorial we configure our graphics pipeline create info to prepare our pipeline for drawing. We read in the compiled shader files created in the previous tutorial and use them to create shader modules. We also have added the lve_device helper file which encapsulates a vulkan device and functionality for creating a vulkan instance, setting up validation layers, picking a physical device and creating a logical device and queues. Additionally, there is a bit of helper functionality.
+
+Video not yet released (December 8th)
+
+#### [04 - Command Buffers & the Swap Chain](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial04)
+
+We finally draw a triangle!! In this tutorial we cover command buffers and give a brief overview of the swap chain.
+
+Video not yet released (December 10th)
 
 #### 05 - Drawing a triangle
 Video not yet released
