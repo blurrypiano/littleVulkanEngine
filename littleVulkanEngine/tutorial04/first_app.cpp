@@ -1,5 +1,8 @@
 #include "first_app.hpp"
 
+// std
+#include <array>
+
 namespace lve {
 
 FirstApp::FirstApp() {
@@ -41,7 +44,8 @@ void FirstApp::createPipelineLayout() {
 }
 
 void FirstApp::createPipeline() {
-  auto pipelineConfig = LvePipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT);
+  auto pipelineConfig =
+      LvePipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());
   pipelineConfig.renderPass = lveSwapChain.getRenderPass();
   pipelineConfig.pipelineLayout = pipelineLayout;
   simplePipeline = std::make_unique<LvePipeline>(
