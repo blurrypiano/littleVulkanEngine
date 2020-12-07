@@ -1,6 +1,6 @@
 /*
  * Encapsulates a vulkan swap chain, and other functionality related to synchronization,
- * image aquistion, presenting to the graphics queue, etc.
+ * image aquistion, presenting to the graphics queue, creating a render pass, framebuffers etc.
  *
  * Copyright (C) 2020 by Blurrypiano - https://github.com/blurrypiano/littleVulkanEngine
  *

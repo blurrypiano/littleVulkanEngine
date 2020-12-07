@@ -203,6 +203,7 @@ VkResult LveBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
  * Release all Vulkan resources held by this buffer
  */
 void LveBuffer::destroy() {
+  unmap();
   if (buffer) {
     vkDestroyBuffer(device_.device(), buffer, nullptr);
   }

@@ -55,6 +55,7 @@ void LvePipeline::createGraphicsPipeline(PipelineConfigInfo& configInfo) {
       configInfo.pipelineLayout != nullptr &&
       "Pipeline cannot be created with null pipeline layout");
 
+  // TODO abstract this away into shader layout
   auto vertCode = readFile(shaderLayout_.vertFilePath);
   auto fragCode = readFile(shaderLayout_.fragFilePath);
 
@@ -127,7 +128,7 @@ VkShaderModule LvePipeline::createShaderModule(const std::vector<char>& code) {
  *
  * @param swapChain Active swapchain
  *
- * @return FixedFunctionCreateInfo for default pipeline
+ * @return FixedFunctionCreateInfo for default pipeline, pipeline layout needs to be set
  */
 PipelineConfigInfo LvePipeline::defaultFixedFunctionCreateInfo(LveSwapChain& swapChain) {
   VkExtent2D swapChainExtent = swapChain.getSwapChainExtent();

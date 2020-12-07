@@ -75,7 +75,7 @@ void LveFramebuffer::createAttachment(
     imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
   }
 
-  // I hate this!
+  // Don't like this, should I be using an image array instead of multiple images?
   VkImageCreateInfo imageInfo = lve::initializers::imageCreateInfo();
   imageInfo.imageType = VK_IMAGE_TYPE_2D;
   imageInfo.format = format;

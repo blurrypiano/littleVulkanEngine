@@ -63,9 +63,10 @@ VkResult LveSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
   VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
-  VkPipelineStageFlags waitStages[] = {
-      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-      VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT};
+  // VkPipelineStageFlags waitStages[] = {
+  //     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+  //     VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT};
+  VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
   submitInfo.waitSemaphoreCount = 1;
   submitInfo.pWaitSemaphores = waitSemaphores;
   submitInfo.pWaitDstStageMask = waitStages;
@@ -256,14 +257,21 @@ void LveSwapChain::createRenderPass() {
   subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
   VkSubpassDependency dependency = {};
-  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-  dependency.dstSubpass = 0;
 
-  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.srcAccessMask = 0;
+  dependency.dstSubpass = 0;  // For our current render pass
+  dependency.dstAccessMask =
+      VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;  // we write access our color attachment
+  dependency.dstStageMask =
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;  // at color attachment output stage
 
-  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+  // only after
+  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;  // the previous subpass
+  dependency.srcAccessMask = 0;                 // does whatever
+  dependency.srcStageMask =
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;  // at its color attachment output stage
+
+  // i.e this means we can't write to our color attachment until after the previous render pass has
+  // finished with its color attachment stage
 
   std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
   VkRenderPassCreateInfo renderPassInfo = {};
