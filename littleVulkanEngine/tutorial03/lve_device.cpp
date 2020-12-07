@@ -427,10 +427,6 @@ void LveDevice::createBuffer(
   allocInfo.allocationSize = memRequirements.size;
   allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  // TODO there is a maximum number of memory allocations
-  // maxMemoryAllocationCount for a physical device. Should create a custom
-  // allocator that batches together a large number of objects at once. See
-  // https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
   if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate vertex buffer memory!");
   }
@@ -439,11 +435,6 @@ void LveDevice::createBuffer(
 }
 
 VkCommandBuffer LveDevice::beginSingleTimeCommands() {
-  // You may wish to create a separate command pool for these kinds of
-  // short-lived buffers,
-  // because the implementation may be able to apply memory allocation
-  // optimizations. You should use the VK_COMMAND_POOL_CREATE_TRANSIENT_BIT
-  // flag during command pool generation in that case.
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
