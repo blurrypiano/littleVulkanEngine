@@ -1,10 +1,6 @@
 # Tutorial
 
-In this tutorial we continue working on our graphics pipeline. We read in the compiled shader files created in the previous tutorial and use them to create shader modules.
-
-
-We also have added the lve_device file which encapsulates a vulkan device and functionality for creating a vulkan instance, setting up validation layers, picking a physical device and creating a logical device and queues. Additionally, there is a bit of helper functionality
-
+In this tutorial we configure the rest of our graphics pipeline create info to prepare our pipeline for drawing.
 
 ## Building
 
