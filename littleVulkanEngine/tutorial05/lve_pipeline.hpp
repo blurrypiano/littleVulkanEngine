@@ -11,7 +11,6 @@ namespace lve {
 struct PipelineConfigInfo {
   VkViewport viewport;
   VkRect2D scissor;
-  VkPipelineViewportStateCreateInfo viewportInfo;
   VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
   VkPipelineRasterizationStateCreateInfo rasterizationInfo;
   VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -46,6 +45,7 @@ class LvePipeline {
       const std::string& vertFilepath,
       const std::string& fragFilepath,
       const PipelineConfigInfo& configInfo);
+
   void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
   LveDevice& lveDevice;

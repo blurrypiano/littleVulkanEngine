@@ -1,7 +1,9 @@
 #pragma once
 
 #include "lve_device.hpp"
-#include "lve_window.hpp"
+
+// vulkan headers
+#include <vulkan/vulkan.h>
 
 // std lib headers
 #include <string>
@@ -13,12 +15,8 @@ class LveSwapChain {
  public:
   static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-  LveSwapChain(LveWindow &window, LveDevice &device) : window_{window}, device_{device} { init(); }
-
-  ~LveSwapChain() {
-    cleanupSwapChain();
-    cleanupSyncObjects();
-  }
+  LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent);
+  ~LveSwapChain();
 
   LveSwapChain(const LveSwapChain &) = delete;
   void operator=(const LveSwapChain &) = delete;
@@ -26,8 +24,6 @@ class LveSwapChain {
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
   VkImageView getImageView(int index) { return swapChainImageViews[index]; }
-  void recreateSwapChain();
-  void cleanupSwapChain();
   size_t imageCount() { return swapChainImages.size(); }
   VkFormat getSwapChainImageFormat() { return swapChainImageFormat; }
   VkExtent2D getSwapChainExtent() { return swapChainExtent; }
@@ -43,8 +39,6 @@ class LveSwapChain {
   VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
  private:
-  void init();
-  void cleanupSyncObjects();
   void createSwapChain();
   void createImageViews();
   void createDepthResources();
@@ -71,8 +65,8 @@ class LveSwapChain {
   std::vector<VkImage> swapChainImages;
   std::vector<VkImageView> swapChainImageViews;
 
-  LveWindow &window_;
-  LveDevice &device_;
+  LveDevice &device;
+  VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
 
