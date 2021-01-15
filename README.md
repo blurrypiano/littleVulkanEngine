@@ -53,7 +53,9 @@ In this tutorial we configure our graphics pipeline create info to prepare our p
 
 We finally draw a triangle!! In this tutorial we cover command buffers and give a brief overview of the swap chain, and the initial functionality we will be using to draw to a window.
 
-[Video Part 1](https://youtu.be/IUYH74MqxOA)
+[Video Tutorial - Part 1](https://youtu.be/IUYH74MqxOA)
+
+[Video Tutorial - Part 2](https://youtu.be/_VOR6q3edig)
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
