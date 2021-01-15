@@ -49,11 +49,11 @@ In this tutorial we configure our graphics pipeline create info to prepare our p
 
 [Tutorial 04 Video](https://youtu.be/ecMcXW6MSYU)
 
-#### [05 - Command Buffers & the Swap Chain](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial04)
+#### [05 - Command Buffers & the Swap Chain](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial05)
 
 We finally draw a triangle!! In this tutorial we cover command buffers and give a brief overview of the swap chain, and the initial functionality we will be using to draw to a window.
 
-Video not yet released (est. December 23rd)
+[Video Part 1](https://youtu.be/IUYH74MqxOA)
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
