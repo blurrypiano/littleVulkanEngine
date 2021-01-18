@@ -144,6 +144,7 @@ PipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(uint32_t width, uint32
   configInfo.scissor.offset = {0, 0};
   configInfo.scissor.extent = {width, height};
 
+  // Known issue: this creates a self-referencing structure. Fixed in tutorial 05
   configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
   configInfo.viewportInfo.viewportCount = 1;
   configInfo.viewportInfo.pViewports = &configInfo.viewport;
