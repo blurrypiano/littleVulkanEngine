@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lve_model.hpp"
 #include "lve_pipeline.hpp"
 #include "lve_swap_chain.hpp"
 #include "lve_window.hpp"
@@ -34,5 +35,6 @@ class FirstApp {
   VkPipelineLayout pipelineLayout;
   std::unique_ptr<LvePipeline> simplePipeline;
   std::vector<VkCommandBuffer> commandBuffers;
+  LveModel lveModel{lveDevice};
 };
 }  // namespace lve
