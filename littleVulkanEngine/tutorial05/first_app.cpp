@@ -2,6 +2,7 @@
 
 // std
 #include <array>
+#include <stdexcept>
 
 namespace lve {
 
@@ -36,8 +37,11 @@ void FirstApp::createPipelineLayout() {
 }
 
 void FirstApp::createPipeline() {
-  auto pipelineConfig =
-      LvePipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());
+  PipelineConfigInfo pipelineConfig{};
+  LvePipeline::defaultPipelineConfigInfo(
+      pipelineConfig,
+      lveSwapChain.width(),
+      lveSwapChain.height());
   pipelineConfig.renderPass = lveSwapChain.getRenderPass();
   pipelineConfig.pipelineLayout = pipelineLayout;
   lvePipeline = std::make_unique<LvePipeline>(
@@ -94,12 +98,11 @@ void FirstApp::createCommandBuffers() {
     }
   }
 }
-
 void FirstApp::drawFrame() {
   uint32_t imageIndex;
   auto result = lveSwapChain.acquireNextImage(&imageIndex);
   if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("failed to acquire swap chain image");
+    throw std::runtime_error("failed to acquire swap chain image!");
   }
 
   result = lveSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
