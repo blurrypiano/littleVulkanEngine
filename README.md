@@ -57,6 +57,13 @@ We finally draw a triangle!! In this tutorial we cover command buffers and give 
 
 [Video Tutorial - Part 2](https://youtu.be/_VOR6q3edig)
 
+#### [06 - Vertex Buffers](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial06)
+
+In this tutorial, we will cover how vertex buffers store data, and can be bound to graphics pipelines. A vertex buffer is really just a chunk of memory that we pass into our vertex shader. We can put whatever data we would like into this memory as long as we tell our graphics pipeline how it is structured.
+
+Video Tutorial - coming soon
+
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
