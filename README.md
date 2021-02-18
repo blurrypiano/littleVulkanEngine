@@ -61,7 +61,13 @@ We finally draw a triangle!! In this tutorial we cover command buffers and give 
 
 In this tutorial, we will cover how vertex buffers store data, and can be bound to graphics pipelines. A vertex buffer is really just a chunk of memory that we pass into our vertex shader. We can put whatever data we would like into this memory as long as we tell our graphics pipeline how it is structured.
 
-Video Tutorial - coming soon
+[Tutorial 06 Video](https://www.youtube.com/watch?v=mnKp501RXDc)
+
+#### [07 - Fragment Interpolation](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial07)
+
+We update the vertex struct and buffer to include an additional color attribute. We then use the color attribute to demonstrate fragment interpolation for values output from the vertex shader to the fragment shader.
+
+[Tutorial 07 Video](https://youtu.be/ngoZZkMuCOM)
 
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
