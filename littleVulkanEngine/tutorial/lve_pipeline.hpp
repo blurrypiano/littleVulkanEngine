@@ -36,7 +36,7 @@ class LvePipeline {
   ~LvePipeline();
 
   LvePipeline(const LvePipeline&) = delete;
-  void operator=(const LvePipeline&) = delete;
+  LvePipeline& operator=(const LvePipeline&) = delete;
 
   void bind(VkCommandBuffer commandBuffer);
 
