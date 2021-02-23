@@ -36,7 +36,7 @@ class LveTexture {
   }
 
   LveTexture(const LveTexture &) = delete;
-  void operator=(const LveTexture &) = delete;
+  LveTexture &operator=(const LveTexture &) = delete;
 
   static std::unique_ptr<LveTexture> loadTexture(
       LveDevice &device, const std::string &textureFilepath);

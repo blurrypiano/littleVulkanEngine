@@ -79,6 +79,10 @@ class LvePipeline {
  public:
   LvePipeline(LveDevice& device, ShaderLayout shaderLayout, PipelineConfigInfo& configInfo);
   ~LvePipeline();
+
+  LvePipeline(const LvePipeline&) = delete;
+  LvePipeline& operator=(const LvePipeline&) = delete;
+
   void bind(VkCommandBuffer commandBuffer);
 
   static PipelineConfigInfo defaultFixedFunctionCreateInfo(LveSwapChain& swapChain_);

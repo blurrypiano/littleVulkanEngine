@@ -40,7 +40,7 @@ class LveBuffer {
   ~LveBuffer();
 
   LveBuffer(const LveBuffer&) = delete;
-  void operator=(const LveBuffer&) = delete;
+  LveBuffer& operator=(const LveBuffer&) = delete;
 
   void create();
   VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);

@@ -57,7 +57,7 @@ class LveFramebuffer {
   ~LveFramebuffer();
 
   LveFramebuffer(const LveFramebuffer &) = delete;
-  void operator=(const LveFramebuffer &) = delete;
+  LveFramebuffer &operator=(const LveFramebuffer &) = delete;
 
   std::vector<lve::FramebufferAttachment> attachments;
   VkFramebuffer framebuffer;

@@ -63,7 +63,7 @@ class LveModel {
   ~LveModel() { cleanup(); }
 
   LveModel(const LveModel&) = delete;
-  void operator=(const LveModel&) = delete;
+  LveModel& operator=(const LveModel&) = delete;
 
   void draw(VkCommandBuffer commandBuffer);
   void bind(VkCommandBuffer commandBuffer);

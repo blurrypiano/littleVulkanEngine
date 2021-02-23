@@ -47,7 +47,7 @@ class LveDevice {
   ~LveDevice() { cleanup(); }
 
   LveDevice(const LveDevice &) = delete;
-  void operator=(const LveDevice &) = delete;
+  LveDevice &operator=(const LveDevice &) = delete;
 
   VkCommandPool getCommandPool() { return commandPool; }
   VkDevice device() { return device_; }

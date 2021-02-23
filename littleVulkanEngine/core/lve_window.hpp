@@ -35,7 +35,7 @@ class LveWindow {
   }
 
   LveWindow(const LveWindow &) = delete;
-  void operator=(const LveWindow &) = delete;
+  LveWindow &operator=(const LveWindow &) = delete;
 
   bool shouldClose() { return glfwWindowShouldClose(window_); }
   bool wasWindowResized() { return framebufferResized_; }
