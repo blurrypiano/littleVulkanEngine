@@ -18,7 +18,7 @@ class LveSwapChain {
 
   LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent);
   LveSwapChain(
-      LveDevice &deviceRef, VkExtent2D windowExtent, std::unique_ptr<LveSwapChain> previous);
+      LveDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<LveSwapChain> previous);
   ~LveSwapChain();
 
   LveSwapChain(const LveSwapChain &) = delete;
@@ -73,7 +73,7 @@ class LveSwapChain {
   VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
-  std::unique_ptr<LveSwapChain> oldSwapChain;
+  std::shared_ptr<LveSwapChain> oldSwapChain;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

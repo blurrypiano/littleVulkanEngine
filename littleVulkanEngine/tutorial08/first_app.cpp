@@ -2,6 +2,7 @@
 
 // std
 #include <array>
+#include <cassert>
 #include <stdexcept>
 
 namespace lve {
@@ -55,7 +56,11 @@ void FirstApp::recreateSwapChain() {
   if (lveSwapChain == nullptr) {
     lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent);
   } else {
-    lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, std::move(lveSwapChain));
+    std::shared_ptr<LveSwapChain> oldSwapChain = std::move(lveSwapChain);
+    lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, oldSwapChain);
+    assert(
+        lveSwapChain->imageCount() == oldSwapChain->imageCount() &&
+        "Swap chain image count has changed!");
   }
   createPipeline();
 }

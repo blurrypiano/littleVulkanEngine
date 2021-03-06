@@ -17,8 +17,8 @@ LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent)
 }
 
 LveSwapChain::LveSwapChain(
-    LveDevice &deviceRef, VkExtent2D extent, std::unique_ptr<LveSwapChain> previous)
-    : device{deviceRef}, windowExtent{extent}, oldSwapChain{std::move(previous)} {
+    LveDevice &deviceRef, VkExtent2D extent, std::shared_ptr<LveSwapChain> previous)
+    : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
   init();
 
   // clean up old swap chain since it's no longer needed
