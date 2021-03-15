@@ -30,12 +30,10 @@ class FirstApp {
   void createPipeline();
   void createCommandBuffers();
   void drawFrame();
-  void recreateSwapChain();
-  void recordCommandBuffer(int imageIndex);
 
-  LveWindow lveWindow{WIDTH, HEIGHT, "Tutorial 07"};
+  LveWindow lveWindow{WIDTH, HEIGHT, "Vulkan Tutorial"};
   LveDevice lveDevice{lveWindow};
-  std::unique_ptr<LveSwapChain> lveSwapChain;
+  LveSwapChain lveSwapChain;
   std::unique_ptr<LvePipeline> lvePipeline;
   VkPipelineLayout pipelineLayout;
   std::vector<VkCommandBuffer> commandBuffers;
