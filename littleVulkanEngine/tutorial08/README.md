@@ -6,6 +6,8 @@ We change to using a dynamic viewport and scissor so that graphics pipeline crea
 
 ** [View Tutorial Changes](https://github.com/blurrypiano/littleVulkanEngine/commit/ac911abade3f0747c31b5cf3d21c59c7c077d6f4) **
 
+** [Video Tutorial](https://youtu.be/0IIqvi3Z0ng)
+
 
 ## Building
 
