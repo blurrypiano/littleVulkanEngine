@@ -69,6 +69,12 @@ We update the vertex struct and buffer to include an additional color attribute.
 
 [Tutorial 07 Video](https://youtu.be/ngoZZkMuCOM)
 
+#### [08 - Swap Chain Recreation & Dynamic Viewports](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial08)
+
+We set up a callback function that listens to changes on the glfw window and updates the dimensions of the window wrapper class. When the window is resized we must create a new compatible swap chain.
+
+[Tutorial 08 Video](https://youtu.be/0IIqvi3Z0ng)
+
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
