@@ -1,6 +1,11 @@
 # Tutorial
 
-In this tutorial we change our command buffers to be re-recorded before each frame. We change our window class to support resizing and will rebuild the swap chain (and objects that depend on the swap chain such as our graphics pipeline).
+In this tutorial we set up a callback function that listens to changes on the glfw window and updates the dimensions of the window wrapper class. When the window is resized we must create a new compatible swap chain.
+
+We change to using a dynamic viewport and scissor so that graphics pipeline creation is no longer dependent on the swap chains dimensions.
+
+** [View Tutorial Changes](https://github.com/blurrypiano/littleVulkanEngine/commit/ac911abade3f0747c31b5cf3d21c59c7c077d6f4) **
+
 
 ## Building
 

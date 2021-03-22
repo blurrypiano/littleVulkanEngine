@@ -20,8 +20,6 @@ LveSwapChain::LveSwapChain(
     LveDevice &deviceRef, VkExtent2D extent, std::shared_ptr<LveSwapChain> previous)
     : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
   init();
-
-  // clean up old swap chain since it's no longer needed
   oldSwapChain = nullptr;
 }
 

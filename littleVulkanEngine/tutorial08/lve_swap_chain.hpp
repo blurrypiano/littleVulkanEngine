@@ -19,6 +19,7 @@ class LveSwapChain {
   LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent);
   LveSwapChain(
       LveDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<LveSwapChain> previous);
+
   ~LveSwapChain();
 
   LveSwapChain(const LveSwapChain &) = delete;
