@@ -41,7 +41,6 @@ $(ODIR)/%.o : %.cpp $(DEPDIR)/%.d | $(DEPDIR)
 libs: $(TARGET)
 	ar rvs lvecore.a $(coreObjFiles)
 	ar rvs lvegenerate.a $(generateObjFiles)
-	ar rvs lvegenerate.a $(experimentalObjFiles)
 
 $(DEPFILES):
 include $(wildcard $(DEPFILES))
