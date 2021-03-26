@@ -22,7 +22,7 @@ In this tutorial I provide an introduction to vulkan push constants and show a s
 
 [Vulkan Spec - Offset and Stride alignment](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/chap15.html#interfaces-resources-layout) 
 
-[Alignment Requirements](https://vulkan-tutorial.com/Uniform_buffers/Descriptor_pool_and_sets#page_Alignment-requirements) 
+[Vulkan tutorial - Alignment Requirements](https://vulkan-tutorial.com/Uniform_buffers/Descriptor_pool_and_sets#page_Alignment-requirements) 
 
 
 ## Building
