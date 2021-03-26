@@ -75,6 +75,13 @@ We set up a callback function that listens to changes on the glfw window and upd
 
 [Tutorial 08 Video](https://youtu.be/0IIqvi3Z0ng)
 
+#### [09 - Push Constants](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial09)
+
+Vulkan Push constants are an easy and performant way to pass data to a shader, via a vulkan command buffer rather than writes to memory or copy commands. They’re a great option for data that updates frequently, however have a main drawback of being limited in size.
+
+
+[Tutorial 09 Video](https://youtu.be/wlLGLWI9Fdc)
+
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
