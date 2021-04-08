@@ -61,35 +61,22 @@ LveSwapChain::~LveSwapChain() {
     vkDestroySemaphore(device.device(), imageAvailableSemaphores[i], nullptr);
     vkDestroyFence(device.device(), inFlightFences[i], nullptr);
   }
-
-  // I'm not really sure why this wait here is necessary but otherwise we get
-  // validation layer: VkFence 0x21[] is in use,
-  // even though we call vkWaitIdle. I guess vkWaitIdle does not include vkAcquireNextImageKHR
-  vkWaitForFences(
-      device.device(),
-      1,
-      &imageAvailableFence,
-      VK_TRUE,
-      std::numeric_limits<uint64_t>::max());
-  vkDestroyFence(device.device(), imageAvailableFence, nullptr);
 }
 
 VkResult LveSwapChain::acquireNextImage(uint32_t *imageIndex) {
-  VkFence fences[2] = {inFlightFences[currentFrame], imageAvailableFence};
   vkWaitForFences(
       device.device(),
-      sizeof(fences) / sizeof(fences[0]),
-      fences,
+      1,
+      &inFlightFences[currentFrame],
       VK_TRUE,
       std::numeric_limits<uint64_t>::max());
 
-  vkResetFences(device.device(), 1, &imageAvailableFence);
   VkResult result = vkAcquireNextImageKHR(
       device.device(),
       swapChain,
       std::numeric_limits<uint64_t>::max(),
       imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
-      imageAvailableFence,
+      VK_NULL_HANDLE,
       imageIndex);
 
   return result;
@@ -377,10 +364,6 @@ void LveSwapChain::createSyncObjects() {
         vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
       throw std::runtime_error("failed to create synchronization objects for a frame!");
     }
-  }
-
-  if (vkCreateFence(device.device(), &fenceInfo, nullptr, &imageAvailableFence) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create synchronization objects for a frame!");
   }
 }
 
