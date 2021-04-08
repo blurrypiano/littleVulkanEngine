@@ -80,6 +80,8 @@ class LveSwapChain {
   std::vector<VkSemaphore> renderFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
   std::vector<VkFence> imagesInFlight;
+  VkFence imageAvailableFence;
+
   size_t currentFrame = 0;
 };
 
