@@ -1,4 +1,4 @@
-# Tutorial 09
+# Tutorial 10
 
 Matrices are an incredibly useful tool for representing linear transformations on geometry. In this tutorial we cover 2d transformation matrices and use them in our shaders to stretch, shrink and rotate our vertex position.
 
