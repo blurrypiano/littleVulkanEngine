@@ -11,11 +11,11 @@ namespace lve {
 
 LveFramebuffer::LveFramebuffer(
     LveDevice& device,
-    VkRenderPass& renderPass,
+    VkRenderPass renderPass,
     uint32_t width,
     uint32_t height,
     std::vector<AttachmentDescription>& attachmentDescriptions)
-    : device{device}, renderPass{renderPass}, width{width}, height{height} {
+    : device{device}, width{width}, height{height} {
   attachments.resize(attachmentDescriptions.size());
   for (int i = 0; i < attachmentDescriptions.size(); i++) {
     createAttachment(
@@ -23,7 +23,7 @@ LveFramebuffer::LveFramebuffer(
         attachmentDescriptions[i].usage,
         &attachments[i]);
   }
-  createFramebuffer();
+  createFramebuffer(renderPass);
 }
 
 LveFramebuffer::~LveFramebuffer() {
@@ -38,7 +38,7 @@ LveFramebuffer::~LveFramebuffer() {
 }
 
 // Override framebuffer setup from base class
-void LveFramebuffer::createFramebuffer() {
+void LveFramebuffer::createFramebuffer(VkRenderPass renderPass) {
   assert(attachments.size() > 0 && "cannot create framebuffer with no attachments");
   std::vector<VkImageView> views{};
   for (auto& attachment : attachments) {
@@ -143,7 +143,7 @@ void LveFramebuffer::Builder::addAttachment(VkFormat format, VkImageUsageFlags u
 }
 
 std::unique_ptr<LveFramebuffer> LveFramebuffer::Builder::build(
-    LveDevice& device, VkRenderPass& renderPass) {
+    LveDevice& device, VkRenderPass renderPass) {
   return std::make_unique<LveFramebuffer>(
       device,
       renderPass,

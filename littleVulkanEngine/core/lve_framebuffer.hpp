@@ -41,7 +41,7 @@ class LveFramebuffer {
     uint32_t height;
 
     void addAttachment(VkFormat format, VkImageUsageFlags usage);
-    std::unique_ptr<LveFramebuffer> build(LveDevice &device, VkRenderPass &renderPass);
+    std::unique_ptr<LveFramebuffer> build(LveDevice &device, VkRenderPass renderPass);
 
    private:
     std::vector<AttachmentDescription> attachmentDescriptions;
@@ -49,7 +49,7 @@ class LveFramebuffer {
 
   LveFramebuffer(
       LveDevice &device,
-      VkRenderPass &renderPass,
+      VkRenderPass renderPass,
       uint32_t width,
       uint32_t height,
       std::vector<AttachmentDescription> &attachmentDescriptions);
@@ -65,12 +65,10 @@ class LveFramebuffer {
   const uint32_t height;
 
  private:
-  void createFramebuffer();
-  VkResult createRenderPass();
+  void createFramebuffer(VkRenderPass renderPass);
   void createAttachment(
       VkFormat format, VkImageUsageFlags usage, FramebufferAttachment *attachment);
 
   LveDevice &device;
-  VkRenderPass &renderPass;
 };
 }  // namespace lve
