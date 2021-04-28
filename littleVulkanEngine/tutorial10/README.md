@@ -18,7 +18,7 @@ I also introduce the idea of a runtime game object model, and we create a (very)
 
 [Object oriented Game Engine Architecture](https://homepages.fhv.at/thjo/lecturenotes/sysarch/game-engine-architecture.html#game-objects) 
 
-[Ray Renderlich old iOS tutorial on ECS (good explanation)](https://www.raywenderlich.com/706-gameplaykit-tutorial-entity-component-system-agents-goals-and-behaviors)
+[Ray Renderlich Introduction to Entity Component Systems (good explanation)](https://www.raywenderlich.com/2806-introduction-to-component-based-architecture-in-games)
 
 [A c++ ECS implementation I like by Austin Morlan](https://austinmorlan.com/posts/entity_component_system/)
 
