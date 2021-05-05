@@ -9,11 +9,11 @@ should be pretty straightforward to do.
 
 # Integration steps
 
-1. Copy the core (imgui files)[https://github.com/ocornut/imgui] somewhere into your project. In my case I've put them into an external/imgui subdirectory. Then from the backends directory you will also need to copy imgui_impl_glfw.hpp, imgui_impl_glfw.cpp, imgui_impl_vulkan.hpp, and imgui_impl_vulkan.cpp
+1. Copy the core [imgui files](https://github.com/ocornut/imgui) somewhere into your project. In my case I've put them into an external/imgui subdirectory. Then from the backends directory you will also need to copy imgui_impl_glfw.hpp, imgui_impl_glfw.cpp, imgui_impl_vulkan.hpp, and imgui_impl_vulkan.cpp
 
 2. Check to see if any changes/updates for your build system, are required. For me this required updating my cflags to include the path to my imgui subfolder and udpating my makefile to build the imgui cpp files with the rest of the engine.
 
-3. Integrate imgui into your code. Here's my  (change file for example)[https://github.com/blurrypiano/littleVulkanEngine/commit/c25099a7da6770072fdfc9ec3bd4d38aa9380906].
+3. Integrate imgui into your code. Here's my  [change file for example](https://github.com/blurrypiano/littleVulkanEngine/commit/c25099a7da6770072fdfc9ec3bd4d38aa9380906).
 
 
 ## Building
