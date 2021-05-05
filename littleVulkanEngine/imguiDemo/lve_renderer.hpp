@@ -19,6 +19,7 @@ class LveRenderer {
   LveRenderer &operator=(const LveRenderer &) = delete;
 
   VkRenderPass getSwapChainRenderPass() const { return lveSwapChain->getRenderPass(); }
+  uint32_t getImageCount() const { return lveSwapChain->imageCount(); }
   bool isFrameInProgress() const { return isFrameStarted; }
 
   VkCommandBuffer getCurrentCommandBuffer() const {

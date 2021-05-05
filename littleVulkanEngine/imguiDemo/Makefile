@@ -1,6 +1,6 @@
 include .env
 
-CFLAGS = -std=c++17 -I. -I$(VULKAN_SDK_PATH)/include
+CFLAGS = -std=c++17 -I. -I$(VULKAN_SDK_PATH)/include -I$(IMGUI_INCLUDE_PATH)
 LDFLAGS = -L$(VULKAN_SDK_PATH)/lib `pkg-config --static --libs glfw3` -lvulkan
 
 # create list of all spv files and set as dependency
@@ -12,7 +12,7 @@ fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragSources))
 TARGET = a.out
 $(TARGET): $(vertObjFiles) $(fragObjFiles)
 $(TARGET): *.cpp *.hpp
-	g++ $(CFLAGS) -o $(TARGET) *.cpp $(LDFLAGS)
+	g++ $(CFLAGS) -o $(TARGET) *.cpp  external/imgui/*.cpp $(LDFLAGS)
 
 # make shader targets
 %.spv: %
