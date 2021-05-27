@@ -95,6 +95,12 @@ This is a coding focused tutorial with not much theory. We restructure our appli
 
 [Tutorial 11 Video](https://youtu.be/uGRSTRGlZVs)
 
+#### [12 - Homogeneous Coordinates & Euler Angles](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial12)
+
+We finally moved to 3D! In this tutorial we update the engine to use 3D positions and homogeneous coordinates, opening the possibility to more complicated transformation matrices. 
+
+[Tutorial 12 Video](https://youtu.be/0X_kRtyVzm4)
+
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
