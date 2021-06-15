@@ -6,7 +6,7 @@ We implement functions to create the orthographic projection and the perspective
 
 [Theory Video - Perspective Projection Matrices](https://youtu.be/U0_ONQQ5ZNM)
 
-[Video Tutorial](https://youtu.be/0X_kRtyVzm4)
+[Video Tutorial](https://youtu.be/YO46x8fALzE)
 
 [Projection Matrices paste bin](https://pastebin.com/eFwnyuX6)
 
