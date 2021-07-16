@@ -21,9 +21,13 @@ For user input the tutorial series will focus on GLFW because I’d like to avoi
 ## Resources
 
 Fundamentals of Computer Graphics by Peter Shirley & Steve Marschner
+
 [Programming Patterns - Game Loop](https://gameprogrammingpatterns.com/game-loop.html)
+
 [Fix your timestep](https://gafferongames.com/post/fix_your_timestep/)
+
 [A GLFW Keyboard and mouse tutorial](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-6-keyboard-and-mouse/)
+
 [GLFW Input Guide](https://www.glfw.org/docs/3.3/input_guide.html)
 
 ## Building
