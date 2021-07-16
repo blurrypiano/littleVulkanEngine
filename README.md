@@ -113,6 +113,12 @@ We implement the camera/view transform. This allows us to place a virtual camera
 
 [Tutorial 14 Video](https://youtu.be/rvJHkYnAR3w)
 
+#### [15 - Game Loops and User Input](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial15)
+
+Getting user input and time loops are both integral parts to any game engine and are complex topics. In this tutorial I briefly introduce the concepts and we add the ability to dynamically move the camera in a frame rate independent way. 
+
+[Tutorial 15 Video](https://youtu.be/wFV9zPU_Cjg)
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
