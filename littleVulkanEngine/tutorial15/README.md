@@ -12,7 +12,7 @@ For user input the tutorial series will focus on GLFW because I’d like to avoi
 [A GLFW Keyboard and mouse tutorial](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-6-keyboard-and-mouse/)
 [GLFW Input Guide](https://www.glfw.org/docs/3.3/input_guide.html)
 
-[View Tutorial Changes](https://github.com/blurrypiano/littleVulkanEngine/commit/edbec223bcf8012c92aca46da5f090fbb1ba86f3) 
+[View Tutorial Changes](https://github.com/blurrypiano/littleVulkanEngine/commit/154cd39c75b58b3d0501e04bf13e0ad12cd2bacb) 
 
 [Video Tutorial](https://youtu.be/wFV9zPU_Cjg)
 
