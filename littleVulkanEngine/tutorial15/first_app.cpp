@@ -1,5 +1,6 @@
 #include "first_app.hpp"
 
+#include "input.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "lve_camera.hpp"
 #include "simple_render_system.hpp"
@@ -18,7 +19,64 @@
 
 namespace lve {
 
-FirstApp::FirstApp() { loadGameObjects(); }
+FirstApp::FirstApp() {
+  loadGameObjects();
+
+  input.addListener("key_down", [](int key, int mods) {
+    std::cout << "key_down: " << key << std::endl;
+  });
+
+  input.addListener("key_up", [](int key, int mods) {
+    std::cout << "key_up: " << key << std::endl;
+  });
+
+  input.addListener("key_pressed", [this](int key, int mods) {
+    if (key == GLFW_KEY_ESCAPE) {
+      lveWindow.closeGLFWwindow();
+    } else {
+      std::cout << "key_pressed: " << key << std::endl;
+    }
+  });
+
+  input.addListener("button_down", [](int button, int mods) {
+    std::cout << "button_down: " << button << std::endl;
+  });
+
+  input.addListener("button_up", [](int button, int mods) {
+    std::cout << "button_up: " << button << std::endl;
+  });
+
+  input.addListener("button_clicked", [](int button, int mods) {
+    std::cout << "button_clicked: " << button << std::endl;
+  });
+
+  input.addListener("button_clicked", [](int button, int mods) {
+    std::cout << "button_clicked: " << button << std::endl;
+  });
+
+  input.addListener("wheel_left", [](int offset) {
+    std::cout << "wheel_left: " << offset << std::endl;
+  });
+
+  input.addListener("wheel_right", [](int offset) {
+    std::cout << "wheel_right: " << offset << std::endl;
+  });
+
+  input.addListener("wheel_up", [](int offset) {
+    std::cout << "wheel_up: " << offset << std::endl;
+  });
+
+  input.addListener("wheel_down", [](int offset) {
+    std::cout << "wheel_down: " << offset << std::endl;
+  });
+
+  input.addListener("mouse_moved", [this](glm::vec2 position, glm::vec2 offset) {
+    if (input.getButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+      std::cout << "mouse_moved: px: " << position.x << ", py: " << position.y
+                << ", ox: " << offset.x << ", oy: " << offset.y << std::endl;
+    }
+  });
+}
 
 FirstApp::~FirstApp() {}
 
@@ -38,7 +96,7 @@ void FirstApp::run() {
         std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
     currentTime = newTime;
 
-    cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
+    cameraController.moveInPlaneXZ(input, frameTime, viewerObject);
     camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
     float aspect = lveRenderer.getAspectRatio();

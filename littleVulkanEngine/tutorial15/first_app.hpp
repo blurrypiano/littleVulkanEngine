@@ -1,5 +1,6 @@
 #pragma once
 
+#include "input.hpp"
 #include "lve_device.hpp"
 #include "lve_game_object.hpp"
 #include "lve_renderer.hpp"
@@ -29,6 +30,7 @@ class FirstApp {
   LveWindow lveWindow{WIDTH, HEIGHT, "Vulkan Tutorial"};
   LveDevice lveDevice{lveWindow};
   LveRenderer lveRenderer{lveWindow, lveDevice};
+  Input input{lveWindow.getGLFWwindow()};
 
   std::vector<LveGameObject> gameObjects;
 };

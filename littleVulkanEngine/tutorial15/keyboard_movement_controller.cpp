@@ -5,13 +5,16 @@
 
 namespace lve {
 
-void KeyboardMovementController::moveInPlaneXZ(
-    GLFWwindow* window, float dt, LveGameObject& gameObject) {
+void KeyboardMovementController::moveInPlaneXZ(Input input, float dt, LveGameObject& gameObject) {
   glm::vec3 rotate{0};
-  if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.f;
-  if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.f;
-  if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.f;
-  if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.f;
+
+  if (input.getButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
+    rotate.y -= input.getMousePositionOffset().x;
+    rotate.x += input.getMousePositionOffset().y;
+  } else {
+    rotate.y += (float)(input.getKeyDown(keys.lookRight) - input.getKeyDown(keys.lookLeft));
+    rotate.x += (float)(input.getKeyDown(keys.lookUp) - input.getKeyDown(keys.lookDown));
+  }
 
   if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
     gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
@@ -27,12 +30,11 @@ void KeyboardMovementController::moveInPlaneXZ(
   const glm::vec3 upDir{0.f, -1.f, 0.f};
 
   glm::vec3 moveDir{0.f};
-  if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS) moveDir += forwardDir;
-  if (glfwGetKey(window, keys.moveBackward) == GLFW_PRESS) moveDir -= forwardDir;
-  if (glfwGetKey(window, keys.moveRight) == GLFW_PRESS) moveDir += rightDir;
-  if (glfwGetKey(window, keys.moveLeft) == GLFW_PRESS) moveDir -= rightDir;
-  if (glfwGetKey(window, keys.moveUp) == GLFW_PRESS) moveDir += upDir;
-  if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS) moveDir -= upDir;
+
+  moveDir += forwardDir *
+             (float)(input.getKeyDown(keys.moveForward) - input.getKeyDown(keys.moveBackward));
+  moveDir += rightDir * (float)(input.getKeyDown(keys.moveRight) - input.getKeyDown(keys.moveLeft));
+  moveDir += upDir * (float)(input.getKeyDown(keys.moveUp) - input.getKeyDown(keys.moveDown));
 
   if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
     gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir);
