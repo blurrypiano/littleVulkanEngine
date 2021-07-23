@@ -119,6 +119,12 @@ Getting user input and time loops are both integral parts to any game engine and
 
 [Tutorial 15 Video](https://youtu.be/wFV9zPU_Cjg)
 
+#### [16 - Index and Staging Buffers](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial16)
+
+Index buffers are a way to reduce the amount of gpu memory required to store a model’s attribute data by allowing duplicate vertex data to be removed from the Vertex Buffer.
+
+[Tutorial 16 Video](https://youtu.be/qxuvQVtehII)
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
