@@ -125,6 +125,12 @@ Index buffers are a way to reduce the amount of gpu memory required to store a m
 
 [Tutorial 16 Video](https://youtu.be/qxuvQVtehII)
 
+#### [17 - Loading 3D Models](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial17)
+
+In this tutorial we make use of tinyobjloader, a tiny but powerful single file wavefront obj loader, to load 3D models into the engine.
+
+[Tutorial 17 Video](https://youtu.be/jdiPVfIHmEA)
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
