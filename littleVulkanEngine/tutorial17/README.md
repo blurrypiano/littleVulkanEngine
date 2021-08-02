@@ -6,7 +6,7 @@ In this tutorial we make use of tinyobjloader, a tiny but powerful single file w
 
 [Models Sharedrive](https://drive.google.com/drive/folders/1QuvSRG4HCxCfC5k0F5G03tNwUQoqE8f3?usp=sharing)
 
-[Paste Bin - hashCombine](https://pastebin.com/4T10MFgb)
+[Paste Bin - hashCombine](https://pastebin.com/sRu5PiMs)
 
 [View Tutorial Changes](https://github.com/blurrypiano/littleVulkanEngine/commit/b1b665ed9eb82c69f99e56fe42e82d081a4a9203) 
 
