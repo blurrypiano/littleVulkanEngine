@@ -6,4 +6,10 @@ Each time I record a new video, this is the directory I'm working in, and theref
 
 Create a directory for your project and copy the contents of tutorial to your directory. Rename .env-example to .env and enter the path to where you installed the vulkan sdk.
 
-Build the project using make, and run. You should see a 6-colored cube. Move the camera with WASD and the arrow keys.
+If you are not using the makefile provided, make sure to compile your shader code to the .spv files (see tutorial 2).
+
+Build the project using make, and run. You should see a white featureless vase. Move the camera with WASD and the arrow keys.
+
+## Errors
+
+The most likely cause for an error is that the relative filepaths are not correct. This can happen if the current working directory for when the program executable is run is not the same as the project directory. In this case try changing "shaders/simple_shader.vert.spv" as "shaders/simple_shader.frag.spv" in simple_render_system.cpp to use an absolute path instead, as well the filepath for "models/smooth_vase.obj" in first_app.cpp
