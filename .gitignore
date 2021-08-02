@@ -2,6 +2,7 @@
 build/**
 .vscode
 **/.env
+**/.obj
 *.spv
 littleVulkanEngine/sandbox/**
 *.a
