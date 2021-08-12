@@ -1,4 +1,4 @@
-# Tutorial 17
+# Diffuse Shading - Tutorial 18
 
 In this tutorial we implement a diffuse lighting model with a constant ambient light term in the vertex shader. This colors the vase object by calculating the intensity of light for each vertex based on how directly the surface at the point faces the incoming light.
 

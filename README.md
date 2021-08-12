@@ -131,6 +131,12 @@ In this tutorial we make use of tinyobjloader, a tiny but powerful single file w
 
 [Tutorial 17 Video](https://youtu.be/jdiPVfIHmEA)
 
+#### [18 - Diffuse Shading](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial18)
+
+we implement a diffuse lighting model with a constant ambient light term in the vertex shader. This colors the vase object by calculating the intensity of light for each vertex based on how directly the surface at the point faces the incoming light.
+
+[Tutorial 18 Video](https://youtu.be/wfh2N4u-nOU)
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
