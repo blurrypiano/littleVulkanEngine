@@ -1,19 +1,6 @@
-/*
- * Glfw window class
- *
- * Encapsulates a glfw window
- *
- * Copyright (C) 2020 by Brendan Galea - https://github.com/blurrypiano/littleVulkanEngine
- *
- * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
- */
-
 #pragma once
 
-#include <littleVulkanEngine/core/lve_window.hpp>
-
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include "lve_window.hpp"
 
 // std lib headers
 #include <string>
@@ -43,11 +30,14 @@ class LveDevice {
   const bool enableValidationLayers = true;
 #endif
 
-  LveDevice(LveWindow &windowRef) : window{windowRef} { init(); }
-  ~LveDevice() { cleanup(); }
+  LveDevice(LveWindow &window);
+  ~LveDevice();
 
+  // Not copyable or movable
   LveDevice(const LveDevice &) = delete;
   LveDevice &operator=(const LveDevice &) = delete;
+  LveDevice(LveDevice &&) = delete;
+  LveDevice &operator=(LveDevice &&) = delete;
 
   VkCommandPool getCommandPool() { return commandPool; }
   VkDevice device() { return device_; }
@@ -73,33 +63,6 @@ class LveDevice {
   void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
   void copyBufferToImage(
       VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
-  void transitionImageLayout(
-      VkImage image,
-      VkFormat format,
-      VkImageLayout oldLayout,
-      VkImageLayout newLayout,
-      uint32_t mipLevels,
-      uint32_t layerCount);
-
-  // image helper functions
-  VkImageView createImageView(
-      VkImage image,
-      VkFormat format,
-      VkImageAspectFlags aspectFlags,
-      uint32_t mipLevels,
-      VkImageViewType viewType);
-  void createImage(
-      uint32_t width,
-      uint32_t height,
-      uint32_t mipLevels,
-      VkFormat format,
-      VkImageTiling tiling,
-      VkImageUsageFlags usage,
-      VkMemoryPropertyFlags properties,
-      VkImage &image,
-      VkDeviceMemory &imageMemory,
-      VkImageCreateFlags flags,
-      uint32_t arrayLayers);
 
   void createImageWithInfo(
       const VkImageCreateInfo &imageInfo,
@@ -107,14 +70,9 @@ class LveDevice {
       VkImage &image,
       VkDeviceMemory &imageMemory);
 
-  void generateMipmaps(
-      VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-
   VkPhysicalDeviceProperties properties;
 
  private:
-  void init();
-  void cleanup();
   void createInstance();
   void setupDebugMessenger();
   void createSurface();

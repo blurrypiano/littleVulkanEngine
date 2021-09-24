@@ -1,12 +1,13 @@
-#include "lve_app.hpp"
 
-// sys headers
+#include "first_app.hpp"
+
+// std
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 int main() {
-  lve::LveApp app;
+  lve::FirstApp app{};
 
   try {
     app.run();
@@ -14,5 +15,6 @@ int main() {
     std::cerr << e.what() << '\n';
     return EXIT_FAILURE;
   }
+
   return EXIT_SUCCESS;
 }

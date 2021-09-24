@@ -1,66 +1,36 @@
-/*
- * Glfw window class
- *
- * Encapsulates a glfw window
- *
- * Copyright (C) 2020 by Brendan Galea - https://github.com/blurrypiano/littleVulkanEngine
- *
- * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
- */
-
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-// std lib headers
-#include <stdexcept>
 #include <string>
-#include <vector>
-
 namespace lve {
 
 class LveWindow {
  public:
-  LveWindow(int width, int height) : LveWindow(width, height, "Vulkan Application") {}
-
-  LveWindow(int width, int height, std::string windowName) : width_{width}, height_{height} {
-    windowName_ = windowName;
-    initWindow();
-  }
-
-  ~LveWindow() {
-    glfwDestroyWindow(window_);
-    glfwTerminate();
-  }
+  LveWindow(int w, int h, std::string name);
+  ~LveWindow();
 
   LveWindow(const LveWindow &) = delete;
   LveWindow &operator=(const LveWindow &) = delete;
 
-  bool shouldClose() { return glfwWindowShouldClose(window_); }
-  bool wasWindowResized() { return framebufferResized_; }
-  void resetWindowResized() { framebufferResized_ = false; }
+  bool shouldClose() { return glfwWindowShouldClose(window); }
+  VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
+  bool wasWindowResized() { return framebufferResized; }
+  void resetWindowResizedFlag() { framebufferResized = false; }
+  GLFWwindow *getGLFWwindow() const { return window; }
 
-  int height() { return height_; }
-  int width() { return width_; }
-  GLFWwindow *window() { return window_; }
-
-  void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
-    if (glfwCreateWindowSurface(instance, window_, nullptr, surface) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create window surface!");
-    }
-  }
+  void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
  private:
-  void initWindow();
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
+  void initWindow();
 
-  GLFWwindow *window_;
-  int width_;
-  int height_;
-  std::string windowName_;
+  int width;
+  int height;
+  bool framebufferResized = false;
 
-  bool framebufferResized_ = false;
+  std::string windowName;
+  GLFWwindow *window;
 };
-
 }  // namespace lve

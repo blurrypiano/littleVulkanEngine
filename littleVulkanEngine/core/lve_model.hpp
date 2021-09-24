@@ -1,20 +1,11 @@
-/*
- * LveModel Class
- *
- * Little vulkan engine model class
- *
- * Copyright (C) 2020 by Brendan Galea - https://github.com/blurrypiano/littleVulkanEngine
- *
- * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
- */
-
 #pragma once
 
+#include "lve_buffer.hpp"
 #include "lve_device.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE  // open gl uses -1 to 1, vk is 0 to 1
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
 // std
@@ -22,68 +13,53 @@
 #include <vector>
 
 namespace lve {
-
 class LveModel {
  public:
-  enum class VertexAttribute { POSITION, NORMAL, COLOR, UV, TANGENT };
-
   struct Vertex {
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec4 color;
-    glm::vec2 uv;
-    glm::vec4 tangent;  // w component is -1 or 1 and indicates handedness of the tangent basis
+    glm::vec3 position{};
+    glm::vec3 color{};
+    glm::vec3 normal{};
+    glm::vec2 uv{};
 
-    static VkVertexInputBindingDescription getBindingDescription() {
-      VkVertexInputBindingDescription bindingDescription{};
-      bindingDescription.binding = 0;
-      bindingDescription.stride = sizeof(Vertex);
-      bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-      return bindingDescription;
-    }
+    static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+    static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
-    static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions(
-        const std::vector<VertexAttribute>& attributes);
-
-    bool operator==(const Vertex& other) const {
-      return position == other.position && color == other.color && uv == other.uv &&
-             normal == other.normal && tangent == other.tangent;
+    bool operator==(const Vertex &other) const {
+      return position == other.position && color == other.color && normal == other.normal &&
+             uv == other.uv;
     }
   };
 
-  class Builder {
-   public:
+  struct Builder {
     std::vector<Vertex> vertices{};
     std::vector<uint32_t> indices{};
 
-    void loadModel(std::string filepath);
+    void loadModel(const std::string &filepath);
   };
 
-  LveModel(LveDevice& device, Builder& builder);
-  ~LveModel() { cleanup(); }
+  LveModel(LveDevice &device, const LveModel::Builder &builder);
+  ~LveModel();
 
-  LveModel(const LveModel&) = delete;
-  LveModel& operator=(const LveModel&) = delete;
+  LveModel(const LveModel &) = delete;
+  LveModel &operator=(const LveModel &) = delete;
 
-  void draw(VkCommandBuffer commandBuffer);
+  static std::unique_ptr<LveModel> createModelFromFile(
+      LveDevice &device, const std::string &filepath);
+
   void bind(VkCommandBuffer commandBuffer);
-  void swapChainReset(){};
-
-  static std::unique_ptr<LveModel> loadModelFromFile(LveDevice& device, std::string filepath);
+  void draw(VkCommandBuffer commandBuffer);
 
  private:
-  LveDevice& device_;
+  void createVertexBuffers(const std::vector<Vertex> &vertices);
+  void createIndexBuffers(const std::vector<uint32_t> &indices);
 
-  VkBuffer vertexBuffer_;
-  VkDeviceMemory vertexBufferMemory_;
-  uint32_t vertexCount_;
+  LveDevice &lveDevice;
 
-  VkBuffer indexBuffer_;
-  VkDeviceMemory indexBufferMemory_;
-  uint32_t indexCount_;
+  std::unique_ptr<LveBuffer> vertexBuffer;
+  uint32_t vertexCount;
 
-  void createVertexBuffer(Builder& builder);
-  void createIndexBuffer(Builder& builder);
-  void cleanup();
+  bool hasIndexBuffer = false;
+  std::unique_ptr<LveBuffer> indexBuffer;
+  uint32_t indexCount;
 };
 }  // namespace lve
