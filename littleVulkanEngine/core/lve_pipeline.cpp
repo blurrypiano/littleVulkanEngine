@@ -1,3 +1,7 @@
+#ifndef ROOT_PATH
+#define ROOT_PATH ""
+#endif
+
 #include "lve_pipeline.hpp"
 
 #include "lve_model.hpp"
@@ -26,10 +30,13 @@ LvePipeline::~LvePipeline() {
 }
 
 std::vector<char> LvePipeline::readFile(const std::string& filepath) {
-  std::ifstream file{filepath, std::ios::ate | std::ios::binary};
+  std::string absPath = ROOT_PATH;
+  absPath += filepath;
+
+  std::ifstream file{absPath, std::ios::ate | std::ios::binary};
 
   if (!file.is_open()) {
-    throw std::runtime_error("failed to open file: " + filepath);
+    throw std::runtime_error("failed to open file: " + absPath);
   }
 
   size_t fileSize = static_cast<size_t>(file.tellg());

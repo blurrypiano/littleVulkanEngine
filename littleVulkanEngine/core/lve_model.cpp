@@ -1,3 +1,7 @@
+#ifndef ROOT_PATH
+#define ROOT_PATH ""
+#endif
+
 #include "lve_model.hpp"
 
 #include "lve_utils.hpp"
@@ -35,8 +39,11 @@ LveModel::~LveModel() {}
 
 std::unique_ptr<LveModel> LveModel::createModelFromFile(
     LveDevice &device, const std::string &filepath) {
+  std::string absPath = ROOT_PATH;
+  absPath += filepath;
+
   Builder builder{};
-  builder.loadModel(filepath);
+  builder.loadModel(absPath);
   return std::make_unique<LveModel>(device, builder);
 }
 
