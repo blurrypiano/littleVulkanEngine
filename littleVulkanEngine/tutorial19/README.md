@@ -12,6 +12,12 @@ Uniform buffer data can be used within shaders, similarly to how to push constan
 
 [Buffer Implementation](https://pastebin.com/3WAe7nJx)
 
+## BUG FIX! - nonCoherentAtomSize
+
+[Bug fix code changes](https://github.com/blurrypiano/littleVulkanEngine/commit/65b9c745d4e6728f8e61cd475c6ad72ac48a1ccd)
+
+[Video - Bug fix](https://youtu.be/hFcmtJG3_Ao)
+
 ## Resources
 
 [Zeux - Writing an efficient vulkan Renderer](https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/)
