@@ -141,6 +141,12 @@ We create a buffer abstraction to make working with buffers a bit more convenien
 
 [Tutorial 19 Video](https://youtu.be/may_GMkfs5k)
 
+#### [20 - Descriptor Sets](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial20)
+
+In this tutorial, we create abstractions for descriptor sets, descriptor set layouts and descriptor pools, to make these objects easier to work with within the engine. We create a descriptor set layout that contains a single buffer descriptor, and use this to bind the uboBuffer for use within the vertex shader.
+
+[Tutorial 20 Video](https://youtu.be/d5p44idnZLQ)
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
