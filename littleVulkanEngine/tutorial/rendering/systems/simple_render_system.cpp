@@ -1,4 +1,4 @@
-#include "simple_render_system.hpp"
+#include "rendering/systems/simple_render_system.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -63,8 +63,16 @@ void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
       pipelineConfig);
 }
 
-void SimpleRenderSystem::renderGameObjects(
-    FrameInfo& frameInfo, std::vector<LveGameObject>& gameObjects) {
+// To use a frame pool, I'm going to need to build a buffer object for the system.
+// Technically multiple if I'm going to double buffer.
+// How do you know how large to make the buffer?
+// Going to need to set a max objects size.
+// Then copy the objects data
+// or could have fixed size buffers ChunkedBufferAllocator managed per frame, with different sizes
+// just do a fixed limit of objects to render.
+// Include VMA? Might be time to do that
+
+void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   lvePipeline->bind(frameInfo.commandBuffer);
 
   vkCmdBindDescriptorSets(
@@ -77,7 +85,10 @@ void SimpleRenderSystem::renderGameObjects(
       0,
       nullptr);
 
-  for (auto& obj : gameObjects) {
+  for (auto& kv : frameInfo.gameObjects) {
+    auto& obj = kv.second;
+    if (obj.model == nullptr) continue;
+
     SimplePushConstantData push{};
     push.modelMatrix = obj.transform.mat4();
     push.normalMatrix = obj.transform.normalMatrix();

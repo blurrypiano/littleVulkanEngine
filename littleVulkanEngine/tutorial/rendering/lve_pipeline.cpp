@@ -1,6 +1,6 @@
-#include "lve_pipeline.hpp"
+#include "rendering/lve_pipeline.hpp"
 
-#include "lve_model.hpp"
+#include "rendering/lve_model.hpp"
 
 // std
 #include <cassert>
@@ -75,15 +75,14 @@ void LvePipeline::createGraphicsPipeline(
   shaderStages[1].pNext = nullptr;
   shaderStages[1].pSpecializationInfo = nullptr;
 
-  auto bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
-  auto attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
   VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
   vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
   vertexInputInfo.vertexAttributeDescriptionCount =
-      static_cast<uint32_t>(attributeDescriptions.size());
-  vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
-  vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
+      static_cast<uint32_t>(configInfo.attributeDescriptions.size());
+  vertexInputInfo.vertexBindingDescriptionCount =
+      static_cast<uint32_t>(configInfo.bindingDescriptions.size());
+  vertexInputInfo.pVertexAttributeDescriptions = configInfo.attributeDescriptions.data();
+  vertexInputInfo.pVertexBindingDescriptions = configInfo.bindingDescriptions.data();
 
   VkGraphicsPipelineCreateInfo pipelineInfo{};
   pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -200,6 +199,9 @@ void LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
   configInfo.dynamicStateInfo.dynamicStateCount =
       static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
   configInfo.dynamicStateInfo.flags = 0;
+
+  configInfo.bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
+  configInfo.attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
 }
 
 }  // namespace lve

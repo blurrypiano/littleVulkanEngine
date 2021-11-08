@@ -3,6 +3,8 @@ build/**
 .vscode
 **/.env
 **/.obj
+*.o
+*.d
 *.spv
 littleVulkanEngine/sandbox/**
 *.a

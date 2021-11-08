@@ -1,4 +1,4 @@
-#include "lve_model.hpp"
+#include "rendering/lve_model.hpp"
 
 #include "lve_utils.hpp"
 

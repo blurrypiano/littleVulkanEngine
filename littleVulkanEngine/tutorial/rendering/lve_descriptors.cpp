@@ -1,4 +1,4 @@
-#include "lve_descriptors.hpp"
+#include "rendering/lve_descriptors.hpp"
 
 // std
 #include <cassert>

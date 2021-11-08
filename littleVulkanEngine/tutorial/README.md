@@ -1,6 +1,6 @@
-# Tutorial
+# Upcoming Tutorial Drafts
 
-Each time I record a new video, this is the directory I'm working in, and therefore represents the current state of the tutorial series. It also means that the git diff between each tutorial will be easily visible in the github network history.
+I'm planning to cover this content over the course of the next few tutorials. This is a currently just a draft, so the real tutorials will be a cleaned up and modified version of this.
 
 ## Building
 

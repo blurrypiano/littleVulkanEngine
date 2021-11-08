@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lve_device.hpp"
+#include "rendering/lve_device.hpp"
 
 // std
 #include <memory>

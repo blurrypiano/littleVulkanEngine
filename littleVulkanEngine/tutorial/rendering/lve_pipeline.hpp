@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lve_device.hpp"
+#include "rendering/lve_device.hpp"
 
 // std
 #include <string>
@@ -12,6 +12,8 @@ struct PipelineConfigInfo {
   PipelineConfigInfo(const PipelineConfigInfo&) = delete;
   PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
+  std::vector<VkVertexInputBindingDescription> bindingDescriptions;
+  std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
   VkPipelineViewportStateCreateInfo viewportInfo;
   VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
   VkPipelineRasterizationStateCreateInfo rasterizationInfo;
