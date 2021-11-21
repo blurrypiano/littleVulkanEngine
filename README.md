@@ -153,7 +153,11 @@ Find the [Preliminary Completed Project Here](https://github.com/blurrypiano/lit
 
 #### [21 - Intro to Point Lights](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial21)
 
-In this tutorial we add a point light object to the global UBO and update the vertex shader to make use of this new lighting technique.
+In this tutorial we add a point light object to the global UBO and update the vertex shader to make use of this new lighting technique. ([Video](https://youtu.be/Z1lLwAEMt4M))
+
+#### [22 - Vertex vs Fragment Lighting](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial22)
+
+In this tutorial we explore the differences in per-fragment versus per-vertex lighting ([Video](https://youtu.be/YnMyKHfrgU4))
 
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
