@@ -63,8 +63,7 @@ void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
       pipelineConfig);
 }
 
-void SimpleRenderSystem::renderGameObjects(
-    FrameInfo& frameInfo, std::vector<LveGameObject>& gameObjects) {
+void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   lvePipeline->bind(frameInfo.commandBuffer);
 
   vkCmdBindDescriptorSets(
@@ -77,7 +76,9 @@ void SimpleRenderSystem::renderGameObjects(
       0,
       nullptr);
 
-  for (auto& obj : gameObjects) {
+  for (auto& kv : frameInfo.gameObjects) {
+    auto& obj = kv.second;
+    if (obj.model == nullptr) continue;
     SimplePushConstantData push{};
     push.modelMatrix = obj.transform.mat4();
     push.normalMatrix = obj.transform.normalMatrix();
