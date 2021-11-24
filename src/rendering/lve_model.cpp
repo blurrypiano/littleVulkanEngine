@@ -13,8 +13,8 @@
 #include <cstring>
 #include <unordered_map>
 
-#ifndef ROOT_PATH
-#define ROOT_PATH "X:/dev/LittleVulkanEngine/"
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
 #endif
 
 namespace std {
@@ -40,7 +40,7 @@ LveModel::~LveModel() {}
 std::unique_ptr<LveModel> LveModel::createModelFromFile(
     LveDevice &device, const std::string &filepath) {
   Builder builder{};
-  builder.loadModel(ROOT_PATH + filepath);
+  builder.loadModel(ENGINE_DIR + filepath);
   return std::make_unique<LveModel>(device, builder);
 }
 

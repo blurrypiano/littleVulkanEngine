@@ -8,8 +8,8 @@
 #include <iostream>
 #include <stdexcept>
 
-#ifndef ROOT_PATH
-#define ROOT_PATH "X:/dev/LittleVulkanEngine/"
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
 #endif
 
 namespace lve {
@@ -30,8 +30,7 @@ LvePipeline::~LvePipeline() {
 }
 
 std::vector<char> LvePipeline::readFile(const std::string& filepath) {
-  std::string absPath = ROOT_PATH;
-  absPath += filepath;
+  std::string absPath = ENGINE_DIR + filepath;
   
   std::ifstream file{absPath, std::ios::ate | std::ios::binary};
   if (!file.is_open()) {
