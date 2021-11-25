@@ -14,7 +14,33 @@ Currently this repository is more for use as a reference and for my own use to t
 
 ## <a name="Building"></a> Building
 
-This repository is still in the early stages and doesn't contain everything you may need to compile and build the code on your machine. If you wish to use this as a starting point for your project my recommendation is to follow the tutorial series. Any contributions to making a more robust, multi-platform build system are appreciated :)
+### Unix/MacOS build instructions
+Build Instructions Unix/macOS
+Install the cmake binary distributions for your OS
+cd littleVulkanEngine
+cp envUnixExample.cmake .env.cmake
+In the .env.cmake file
+    Update the TINYOBJ_PATH to point to your directory that contains the header
+Then run 
+./unixBuild.sh
+
+
+#### Windows build instructions
+Install powershell if you dont have it yet
+Install cmake binary distribution for windows, make sure during the installation path to select one of the options to add cmake to your PATH
+
+duplicate envWindowsExample.cmake and rename to .env.cmake in the new file update the paths to your installation locations
+
+In power shell
+cd littleVulkanEngine
+cmake -S . -B .\build\
+
+If build completes successfully there should now be a .sln file in the littleVulkanEngine/build directory that can be opened with visual studio
+
+Right click on the Shaders project and click build to build shaders
+Right click on the runEngine project and set as start project
+
+Next to the green arrow to build and run, make sure release mode is selected, and not debug. Then you should be able to build and run the project successfully in visual studio
 
 ## <a name="Tutorials"></a> Tutorials
 
