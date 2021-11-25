@@ -9,3 +9,4 @@ littleVulkanEngine/sandbox/**
 textures_
 models/viking_room.obj
 imgui.ini
+.env.cmake
