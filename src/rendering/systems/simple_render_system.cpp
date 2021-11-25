@@ -50,7 +50,7 @@ void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLay
 }
 
 void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
-  assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
+  assert(pipelineLayout != VK_NULL_HANDLE && "Cannot create pipeline before pipeline layout");
 
   PipelineConfigInfo pipelineConfig{};
   LvePipeline::defaultPipelineConfigInfo(pipelineConfig);

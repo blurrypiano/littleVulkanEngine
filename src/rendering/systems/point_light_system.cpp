@@ -51,7 +51,7 @@ void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayou
 }
 
 void PointLightSystem::createPipeline(VkRenderPass renderPass) {
-  assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
+  assert(pipelineLayout != VK_NULL_HANDLE && "Cannot create pipeline before pipeline layout");
 
   PipelineConfigInfo configInfo{};
   LvePipeline::defaultPipelineConfigInfo(configInfo);
