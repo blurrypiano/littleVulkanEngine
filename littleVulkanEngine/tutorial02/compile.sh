@@ -1,2 +1,0 @@
-/home/me/Documents/programming/vulkan-sdk/1.2.154.0/x86_64/bin/glslc simple_shader.vert -o simple_shader.vert.spv
-/home/me/Documents/programming/vulkan-sdk/1.2.154.0/x86_64/bin/glslc simple_shader.frag -o simple_shader.frag.spv
