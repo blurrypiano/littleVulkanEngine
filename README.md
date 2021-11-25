@@ -20,7 +20,7 @@ This repository is still in the early stages and doesn't contain everything you 
 
 ### <a name="Basics"></a> Basics
 
-#### [00 - Starting Point](littleVulkanEngine/tutorial00/)
+#### [00 - Starting Point](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial00)
 
 This is the staring point to the tutorial series. It is equivalent to where you'd be at if you completed the linux section of
 setting up your development environment as described by [Vulkan Tutorial](https://vulkan-tutorial.com/Development_environment)
@@ -28,13 +28,13 @@ with just a few small changes.
 
 [Video Tutorial](https://youtu.be/Y9U9IE0gVHA)
 
-#### [01 - Opening a window](littleVulkanEngine/tutorial01/)
+#### [01 - Opening a window](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial01/)
 
 In the very first tutorial of this series we will be creating a class to encapsulate a glfw window, and a class to run our application.
 
 [Video Tutorial](https://youtu.be/lr93-_cC8v4)
 
-#### [02 - Shaders & the graphics pipeline](littleVulkanEngine/tutorial02/)
+#### [02 - Shaders & the graphics pipeline](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial02/)
 
 In this tutorial we create the most basic of vertex and fragment shaders files, go over how to compile them to SPIR-V, and read
 the compiled files into our c++ program, to later be used to create shader modules in the next tutorial.
