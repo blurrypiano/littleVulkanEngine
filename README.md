@@ -159,6 +159,10 @@ In this tutorial we add a point light object to the global UBO and update the ve
 
 In this tutorial we explore the differences in per-fragment versus per-vertex lighting ([Video](https://youtu.be/YnMyKHfrgU4))
 
+#### [23 - Project Restructure and cmake](https://github.com/blurrypiano/littleVulkanEngine/tree/tut23)
+
+In this tutorial I change the projrect to use cmake rather than a simple makefile to make building on multiple platforms simpler and more straightforward. ([Video](https://youtu.be/ZuHK_5cJ6B8))
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
