@@ -1,5 +1,6 @@
 **/a.out
 build
+build/**
 .vscode
 **/.env
 **/.obj

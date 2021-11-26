@@ -115,6 +115,8 @@ find_program(GLSL_VALIDATOR glslangValidator HINTS
   ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE} 
   /usr/bin 
   /usr/local/bin 
+  ${VULKAN_SDK_PATH}/Bin
+  ${VULKAN_SDK_PATH}/Bin32
   $ENV{VULKAN_SDK}/Bin/ 
   $ENV{VULKAN_SDK}/Bin32/
 )
