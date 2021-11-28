@@ -1,20 +1,22 @@
 # Little Vulkan Engine
 
-A video tutorial series introducing computer graphics for [Vulkan®](https://www.khronos.org/vulkan/), the new generation graphics and compute API from Khronos.
-
-Currently this repository is more for use as a reference and for my own use to track the progress of this series, rather than something that can be cloned and used as a starting point, at least until I make a more robust build system.
+A video tutorial series introducing computer graphics for [Vulkan®](https://www.khronos.org/vulkan/), the new generation graphics and compute API from Khronos. The focus of this tutorial is to be approachable to newcomers to computer graphics and graphics APIs, explaining not just the Vulkan API but also computer graphics theory, mathematics and engine architecture. 
 
 ## Table of Contents
 
 - [Building](#Building)
+  -[Building for Unix](#UnixBuild)
+  -[Building for MacOS](#MacOSBuild)
+  -[Building for Windows](#WindowsBuild)
 - [Tutorials](#Tutorials)
   - [Basics](#Basics)
+  - [Point Lights](#PointLights)
 - [Official Khronos Vulkan Samples](#Khronossamples)
 - [Credits and Attributions](#CreditsAttributions)
 
 ## <a name="Building"></a> Building
 
-### Unix Build Instructions
+### <a name="UnixBuild"></a> Unix Build Instructions
 - Install the dependencies: cmake, glm, vulkan and glfw
 
 - For example
@@ -32,7 +34,7 @@ Currently this repository is more for use as a reference and for my own use to t
     ./unixBuild.sh
    ```
 
-### MacOS Build Instructions
+### <a name="MacOSBuild"></a> MacOS Build Instructions
 
 #### Install Dependencies
 
@@ -53,7 +55,7 @@ Currently this repository is more for use as a reference and for my own use to t
     ./unixBuild.sh
    ```
 
-### Windows build instructions
+### <a name="WindowsBuild"></a> Windows build instructions
 
 - [Download and install Windows Vulkan sdk](https://vulkan.lunarg.com/)
 - [Download and install Windows cmake x64 installer](https://cmake.org/download/)
@@ -93,7 +95,7 @@ Currently this repository is more for use as a reference and for my own use to t
 
 This branch is a legacy branch that holds all the older tutorials in the series, starting from the beginning and going up until tutorial 22.
 
-### <a name="Point Lights"></a> Point Lights
+### <a name="PointLights"></a> Point Lights
 
 Find the [Preliminary Completed Project Here](https://github.com/blurrypiano/littleVulkanEngine/tree/pointLights/littleVulkanEngine/tutorial)
 
