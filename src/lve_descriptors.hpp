@@ -58,7 +58,7 @@ class LveDescriptorPool {
     LveDevice &lveDevice;
     std::vector<vk::DescriptorPoolSize> poolSizes{};
     uint32_t maxSets = 1000;
-    vk::DescriptorPoolCreateFlags poolFlags;  // todo fix potencial error  =0
+    vk::DescriptorPoolCreateFlags poolFlags;
   };
 
   LveDescriptorPool(

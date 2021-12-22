@@ -118,7 +118,7 @@ vk::Result LveBuffer::flush(vk::DeviceSize size, vk::DeviceSize offset) {
   mappedRange.offset = offset;
   mappedRange.size = size;
   lveDevice.device().flushMappedMemoryRanges(mappedRange);
-  return vk::Result::eSuccess;  // todo fix potencial error
+  return vk::Result::eSuccess;
 }
 
 /**
@@ -138,7 +138,7 @@ vk::Result LveBuffer::invalidate(vk::DeviceSize size, vk::DeviceSize offset) {
   mappedRange.offset = offset;
   mappedRange.size = size;
   lveDevice.device().invalidateMappedMemoryRanges(mappedRange);
-  return vk::Result::eSuccess;  // todo fix potencial error
+  return vk::Result::eSuccess;
 }
 
 /**

@@ -68,13 +68,13 @@ void LvePipeline::createGraphicsPipeline(
   shaderStages[0].stage = vk::ShaderStageFlagBits::eVertex;
   shaderStages[0].module = vertShaderModule;
   shaderStages[0].pName = "main";
-  // shaderStages [0].flags               = 0; // todo fix potencial error
+  // shaderStages [0].flags               = 0; 
   shaderStages[0].pNext = nullptr;
   shaderStages[0].pSpecializationInfo = nullptr;
   shaderStages[1].stage = vk::ShaderStageFlagBits::eFragment;
   shaderStages[1].module = fragShaderModule;
   shaderStages[1].pName = "main";
-  // shaderStages [1].flags               = 0;// todo fix potencial error
+  // shaderStages [1].flags               = 0;
   shaderStages[1].pNext = nullptr;
   shaderStages[1].pSpecializationInfo = nullptr;
 
@@ -179,14 +179,14 @@ void LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
   configInfo.depthStencilInfo.minDepthBounds = 0.0f;  // Optional
   configInfo.depthStencilInfo.maxDepthBounds = 1.0f;  // Optional
   configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
-  // configInfo.depthStencilInfo.front                 = { };  // Optional todo fix potencial error
-  // configInfo.depthStencilInfo.back                  = { };  // Optional todo fix potencial error
+  // configInfo.depthStencilInfo.front                 = { };  // Optional
+  // configInfo.depthStencilInfo.back                  = { };  // Optional
 
   configInfo.dynamicStateEnables = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
   configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
   configInfo.dynamicStateInfo.dynamicStateCount =
       static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
-  // configInfo.dynamicStateInfo.flags             = 0; //todo fix potencial error
+  // configInfo.dynamicStateInfo.flags             = 0;
 }
 
 }  // namespace lve
