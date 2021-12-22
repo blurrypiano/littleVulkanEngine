@@ -10,9 +10,9 @@ namespace lve {
 struct FrameInfo {
   int frameIndex;
   float frameTime;
-  VkCommandBuffer commandBuffer;
+  vk::CommandBuffer commandBuffer;
   LveCamera &camera;
-  VkDescriptorSet globalDescriptorSet;
+  vk::DescriptorSet globalDescriptorSet;
   LveGameObject::Map &gameObjects;
 };
 }  // namespace lve

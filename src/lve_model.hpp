@@ -21,8 +21,8 @@ class LveModel {
     glm::vec3 normal{};
     glm::vec2 uv{};
 
-    static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
-    static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
+    static std::vector<vk::VertexInputBindingDescription> getBindingDescriptions();
+    static std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions();
 
     bool operator==(const Vertex &other) const {
       return position == other.position && color == other.color && normal == other.normal &&
@@ -46,8 +46,8 @@ class LveModel {
   static std::unique_ptr<LveModel> createModelFromFile(
       LveDevice &device, const std::string &filepath);
 
-  void bind(VkCommandBuffer commandBuffer);
-  void draw(VkCommandBuffer commandBuffer);
+  void bind(vk::CommandBuffer commandBuffer);
+  void draw(vk::CommandBuffer commandBuffer);
 
  private:
   void createVertexBuffers(const std::vector<Vertex> &vertices);

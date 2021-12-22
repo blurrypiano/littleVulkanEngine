@@ -30,7 +30,7 @@ FirstApp::FirstApp() {
   globalPool =
       LveDescriptorPool::Builder(lveDevice)
           .setMaxSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT)
-          .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
+          .addPoolSize(vk::DescriptorType::eUniformBuffer, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
           .build();
   loadGameObjects();
 }
@@ -44,17 +44,17 @@ void FirstApp::run() {
         lveDevice,
         sizeof(GlobalUbo),
         1,
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+        vk::BufferUsageFlagBits::eUniformBuffer,
+        vk::MemoryPropertyFlagBits::eHostVisible);
     uboBuffers[i]->map();
   }
 
   auto globalSetLayout =
       LveDescriptorSetLayout::Builder(lveDevice)
-          .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+          .addBinding(0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eAllGraphics)
           .build();
 
-  std::vector<VkDescriptorSet> globalDescriptorSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
+  std::vector<vk::DescriptorSet> globalDescriptorSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
   for (int i = 0; i < globalDescriptorSets.size(); i++) {
     auto bufferInfo = uboBuffers[i]->descriptorInfo();
     LveDescriptorWriter(*globalSetLayout, *globalPool)
@@ -111,7 +111,7 @@ void FirstApp::run() {
     }
   }
 
-  vkDeviceWaitIdle(lveDevice.device());
+  lveDevice.device().waitIdle();
 }
 
 void FirstApp::loadGameObjects() {

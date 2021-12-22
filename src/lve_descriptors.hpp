@@ -17,28 +17,28 @@ class LveDescriptorSetLayout {
 
     Builder &addBinding(
         uint32_t binding,
-        VkDescriptorType descriptorType,
-        VkShaderStageFlags stageFlags,
+        vk::DescriptorType descriptorType,
+        vk::ShaderStageFlags stageFlags,
         uint32_t count = 1);
     std::unique_ptr<LveDescriptorSetLayout> build() const;
 
    private:
     LveDevice &lveDevice;
-    std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
+    std::unordered_map<uint32_t, vk::DescriptorSetLayoutBinding> bindings{};
   };
 
   LveDescriptorSetLayout(
-      LveDevice &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
+      LveDevice &lveDevice, std::unordered_map<uint32_t, vk::DescriptorSetLayoutBinding> bindings);
   ~LveDescriptorSetLayout();
   LveDescriptorSetLayout(const LveDescriptorSetLayout &) = delete;
   LveDescriptorSetLayout &operator=(const LveDescriptorSetLayout &) = delete;
 
-  VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }
+  vk::DescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }
 
  private:
   LveDevice &lveDevice;
-  VkDescriptorSetLayout descriptorSetLayout;
-  std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings;
+  vk::DescriptorSetLayout descriptorSetLayout;
+  std::unordered_map<uint32_t, vk::DescriptorSetLayoutBinding> bindings;
 
   friend class LveDescriptorWriter;
 };
@@ -49,37 +49,37 @@ class LveDescriptorPool {
    public:
     Builder(LveDevice &lveDevice) : lveDevice{lveDevice} {}
 
-    Builder &addPoolSize(VkDescriptorType descriptorType, uint32_t count);
-    Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);
+    Builder &addPoolSize(vk::DescriptorType descriptorType, uint32_t count);
+    Builder &setPoolFlags(vk::DescriptorPoolCreateFlags flags);
     Builder &setMaxSets(uint32_t count);
     std::unique_ptr<LveDescriptorPool> build() const;
 
    private:
     LveDevice &lveDevice;
-    std::vector<VkDescriptorPoolSize> poolSizes{};
+    std::vector<vk::DescriptorPoolSize> poolSizes{};
     uint32_t maxSets = 1000;
-    VkDescriptorPoolCreateFlags poolFlags = 0;
+    vk::DescriptorPoolCreateFlags poolFlags;  // todo fix potencial error  =0
   };
 
   LveDescriptorPool(
       LveDevice &lveDevice,
       uint32_t maxSets,
-      VkDescriptorPoolCreateFlags poolFlags,
-      const std::vector<VkDescriptorPoolSize> &poolSizes);
+      vk::DescriptorPoolCreateFlags poolFlags,
+      const std::vector<vk::DescriptorPoolSize> &poolSizes);
   ~LveDescriptorPool();
   LveDescriptorPool(const LveDescriptorPool &) = delete;
   LveDescriptorPool &operator=(const LveDescriptorPool &) = delete;
 
   bool allocateDescriptor(
-      const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet &descriptor) const;
+      const vk::DescriptorSetLayout descriptorSetLayout, vk::DescriptorSet &descriptor) const;
 
-  void freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const;
+  void freeDescriptors(std::vector<vk::DescriptorSet> &descriptors) const;
 
   void resetPool();
 
  private:
   LveDevice &lveDevice;
-  VkDescriptorPool descriptorPool;
+  vk::DescriptorPool descriptorPool;
 
   friend class LveDescriptorWriter;
 };
@@ -88,16 +88,16 @@ class LveDescriptorWriter {
  public:
   LveDescriptorWriter(LveDescriptorSetLayout &setLayout, LveDescriptorPool &pool);
 
-  LveDescriptorWriter &writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
-  LveDescriptorWriter &writeImage(uint32_t binding, VkDescriptorImageInfo *imageInfo);
+  LveDescriptorWriter &writeBuffer(uint32_t binding, vk::DescriptorBufferInfo *bufferInfo);
+  LveDescriptorWriter &writeImage(uint32_t binding, vk::DescriptorImageInfo *imageInfo);
 
-  bool build(VkDescriptorSet &set);
-  void overwrite(VkDescriptorSet &set);
+  bool build(vk::DescriptorSet &set);
+  void overwrite(vk::DescriptorSet &set);
 
  private:
   LveDescriptorSetLayout &setLayout;
   LveDescriptorPool &pool;
-  std::vector<VkWriteDescriptorSet> writes;
+  std::vector<vk::WriteDescriptorSet> writes;
 };
 
 }  // namespace lve

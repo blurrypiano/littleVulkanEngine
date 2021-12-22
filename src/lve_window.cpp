@@ -24,10 +24,16 @@ void LveWindow::initWindow() {
   glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
-void LveWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
-  if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
-    throw std::runtime_error("failed to craete window surface");
+const vk::SurfaceKHR &LveWindow::createWindowSurface(vk::Instance instance) {
+  const auto result = static_cast<vk::Result>(
+      glfwCreateWindowSurface(VkInstance(instance), window, nullptr, &surfaceC));
+
+  if (result != vk::Result::eSuccess) {
+    throw std::runtime_error("failed to create window surface!");
   }
+  
+  cppSurface = vk::SurfaceKHR(surfaceC);
+  return cppSurface;
 }
 
 void LveWindow::framebufferResizeCallback(GLFWwindow *window, int width, int height) {

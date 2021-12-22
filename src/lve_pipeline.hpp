@@ -12,17 +12,17 @@ struct PipelineConfigInfo {
   PipelineConfigInfo(const PipelineConfigInfo&) = delete;
   PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
-  VkPipelineViewportStateCreateInfo viewportInfo;
-  VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-  VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-  VkPipelineMultisampleStateCreateInfo multisampleInfo;
-  VkPipelineColorBlendAttachmentState colorBlendAttachment;
-  VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-  VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-  std::vector<VkDynamicState> dynamicStateEnables;
-  VkPipelineDynamicStateCreateInfo dynamicStateInfo;
-  VkPipelineLayout pipelineLayout = nullptr;
-  VkRenderPass renderPass = nullptr;
+  vk::PipelineViewportStateCreateInfo viewportInfo;
+  vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+  vk::PipelineRasterizationStateCreateInfo rasterizationInfo;
+  vk::PipelineMultisampleStateCreateInfo multisampleInfo;
+  vk::PipelineColorBlendAttachmentState colorBlendAttachment;
+  vk::PipelineColorBlendStateCreateInfo colorBlendInfo;
+  vk::PipelineDepthStencilStateCreateInfo depthStencilInfo;
+  std::vector<vk::DynamicState> dynamicStateEnables;
+  vk::PipelineDynamicStateCreateInfo dynamicStateInfo;
+  vk::PipelineLayout pipelineLayout = nullptr;
+  vk::RenderPass renderPass = nullptr;
   uint32_t subpass = 0;
 };
 
@@ -38,7 +38,7 @@ class LvePipeline {
   LvePipeline(const LvePipeline&) = delete;
   LvePipeline& operator=(const LvePipeline&) = delete;
 
-  void bind(VkCommandBuffer commandBuffer);
+  void bind(vk::CommandBuffer commandBuffer);
 
   static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
@@ -50,11 +50,11 @@ class LvePipeline {
       const std::string& fragFilepath,
       const PipelineConfigInfo& configInfo);
 
-  void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+  void createShaderModule(const std::vector<char>& code, vk::ShaderModule* shaderModule);
 
   LveDevice& lveDevice;
-  VkPipeline graphicsPipeline;
-  VkShaderModule vertShaderModule;
-  VkShaderModule fragShaderModule;
+  vk::Pipeline graphicsPipeline;
+  vk::ShaderModule vertShaderModule;
+  vk::ShaderModule fragShaderModule;
 };
 }  // namespace lve

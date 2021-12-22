@@ -10,11 +10,11 @@ namespace lve {
 
 LveDescriptorSetLayout::Builder &LveDescriptorSetLayout::Builder::addBinding(
     uint32_t binding,
-    VkDescriptorType descriptorType,
-    VkShaderStageFlags stageFlags,
+    vk::DescriptorType descriptorType,
+    vk::ShaderStageFlags stageFlags,
     uint32_t count) {
   assert(bindings.count(binding) == 0 && "Binding already in use");
-  VkDescriptorSetLayoutBinding layoutBinding{};
+  vk::DescriptorSetLayoutBinding layoutBinding{};
   layoutBinding.binding = binding;
   layoutBinding.descriptorType = descriptorType;
   layoutBinding.descriptorCount = count;
@@ -30,41 +30,33 @@ std::unique_ptr<LveDescriptorSetLayout> LveDescriptorSetLayout::Builder::build()
 // *************** Descriptor Set Layout *********************
 
 LveDescriptorSetLayout::LveDescriptorSetLayout(
-    LveDevice &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings)
+    LveDevice &lveDevice, std::unordered_map<uint32_t, vk::DescriptorSetLayoutBinding> bindings)
     : lveDevice{lveDevice}, bindings{bindings} {
-  std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
+  std::vector<vk::DescriptorSetLayoutBinding> setLayoutBindings{};
   for (auto kv : bindings) {
     setLayoutBindings.push_back(kv.second);
   }
 
-  VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-  descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
   descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
   descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
-
-  if (vkCreateDescriptorSetLayout(
-          lveDevice.device(),
-          &descriptorSetLayoutInfo,
-          nullptr,
-          &descriptorSetLayout) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create descriptor set layout!");
-  }
+  descriptorSetLayout = lveDevice.device().createDescriptorSetLayout(descriptorSetLayoutInfo);
 }
 
 LveDescriptorSetLayout::~LveDescriptorSetLayout() {
-  vkDestroyDescriptorSetLayout(lveDevice.device(), descriptorSetLayout, nullptr);
+  lveDevice.device().destroyDescriptorSetLayout(descriptorSetLayout);
 }
 
 // *************** Descriptor Pool Builder *********************
 
 LveDescriptorPool::Builder &LveDescriptorPool::Builder::addPoolSize(
-    VkDescriptorType descriptorType, uint32_t count) {
+    vk::DescriptorType descriptorType, uint32_t count) {
   poolSizes.push_back({descriptorType, count});
   return *this;
 }
 
 LveDescriptorPool::Builder &LveDescriptorPool::Builder::setPoolFlags(
-    VkDescriptorPoolCreateFlags flags) {
+    vk::DescriptorPoolCreateFlags flags) {
   poolFlags = flags;
   return *this;
 }
@@ -82,53 +74,39 @@ std::unique_ptr<LveDescriptorPool> LveDescriptorPool::Builder::build() const {
 LveDescriptorPool::LveDescriptorPool(
     LveDevice &lveDevice,
     uint32_t maxSets,
-    VkDescriptorPoolCreateFlags poolFlags,
-    const std::vector<VkDescriptorPoolSize> &poolSizes)
+    vk::DescriptorPoolCreateFlags poolFlags,
+    const std::vector<vk::DescriptorPoolSize> &poolSizes)
     : lveDevice{lveDevice} {
-  VkDescriptorPoolCreateInfo descriptorPoolInfo{};
-  descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  vk::DescriptorPoolCreateInfo descriptorPoolInfo{};
   descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
   descriptorPoolInfo.pPoolSizes = poolSizes.data();
   descriptorPoolInfo.maxSets = maxSets;
   descriptorPoolInfo.flags = poolFlags;
-
-  if (vkCreateDescriptorPool(lveDevice.device(), &descriptorPoolInfo, nullptr, &descriptorPool) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("failed to create descriptor pool!");
-  }
+  descriptorPool = lveDevice.device().createDescriptorPool(descriptorPoolInfo);
 }
 
 LveDescriptorPool::~LveDescriptorPool() {
-  vkDestroyDescriptorPool(lveDevice.device(), descriptorPool, nullptr);
+  lveDevice.device().destroyDescriptorPool(descriptorPool);
 }
 
 bool LveDescriptorPool::allocateDescriptor(
-    const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet &descriptor) const {
-  VkDescriptorSetAllocateInfo allocInfo{};
-  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    const vk::DescriptorSetLayout descriptorSetLayout, vk::DescriptorSet &descriptor) const {
+  vk::DescriptorSetAllocateInfo allocInfo{};
   allocInfo.descriptorPool = descriptorPool;
   allocInfo.pSetLayouts = &descriptorSetLayout;
   allocInfo.descriptorSetCount = 1;
 
   // Might want to create a "DescriptorPoolManager" class that handles this case, and builds
   // a new pool whenever an old pool fills up. But this is beyond our current scope
-  if (vkAllocateDescriptorSets(lveDevice.device(), &allocInfo, &descriptor) != VK_SUCCESS) {
-    return false;
-  }
+  descriptor = lveDevice.device().allocateDescriptorSets(allocInfo)[0];
   return true;
 }
 
-void LveDescriptorPool::freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const {
-  vkFreeDescriptorSets(
-      lveDevice.device(),
-      descriptorPool,
-      static_cast<uint32_t>(descriptors.size()),
-      descriptors.data());
+void LveDescriptorPool::freeDescriptors(std::vector<vk::DescriptorSet> &descriptors) const {
+  lveDevice.device().freeDescriptorSets(descriptorPool, descriptors);
 }
 
-void LveDescriptorPool::resetPool() {
-  vkResetDescriptorPool(lveDevice.device(), descriptorPool, 0);
-}
+void LveDescriptorPool::resetPool() { lveDevice.device().resetDescriptorPool(descriptorPool); }
 
 // *************** Descriptor Writer *********************
 
@@ -136,7 +114,7 @@ LveDescriptorWriter::LveDescriptorWriter(LveDescriptorSetLayout &setLayout, LveD
     : setLayout{setLayout}, pool{pool} {}
 
 LveDescriptorWriter &LveDescriptorWriter::writeBuffer(
-    uint32_t binding, VkDescriptorBufferInfo *bufferInfo) {
+    uint32_t binding, vk::DescriptorBufferInfo *bufferInfo) {
   assert(setLayout.bindings.count(binding) == 1 && "Layout does not contain specified binding");
 
   auto &bindingDescription = setLayout.bindings[binding];
@@ -145,8 +123,7 @@ LveDescriptorWriter &LveDescriptorWriter::writeBuffer(
       bindingDescription.descriptorCount == 1 &&
       "Binding single descriptor info, but binding expects multiple");
 
-  VkWriteDescriptorSet write{};
-  write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  vk::WriteDescriptorSet write{};
   write.descriptorType = bindingDescription.descriptorType;
   write.dstBinding = binding;
   write.pBufferInfo = bufferInfo;
@@ -157,7 +134,7 @@ LveDescriptorWriter &LveDescriptorWriter::writeBuffer(
 }
 
 LveDescriptorWriter &LveDescriptorWriter::writeImage(
-    uint32_t binding, VkDescriptorImageInfo *imageInfo) {
+    uint32_t binding, vk::DescriptorImageInfo *imageInfo) {
   assert(setLayout.bindings.count(binding) == 1 && "Layout does not contain specified binding");
 
   auto &bindingDescription = setLayout.bindings[binding];
@@ -166,8 +143,7 @@ LveDescriptorWriter &LveDescriptorWriter::writeImage(
       bindingDescription.descriptorCount == 1 &&
       "Binding single descriptor info, but binding expects multiple");
 
-  VkWriteDescriptorSet write{};
-  write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  vk::WriteDescriptorSet write{};
   write.descriptorType = bindingDescription.descriptorType;
   write.dstBinding = binding;
   write.pImageInfo = imageInfo;
@@ -177,7 +153,7 @@ LveDescriptorWriter &LveDescriptorWriter::writeImage(
   return *this;
 }
 
-bool LveDescriptorWriter::build(VkDescriptorSet &set) {
+bool LveDescriptorWriter::build(vk::DescriptorSet &set) {
   bool success = pool.allocateDescriptor(setLayout.getDescriptorSetLayout(), set);
   if (!success) {
     return false;
@@ -186,11 +162,11 @@ bool LveDescriptorWriter::build(VkDescriptorSet &set) {
   return true;
 }
 
-void LveDescriptorWriter::overwrite(VkDescriptorSet &set) {
+void LveDescriptorWriter::overwrite(vk::DescriptorSet &set) {
   for (auto &write : writes) {
     write.dstSet = set;
   }
-  vkUpdateDescriptorSets(pool.lveDevice.device(), writes.size(), writes.data(), 0, nullptr);
+  pool.lveDevice.device().updateDescriptorSets(writes, nullptr);
 }
 
 }  // namespace lve

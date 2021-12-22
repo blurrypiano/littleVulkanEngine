@@ -20,9 +20,10 @@ namespace lve {
  * @param minOffsetAlignment The minimum required alignment, in bytes, for the offset member (eg
  * minUniformBufferOffsetAlignment)
  *
- * @return VkResult of the buffer mapping call
+ * @return vk::Result of the buffer mapping call
  */
-VkDeviceSize LveBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment) {
+vk::DeviceSize LveBuffer::getAlignment(
+    vk::DeviceSize instanceSize, vk::DeviceSize minOffsetAlignment) {
   if (minOffsetAlignment > 0) {
     return (instanceSize + minOffsetAlignment - 1) & ~(minOffsetAlignment - 1);
   }
@@ -31,11 +32,11 @@ VkDeviceSize LveBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize min
 
 LveBuffer::LveBuffer(
     LveDevice &device,
-    VkDeviceSize instanceSize,
+    vk::DeviceSize instanceSize,
     uint32_t instanceCount,
-    VkBufferUsageFlags usageFlags,
-    VkMemoryPropertyFlags memoryPropertyFlags,
-    VkDeviceSize minOffsetAlignment)
+    vk::BufferUsageFlags usageFlags,
+    vk::MemoryPropertyFlags memoryPropertyFlags,
+    vk::DeviceSize minOffsetAlignment)
     : lveDevice{device},
       instanceSize{instanceSize},
       instanceCount{instanceCount},
@@ -48,8 +49,8 @@ LveBuffer::LveBuffer(
 
 LveBuffer::~LveBuffer() {
   unmap();
-  vkDestroyBuffer(lveDevice.device(), buffer, nullptr);
-  vkFreeMemory(lveDevice.device(), memory, nullptr);
+  lveDevice.device().destroyBuffer(buffer);
+  lveDevice.device().freeMemory(memory);
 }
 
 /**
@@ -59,21 +60,22 @@ LveBuffer::~LveBuffer() {
  * buffer range.
  * @param offset (Optional) Byte offset from beginning
  *
- * @return VkResult of the buffer mapping call
+ * @return vk::Result of the buffer mapping call
  */
-VkResult LveBuffer::map(VkDeviceSize size, VkDeviceSize offset) {
+vk::Result LveBuffer::map(vk::DeviceSize size, vk::DeviceSize offset) {
   assert(buffer && memory && "Called map on buffer before create");
-  return vkMapMemory(lveDevice.device(), memory, offset, size, 0, &mapped);
+  mapped = lveDevice.device().mapMemory(memory, offset, size);
+  return vk::Result::eSuccess;
 }
 
 /**
  * Unmap a mapped memory range
  *
- * @note Does not return a result as vkUnmapMemory can't fail
+ * @note Does not return a result as vk::UnmapMemory can't fail
  */
 void LveBuffer::unmap() {
   if (mapped) {
-    vkUnmapMemory(lveDevice.device(), memory);
+    lveDevice.device().unmapMemory(memory);
     mapped = nullptr;
   }
 }
@@ -87,7 +89,7 @@ void LveBuffer::unmap() {
  * @param offset (Optional) Byte offset from beginning of mapped region
  *
  */
-void LveBuffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset) {
+void LveBuffer::writeToBuffer(void *data, vk::DeviceSize size, vk::DeviceSize offset) {
   assert(mapped && "Cannot copy to unmapped buffer");
 
   if (size == VK_WHOLE_SIZE) {
@@ -108,15 +110,15 @@ void LveBuffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset
  * complete buffer range.
  * @param offset (Optional) Byte offset from beginning
  *
- * @return VkResult of the flush call
+ * @return vk::Result of the flush call
  */
-VkResult LveBuffer::flush(VkDeviceSize size, VkDeviceSize offset) {
-  VkMappedMemoryRange mappedRange = {};
-  mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+vk::Result LveBuffer::flush(vk::DeviceSize size, vk::DeviceSize offset) {
+  vk::MappedMemoryRange mappedRange = {};
   mappedRange.memory = memory;
   mappedRange.offset = offset;
   mappedRange.size = size;
-  return vkFlushMappedMemoryRanges(lveDevice.device(), 1, &mappedRange);
+  lveDevice.device().flushMappedMemoryRanges(mappedRange);
+  return vk::Result::eSuccess;  // todo fix potencial error
 }
 
 /**
@@ -128,15 +130,15 @@ VkResult LveBuffer::flush(VkDeviceSize size, VkDeviceSize offset) {
  * the complete buffer range.
  * @param offset (Optional) Byte offset from beginning
  *
- * @return VkResult of the invalidate call
+ * @return vk::Result of the invalidate call
  */
-VkResult LveBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
-  VkMappedMemoryRange mappedRange = {};
-  mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+vk::Result LveBuffer::invalidate(vk::DeviceSize size, vk::DeviceSize offset) {
+  vk::MappedMemoryRange mappedRange = {};
   mappedRange.memory = memory;
   mappedRange.offset = offset;
   mappedRange.size = size;
-  return vkInvalidateMappedMemoryRanges(lveDevice.device(), 1, &mappedRange);
+  lveDevice.device().invalidateMappedMemoryRanges(mappedRange);
+  return vk::Result::eSuccess;  // todo fix potencial error
 }
 
 /**
@@ -145,10 +147,10 @@ VkResult LveBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
  * @param size (Optional) Size of the memory range of the descriptor
  * @param offset (Optional) Byte offset from beginning
  *
- * @return VkDescriptorBufferInfo of specified offset and range
+ * @return vk::DescriptorBufferInfo of specified offset and range
  */
-VkDescriptorBufferInfo LveBuffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
-  return VkDescriptorBufferInfo{
+vk::DescriptorBufferInfo LveBuffer::descriptorInfo(vk::DeviceSize size, vk::DeviceSize offset) {
+  return vk::DescriptorBufferInfo{
       buffer,
       offset,
       size,
@@ -172,16 +174,16 @@ void LveBuffer::writeToIndex(void *data, int index) {
  * @param index Used in offset calculation
  *
  */
-VkResult LveBuffer::flushIndex(int index) { return flush(alignmentSize, index * alignmentSize); }
+vk::Result LveBuffer::flushIndex(int index) { return flush(alignmentSize, index * alignmentSize); }
 
 /**
  * Create a buffer info descriptor
  *
  * @param index Specifies the region given by index * alignmentSize
  *
- * @return VkDescriptorBufferInfo for instance at index
+ * @return vk::DescriptorBufferInfo for instance at index
  */
-VkDescriptorBufferInfo LveBuffer::descriptorInfoForIndex(int index) {
+vk::DescriptorBufferInfo LveBuffer::descriptorInfoForIndex(int index) {
   return descriptorInfo(alignmentSize, index * alignmentSize);
 }
 
@@ -192,9 +194,9 @@ VkDescriptorBufferInfo LveBuffer::descriptorInfoForIndex(int index) {
  *
  * @param index Specifies the region to invalidate: index * alignmentSize
  *
- * @return VkResult of the invalidate call
+ * @return vk::Result of the invalidate call
  */
-VkResult LveBuffer::invalidateIndex(int index) {
+vk::Result LveBuffer::invalidateIndex(int index) {
   return invalidate(alignmentSize, index * alignmentSize);
 }
 

@@ -18,11 +18,11 @@ class LveRenderer {
   LveRenderer(const LveRenderer &) = delete;
   LveRenderer &operator=(const LveRenderer &) = delete;
 
-  VkRenderPass getSwapChainRenderPass() const { return lveSwapChain->getRenderPass(); }
+  vk::RenderPass getSwapChainRenderPass() const { return lveSwapChain->getRenderPass(); }
   float getAspectRatio() const { return lveSwapChain->extentAspectRatio(); }
   bool isFrameInProgress() const { return isFrameStarted; }
 
-  VkCommandBuffer getCurrentCommandBuffer() const {
+  vk::CommandBuffer getCurrentCommandBuffer() const {
     assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
     return commandBuffers[currentFrameIndex];
   }
@@ -32,10 +32,10 @@ class LveRenderer {
     return currentFrameIndex;
   }
 
-  VkCommandBuffer beginFrame();
+  vk::CommandBuffer beginFrame();
   void endFrame();
-  void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
-  void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
+  void beginSwapChainRenderPass(vk::CommandBuffer commandBuffer);
+  void endSwapChainRenderPass(vk::CommandBuffer commandBuffer);
 
  private:
   void createCommandBuffers();
@@ -45,7 +45,7 @@ class LveRenderer {
   LveWindow &lveWindow;
   LveDevice &lveDevice;
   std::unique_ptr<LveSwapChain> lveSwapChain;
-  std::vector<VkCommandBuffer> commandBuffers;
+  std::vector<vk::CommandBuffer> commandBuffers;
 
   uint32_t currentImageIndex;
   int currentFrameIndex{0};
