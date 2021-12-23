@@ -9,8 +9,8 @@
 namespace lve {
 
 struct PipelineConfigInfo {
-  PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-  PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+  // PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+  // PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
   vk::PipelineViewportStateCreateInfo viewportInfo;
   vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo;

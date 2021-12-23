@@ -84,36 +84,33 @@ vk::Result LveSwapChain::submitCommandBuffers(
   }
   imagesInFlight[*imageIndex] = inFlightFences[currentFrame];
 
-  vk::SubmitInfo submitInfo = {};
-
-  vk::Semaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
-  vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
-  submitInfo.waitSemaphoreCount = 1;
-  submitInfo.pWaitSemaphores = waitSemaphores;
-  submitInfo.pWaitDstStageMask = waitStages;
-
-  submitInfo.commandBufferCount = 1;
-  submitInfo.pCommandBuffers = buffers;
-
-  vk::Semaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
-  submitInfo.signalSemaphoreCount = 1;
-  submitInfo.pSignalSemaphores = signalSemaphores;
+  vk::Semaphore waitSemaphores[]{imageAvailableSemaphores[currentFrame]};
+  vk::Semaphore signalSemaphores[]{renderFinishedSemaphores[currentFrame]};
+  vk::PipelineStageFlags waitStages[]{vk::PipelineStageFlagBits::eColorAttachmentOutput};
+  vk::SubmitInfo submitInfo{
+      .waitSemaphoreCount = 1,
+      .pWaitSemaphores = waitSemaphores,
+      .pWaitDstStageMask = waitStages,
+      .commandBufferCount = 1,
+      .pCommandBuffers = buffers,
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores = signalSemaphores};
 
   device.device().resetFences(inFlightFences[currentFrame]);
   device.graphicsQueue().submit(submitInfo, inFlightFences[currentFrame]);
 
-  vk::PresentInfoKHR presentInfo = {};
-
-  presentInfo.waitSemaphoreCount = 1;
-  presentInfo.pWaitSemaphores = signalSemaphores;
-
-  vk::SwapchainKHR swapChains[] = {swapChain};
-  presentInfo.swapchainCount = 1;
-  presentInfo.pSwapchains = swapChains;
-
-  presentInfo.pImageIndices = imageIndex;
+  vk::SwapchainKHR swapChains[]{swapChain};
+  vk::PresentInfoKHR presentInfo{
+      .waitSemaphoreCount = 1,
+      .pWaitSemaphores = signalSemaphores,
+      .swapchainCount = 1,
+      .pSwapchains = swapChains,
+      .pImageIndices = imageIndex};
 
   auto result = device.presentQueue().presentKHR(presentInfo);
+  if (result != vk::Result::eSuccess) {
+    return result;
+  }
 
   currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
@@ -133,7 +130,7 @@ void LveSwapChain::createSwapChain() {
     imageCount = swapChainSupport.capabilities.maxImageCount;
   }
 
-  vk::SwapchainCreateInfoKHR createInfo = {};
+  vk::SwapchainCreateInfoKHR createInfo{};
   createInfo.surface = device.surface();
   createInfo.minImageCount = imageCount;
   createInfo.imageFormat = surfaceFormat.format;
@@ -143,7 +140,7 @@ void LveSwapChain::createSwapChain() {
   createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
 
   QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
-  uint32_t queueFamilyIndices[] = {indices.graphicsFamily, indices.presentFamily};
+  uint32_t queueFamilyIndices[]{indices.graphicsFamily, indices.presentFamily};
 
   if (indices.graphicsFamily != indices.presentFamily) {
     createInfo.imageSharingMode = vk::SharingMode::eConcurrent;
@@ -178,75 +175,75 @@ void LveSwapChain::createSwapChain() {
 void LveSwapChain::createImageViews() {
   swapChainImageViews.resize(swapChainImages.size());
   for (size_t i = 0; i < swapChainImages.size(); i++) {
-    vk::ImageViewCreateInfo viewInfo{};
-    viewInfo.image = swapChainImages[i];
-    viewInfo.viewType = vk::ImageViewType::e2D;
-    viewInfo.format = swapChainImageFormat;
-    viewInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-    viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
-    viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
+    vk::ImageViewCreateInfo viewInfo{
+        .image = swapChainImages[i],
+        .viewType = vk::ImageViewType::e2D,
+        .format = swapChainImageFormat,
+        .subresourceRange{
+            .aspectMask = vk::ImageAspectFlagBits::eColor,
+            .baseMipLevel = 0,
+            .levelCount = 1,
+            .baseArrayLayer = 0,
+            .layerCount = 1}};
 
     swapChainImageViews[i] = device.device().createImageView(viewInfo);
   }
 }
 
 void LveSwapChain::createRenderPass() {
-  vk::AttachmentDescription depthAttachment{};
-  depthAttachment.format = findDepthFormat();
-  depthAttachment.samples = vk::SampleCountFlagBits::e1;
-  depthAttachment.loadOp = vk::AttachmentLoadOp::eClear;
-  depthAttachment.storeOp = vk::AttachmentStoreOp::eDontCare;
-  depthAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-  depthAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-  depthAttachment.initialLayout = vk::ImageLayout::eUndefined;
-  depthAttachment.finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+  vk::AttachmentDescription depthAttachment{
+      .format = findDepthFormat(),
+      .samples = vk::SampleCountFlagBits::e1,
+      .loadOp = vk::AttachmentLoadOp::eClear,
+      .storeOp = vk::AttachmentStoreOp::eDontCare,
+      .stencilLoadOp = vk::AttachmentLoadOp::eDontCare,
+      .stencilStoreOp = vk::AttachmentStoreOp::eDontCare,
+      .initialLayout = vk::ImageLayout::eUndefined,
+      .finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal};
 
-  vk::AttachmentReference depthAttachmentRef{};
-  depthAttachmentRef.attachment = 1;
-  depthAttachmentRef.layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+  vk::AttachmentReference depthAttachmentRef{
+      .attachment = 1,
+      .layout = vk::ImageLayout::eDepthStencilAttachmentOptimal};
 
-  vk::AttachmentDescription colorAttachment = {};
-  colorAttachment.format = getSwapChainImageFormat();
-  colorAttachment.samples = vk::SampleCountFlagBits::e1;
-  colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
-  colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
-  colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-  colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-  colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
-  colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+  vk::AttachmentDescription colorAttachment{
+      .format = getSwapChainImageFormat(),
+      .samples = vk::SampleCountFlagBits::e1,
+      .loadOp = vk::AttachmentLoadOp::eClear,
+      .storeOp = vk::AttachmentStoreOp::eStore,
+      .stencilLoadOp = vk::AttachmentLoadOp::eDontCare,
+      .stencilStoreOp = vk::AttachmentStoreOp::eDontCare,
+      .initialLayout = vk::ImageLayout::eUndefined,
+      .finalLayout = vk::ImageLayout::ePresentSrcKHR};
 
-  vk::AttachmentReference colorAttachmentRef = {};
-  colorAttachmentRef.attachment = 0;
-  colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
+  vk::AttachmentReference colorAttachmentRef{
+      .attachment = 0,
+      .layout = vk::ImageLayout::eColorAttachmentOptimal};
 
-  vk::SubpassDescription subpass = {};
-  subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
-  subpass.colorAttachmentCount = 1;
-  subpass.pColorAttachments = &colorAttachmentRef;
-  subpass.pDepthStencilAttachment = &depthAttachmentRef;
+  vk::SubpassDescription subpass{
+      .pipelineBindPoint = vk::PipelineBindPoint::eGraphics,
+      .colorAttachmentCount = 1,
+      .pColorAttachments = &colorAttachmentRef,
+      .pDepthStencilAttachment = &depthAttachmentRef};
 
-  vk::SubpassDependency dependency = {};
-  dependency.dstSubpass = 0;
-  dependency.dstAccessMask =
-      vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
-  dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput |
-                            vk::PipelineStageFlagBits::eEarlyFragmentTests;
-  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-  // dependency.srcAccessMask = 0;
-  dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput |
-                            vk::PipelineStageFlagBits::eEarlyFragmentTests;
+  vk::SubpassDependency dependency{
+      .srcSubpass = VK_SUBPASS_EXTERNAL,
+      .dstSubpass = 0,
+      .srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput |
+                      vk::PipelineStageFlagBits::eEarlyFragmentTests,
+      .dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput |
+                      vk::PipelineStageFlagBits::eEarlyFragmentTests,
+      //.srcAccessMask = 0;
+      .dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite |
+                       vk::AccessFlagBits::eDepthStencilAttachmentWrite};
 
-  std::array<vk::AttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
-  vk::RenderPassCreateInfo renderPassInfo = {};
-  renderPassInfo.sType = vk::StructureType::eRenderPassCreateInfo;
-  renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-  renderPassInfo.pAttachments = attachments.data();
-  renderPassInfo.subpassCount = 1;
-  renderPassInfo.pSubpasses = &subpass;
-  renderPassInfo.dependencyCount = 1;
-  renderPassInfo.pDependencies = &dependency;
+  std::array<vk::AttachmentDescription, 2> attachments{colorAttachment, depthAttachment};
+  vk::RenderPassCreateInfo renderPassInfo{
+      .attachmentCount = static_cast<uint32_t>(attachments.size()),
+      .pAttachments = attachments.data(),
+      .subpassCount = 1,
+      .pSubpasses = &subpass,
+      .dependencyCount = 1,
+      .pDependencies = &dependency};
 
   renderPass = device.device().createRenderPass(renderPassInfo);
 }
@@ -254,17 +251,16 @@ void LveSwapChain::createRenderPass() {
 void LveSwapChain::createFramebuffers() {
   swapChainFramebuffers.resize(imageCount());
   for (size_t i = 0; i < imageCount(); i++) {
-    std::array<vk::ImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
+    std::array<vk::ImageView, 2> attachments{swapChainImageViews[i], depthImageViews[i]};
 
     vk::Extent2D swapChainExtent = getSwapChainExtent();
-    vk::FramebufferCreateInfo framebufferInfo = {};
-    framebufferInfo.renderPass = renderPass;
-    framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-    framebufferInfo.pAttachments = attachments.data();
-    framebufferInfo.width = swapChainExtent.width;
-    framebufferInfo.height = swapChainExtent.height;
-    framebufferInfo.layers = 1;
-
+    vk::FramebufferCreateInfo framebufferInfo{
+        .renderPass = renderPass,
+        .attachmentCount = static_cast<uint32_t>(attachments.size()),
+        .pAttachments = attachments.data(),
+        .width = swapChainExtent.width,
+        .height = swapChainExtent.height,
+        .layers = 1};
     swapChainFramebuffers[i] = device.device().createFramebuffer(framebufferInfo);
   }
 }
@@ -279,20 +275,19 @@ void LveSwapChain::createDepthResources() {
   depthImageViews.resize(imageCount());
 
   for (int i = 0; i < depthImages.size(); i++) {
-    vk::ImageCreateInfo imageInfo{};
-    imageInfo.imageType = vk::ImageType::e2D;
-    imageInfo.extent.width = swapChainExtent.width;
-    imageInfo.extent.height = swapChainExtent.height;
-    imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
-    imageInfo.format = depthFormat;
-    imageInfo.tiling = vk::ImageTiling::eOptimal;
-    imageInfo.initialLayout = vk::ImageLayout::eUndefined;
-    imageInfo.usage = vk::ImageUsageFlagBits::eDepthStencilAttachment;
-    imageInfo.samples = vk::SampleCountFlagBits::e1;
-    imageInfo.sharingMode = vk::SharingMode::eExclusive;
-    // imageInfo.flags         = 0;
+    vk::ImageCreateInfo imageInfo{
+        .imageType = vk::ImageType::e2D,
+        .format = depthFormat,
+        .extent{.width = swapChainExtent.width, .height = swapChainExtent.height, .depth = 1},
+        .mipLevels = 1,
+        .arrayLayers = 1,
+        .samples = vk::SampleCountFlagBits::e1,
+        .tiling = vk::ImageTiling::eOptimal,
+        .usage = vk::ImageUsageFlagBits::eDepthStencilAttachment,
+        .sharingMode = vk::SharingMode::eExclusive,
+        .initialLayout = vk::ImageLayout::eUndefined
+        //.flags         = 0;
+    };
 
     device.createImageWithInfo(
         imageInfo,
@@ -320,15 +315,13 @@ void LveSwapChain::createSyncObjects() {
   inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
   imagesInFlight.resize(imageCount(), VK_NULL_HANDLE);
 
-  vk::SemaphoreCreateInfo semaphoreInfo = {};
-
-  vk::FenceCreateInfo fenceInfo = {};
-  fenceInfo.sType = vk::StructureType::eFenceCreateInfo;
-  fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
+  vk::FenceCreateInfo fenceInfo = {
+      .sType = vk::StructureType::eFenceCreateInfo,
+      .flags = vk::FenceCreateFlagBits::eSignaled};
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    imageAvailableSemaphores[i] = device.device().createSemaphore(semaphoreInfo);
-    renderFinishedSemaphores[i] = device.device().createSemaphore(semaphoreInfo);
+    imageAvailableSemaphores[i] = device.device().createSemaphore({});
+    renderFinishedSemaphores[i] = device.device().createSemaphore({});
     inFlightFences[i] = device.device().createFence(fenceInfo);
   }
 }

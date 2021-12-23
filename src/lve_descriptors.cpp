@@ -14,11 +14,12 @@ LveDescriptorSetLayout::Builder &LveDescriptorSetLayout::Builder::addBinding(
     vk::ShaderStageFlags stageFlags,
     uint32_t count) {
   assert(bindings.count(binding) == 0 && "Binding already in use");
-  vk::DescriptorSetLayoutBinding layoutBinding{};
-  layoutBinding.binding = binding;
-  layoutBinding.descriptorType = descriptorType;
-  layoutBinding.descriptorCount = count;
-  layoutBinding.stageFlags = stageFlags;
+  vk::DescriptorSetLayoutBinding layoutBinding{
+      .binding = binding,
+      .descriptorType = descriptorType,
+      .descriptorCount = count,
+      .stageFlags = stageFlags};
+
   bindings[binding] = layoutBinding;
   return *this;
 }
@@ -37,9 +38,9 @@ LveDescriptorSetLayout::LveDescriptorSetLayout(
     setLayoutBindings.push_back(kv.second);
   }
 
-  vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-  descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
-  descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
+  vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{
+      .bindingCount = static_cast<uint32_t>(setLayoutBindings.size()),
+      .pBindings = setLayoutBindings.data()};
   descriptorSetLayout = lveDevice.device().createDescriptorSetLayout(descriptorSetLayoutInfo);
 }
 
@@ -77,11 +78,12 @@ LveDescriptorPool::LveDescriptorPool(
     vk::DescriptorPoolCreateFlags poolFlags,
     const std::vector<vk::DescriptorPoolSize> &poolSizes)
     : lveDevice{lveDevice} {
-  vk::DescriptorPoolCreateInfo descriptorPoolInfo{};
-  descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-  descriptorPoolInfo.pPoolSizes = poolSizes.data();
-  descriptorPoolInfo.maxSets = maxSets;
-  descriptorPoolInfo.flags = poolFlags;
+  vk::DescriptorPoolCreateInfo descriptorPoolInfo{
+      .flags = poolFlags,
+      .maxSets = maxSets,
+      .poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
+      .pPoolSizes = poolSizes.data()};
+
   descriptorPool = lveDevice.device().createDescriptorPool(descriptorPoolInfo);
 }
 
@@ -91,10 +93,10 @@ LveDescriptorPool::~LveDescriptorPool() {
 
 bool LveDescriptorPool::allocateDescriptor(
     const vk::DescriptorSetLayout descriptorSetLayout, vk::DescriptorSet &descriptor) const {
-  vk::DescriptorSetAllocateInfo allocInfo{};
-  allocInfo.descriptorPool = descriptorPool;
-  allocInfo.pSetLayouts = &descriptorSetLayout;
-  allocInfo.descriptorSetCount = 1;
+  vk::DescriptorSetAllocateInfo allocInfo{
+      .descriptorPool = descriptorPool,
+      .descriptorSetCount = 1,
+      .pSetLayouts = &descriptorSetLayout};
 
   // Might want to create a "DescriptorPoolManager" class that handles this case, and builds
   // a new pool whenever an old pool fills up. But this is beyond our current scope
@@ -123,11 +125,11 @@ LveDescriptorWriter &LveDescriptorWriter::writeBuffer(
       bindingDescription.descriptorCount == 1 &&
       "Binding single descriptor info, but binding expects multiple");
 
-  vk::WriteDescriptorSet write{};
-  write.descriptorType = bindingDescription.descriptorType;
-  write.dstBinding = binding;
-  write.pBufferInfo = bufferInfo;
-  write.descriptorCount = 1;
+  vk::WriteDescriptorSet write{
+      .dstBinding = binding,
+      .descriptorCount = 1,
+      .descriptorType = bindingDescription.descriptorType,
+      .pBufferInfo = bufferInfo};
 
   writes.push_back(write);
   return *this;
@@ -143,11 +145,12 @@ LveDescriptorWriter &LveDescriptorWriter::writeImage(
       bindingDescription.descriptorCount == 1 &&
       "Binding single descriptor info, but binding expects multiple");
 
-  vk::WriteDescriptorSet write{};
-  write.descriptorType = bindingDescription.descriptorType;
-  write.dstBinding = binding;
-  write.pImageInfo = imageInfo;
-  write.descriptorCount = 1;
+  vk::WriteDescriptorSet write{
+      .dstBinding = binding,
+      .descriptorCount = 1,
+      .descriptorType = bindingDescription.descriptorType,
+      .pImageInfo = imageInfo,
+  };
 
   writes.push_back(write);
   return *this;

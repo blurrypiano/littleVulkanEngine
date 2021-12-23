@@ -80,7 +80,7 @@ void FirstApp::run() {
     float frameTime =
         std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
     currentTime = newTime;
-
+    
     cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
     camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
@@ -98,8 +98,7 @@ void FirstApp::run() {
           gameObjects};
 
       // update
-      GlobalUbo ubo{};
-      ubo.projectionView = camera.getProjection() * camera.getView();
+      GlobalUbo ubo{.projectionView = camera.getProjection() * camera.getView()};
       uboBuffers[frameIndex]->writeToBuffer(&ubo);
       uboBuffers[frameIndex]->flush();
 

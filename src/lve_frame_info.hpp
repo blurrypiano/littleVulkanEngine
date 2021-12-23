@@ -4,7 +4,8 @@
 #include "lve_game_object.hpp"
 
 // lib
-#include <vulkan/vulkan.h>
+#define VULKAN_HPP_NO_CONSTRUCTORS
+#include <vulkan/vulkan.hpp>
 
 namespace lve {
 struct FrameInfo {

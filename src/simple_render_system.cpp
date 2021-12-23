@@ -11,74 +11,80 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace lve
-{
+namespace lve {
 
-	struct SimplePushConstantData
-	{
-		glm::mat4 modelMatrix {1.f};
-		glm::mat4 normalMatrix {1.f};
-	};
+struct SimplePushConstantData {
+  glm::mat4 modelMatrix{1.f};
+  glm::mat4 normalMatrix{1.f};
+};
 
-	SimpleRenderSystem::SimpleRenderSystem (LveDevice& device, vk::RenderPass renderPass,
-											vk::DescriptorSetLayout globalSetLayout)
-		: lveDevice {device}
-	{
-		createPipelineLayout (globalSetLayout);
-		createPipeline (renderPass);
-	}
+SimpleRenderSystem::SimpleRenderSystem(
+    LveDevice& device, vk::RenderPass renderPass, vk::DescriptorSetLayout globalSetLayout)
+    : lveDevice{device} {
+  createPipelineLayout(globalSetLayout);
+  createPipeline(renderPass);
+}
 
-	SimpleRenderSystem::~SimpleRenderSystem( ) { lveDevice.device( ).destroyPipelineLayout (pipelineLayout); }
+SimpleRenderSystem::~SimpleRenderSystem() {
+  lveDevice.device().destroyPipelineLayout(pipelineLayout);
+}
 
-	void SimpleRenderSystem::createPipelineLayout (vk::DescriptorSetLayout globalSetLayout)
-	{
-		vk::PushConstantRange pushConstantRange { };
-		pushConstantRange.stageFlags = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;
-		pushConstantRange.offset     = 0;
-		pushConstantRange.size       = sizeof (SimplePushConstantData);
+void SimpleRenderSystem::createPipelineLayout(vk::DescriptorSetLayout globalSetLayout) {
+  vk::PushConstantRange pushConstantRange{
+      .stageFlags = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment,
+      .offset = 0,
+      .size = sizeof(SimplePushConstantData)};
 
-		std::vector<vk::DescriptorSetLayout> descriptorSetLayouts {globalSetLayout};
+  std::vector<vk::DescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
 
-		vk::PipelineLayoutCreateInfo pipelineLayoutInfo { };
-		pipelineLayoutInfo.setLayoutCount         = static_cast<uint32_t> (descriptorSetLayouts.size( ));
-		pipelineLayoutInfo.pSetLayouts            = descriptorSetLayouts.data( );
-		pipelineLayoutInfo.pushConstantRangeCount = 1;
-		pipelineLayoutInfo.pPushConstantRanges    = &pushConstantRange;
-		pipelineLayout                            = lveDevice.device( ).createPipelineLayout (pipelineLayoutInfo);
-	}
+  vk::PipelineLayoutCreateInfo pipelineLayoutInfo{
+      .setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size()),
+      .pSetLayouts = descriptorSetLayouts.data(),
+      .pushConstantRangeCount = 1,
+      .pPushConstantRanges = &pushConstantRange};
 
-	void SimpleRenderSystem::createPipeline (vk::RenderPass renderPass)
-	{
-		assert (pipelineLayout != vk::PipelineLayout( ) && "Cannot create pipeline before pipeline layout");
+  pipelineLayout = lveDevice.device().createPipelineLayout(pipelineLayoutInfo);
+}
 
-		PipelineConfigInfo pipelineConfig { };
-		LvePipeline::defaultPipelineConfigInfo (pipelineConfig);
-		pipelineConfig.renderPass     = renderPass;
-		pipelineConfig.pipelineLayout = pipelineLayout;
-		lvePipeline                   = std::make_unique<LvePipeline> (lveDevice, "shaders/simple_shader.vert.spv",
-                                                     "shaders/simple_shader.frag.spv", pipelineConfig);
-	}
+void SimpleRenderSystem::createPipeline(vk::RenderPass renderPass) {
+  assert(pipelineLayout != vk::PipelineLayout() && "Cannot create pipeline before pipeline layout");
 
-	void SimpleRenderSystem::renderGameObjects (FrameInfo& frameInfo)
-	{
-		lvePipeline->bind (frameInfo.commandBuffer);
-		frameInfo.commandBuffer.bindDescriptorSets (vk::PipelineBindPoint::eGraphics, pipelineLayout, 0,
-													frameInfo.globalDescriptorSet, nullptr);
+  PipelineConfigInfo pipelineConfig{};
+  LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
+  pipelineConfig.renderPass = renderPass;
+  pipelineConfig.pipelineLayout = pipelineLayout;
+  lvePipeline = std::make_unique<LvePipeline>(
+      lveDevice,
+      "shaders/simple_shader.vert.spv",
+      "shaders/simple_shader.frag.spv",
+      pipelineConfig);
+}
 
-		for (auto& kv : frameInfo.gameObjects)
-		{
-			auto& obj = kv.second;
-			if (obj.model == nullptr) continue;
-			SimplePushConstantData push { };
-			push.modelMatrix  = obj.transform.mat4( );
-			push.normalMatrix = obj.transform.normalMatrix( );
+void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
+  lvePipeline->bind(frameInfo.commandBuffer);
+  frameInfo.commandBuffer.bindDescriptorSets(
+      vk::PipelineBindPoint::eGraphics,
+      pipelineLayout,
+      0,
+      frameInfo.globalDescriptorSet,
+      nullptr);
 
-			frameInfo.commandBuffer.pushConstants (
-				pipelineLayout, vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment, 0,
-				sizeof (SimplePushConstantData), &push);
-			obj.model->bind (frameInfo.commandBuffer);
-			obj.model->draw (frameInfo.commandBuffer);
-		}
-	}
+  for (auto& kv : frameInfo.gameObjects) {
+    auto& obj = kv.second;
+    if (obj.model == nullptr) continue;
+    SimplePushConstantData push{
+        .modelMatrix = obj.transform.mat4(),
+        .normalMatrix = obj.transform.normalMatrix()};
+
+    frameInfo.commandBuffer.pushConstants(
+        pipelineLayout,
+        vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment,
+        0,
+        sizeof(SimplePushConstantData),
+        &push);
+    obj.model->bind(frameInfo.commandBuffer);
+    obj.model->draw(frameInfo.commandBuffer);
+  }
+}
 
 }  // namespace lve

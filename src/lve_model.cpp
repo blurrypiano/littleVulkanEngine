@@ -112,8 +112,8 @@ void LveModel::draw(vk::CommandBuffer commandBuffer) {
 }
 
 void LveModel::bind(vk::CommandBuffer commandBuffer) {
-  vk::Buffer buffers[] = {vertexBuffer->getBuffer()};
-  vk::DeviceSize offsets[] = {0};
+  vk::Buffer buffers[]{vertexBuffer->getBuffer()};
+  vk::DeviceSize offsets[]{0};
   commandBuffer.bindVertexBuffers(0, 1, buffers, offsets);
 
   if (hasIndexBuffer) {
@@ -122,10 +122,9 @@ void LveModel::bind(vk::CommandBuffer commandBuffer) {
 }
 
 std::vector<vk::VertexInputBindingDescription> LveModel::Vertex::getBindingDescriptions() {
-  std::vector<vk::VertexInputBindingDescription> bindingDescriptions(1);
-  bindingDescriptions[0].binding = 0;
-  bindingDescriptions[0].stride = sizeof(Vertex);
-  bindingDescriptions[0].inputRate = vk::VertexInputRate::eVertex;
+  std::vector<vk::VertexInputBindingDescription> bindingDescriptions{
+      {.binding = 0, .stride = sizeof(Vertex), .inputRate = vk::VertexInputRate::eVertex}};
+
   return bindingDescriptions;
 }
 

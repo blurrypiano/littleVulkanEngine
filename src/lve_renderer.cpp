@@ -39,10 +39,10 @@ void LveRenderer::recreateSwapChain() {
 void LveRenderer::createCommandBuffers() {
   commandBuffers.resize(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
 
-  vk::CommandBufferAllocateInfo allocInfo{};
-  allocInfo.level = vk::CommandBufferLevel::ePrimary;
-  allocInfo.commandPool = lveDevice.getCommandPool();
-  allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+  vk::CommandBufferAllocateInfo allocInfo{
+      .commandPool = lveDevice.getCommandPool(),
+      .level = vk::CommandBufferLevel::ePrimary,
+      .commandBufferCount = static_cast<uint32_t>(commandBuffers.size())};
 
   commandBuffers = lveDevice.device().allocateCommandBuffers(allocInfo);
 }
@@ -102,29 +102,32 @@ void LveRenderer::beginSwapChainRenderPass(vk::CommandBuffer commandBuffer) {
       commandBuffer == getCurrentCommandBuffer() &&
       "Can't begin render pass on command buffer from a different frame");
 
-  vk::RenderPassBeginInfo renderPassInfo{};
-  renderPassInfo.renderPass = lveSwapChain->getRenderPass();
-  renderPassInfo.framebuffer = lveSwapChain->getFrameBuffer(currentImageIndex);
-
-  renderPassInfo.renderArea.offset = vk::Offset2D{0, 0};
-  renderPassInfo.renderArea.extent = lveSwapChain->getSwapChainExtent();
-
   std::array<vk::ClearValue, 2> clearValues{};
-  clearValues[0].color = vk::ClearColorValue(std::array<float, 4>{0.01f, 0.01f, 0.01f, 1.0f});
+  // clearValues[0].color = vk::ClearColorValue(std::array<float, 4>{0.01f, 0.01f, 0.01f, 1.0f});
+  // vk::ClearColorValue clearColor = { .setInt32() };
+  /// clearValues[0].color = clearColor;
   clearValues[1].depthStencil = vk::ClearDepthStencilValue{1.0f, 0};
-  renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-  renderPassInfo.pClearValues = clearValues.data();
+
+  vk::RenderPassBeginInfo renderPassInfo{
+      .renderPass = lveSwapChain->getRenderPass(),
+      .framebuffer = lveSwapChain->getFrameBuffer(currentImageIndex),
+      .renderArea =
+          vk::Rect2D{.offset = vk::Offset2D{0, 0}, .extent = lveSwapChain->getSwapChainExtent()},
+      .clearValueCount = static_cast<uint32_t>(clearValues.size()),
+      .pClearValues = clearValues.data()};
 
   commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
-  vk::Viewport viewport{};
-  viewport.x = 0.0f;
-  viewport.y = 0.0f;
-  viewport.width = static_cast<float>(lveSwapChain->getSwapChainExtent().width);
-  viewport.height = static_cast<float>(lveSwapChain->getSwapChainExtent().height);
-  viewport.minDepth = 0.0f;
-  viewport.maxDepth = 1.0f;
+  vk::Viewport viewport{
+      .x = 0.0f,
+      .y = 0.0f,
+      .width = static_cast<float>(lveSwapChain->getSwapChainExtent().width),
+      .height = static_cast<float>(lveSwapChain->getSwapChainExtent().height),
+      .minDepth = 0.0f,
+      .maxDepth = 1.0f};
+
   vk::Rect2D scissor{{0, 0}, lveSwapChain->getSwapChainExtent()};
+
   commandBuffer.setViewport(0, viewport);
   commandBuffer.setScissor(0, scissor);
 }

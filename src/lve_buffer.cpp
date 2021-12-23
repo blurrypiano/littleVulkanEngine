@@ -113,11 +113,8 @@ void LveBuffer::writeToBuffer(void *data, vk::DeviceSize size, vk::DeviceSize of
  * @return vk::Result of the flush call
  */
 vk::Result LveBuffer::flush(vk::DeviceSize size, vk::DeviceSize offset) {
-  vk::MappedMemoryRange mappedRange = {};
-  mappedRange.memory = memory;
-  mappedRange.offset = offset;
-  mappedRange.size = size;
-  lveDevice.device().flushMappedMemoryRanges(mappedRange);
+  lveDevice.device().flushMappedMemoryRanges(
+      vk::MappedMemoryRange{.memory = memory, .offset = offset, .size = size});
   return vk::Result::eSuccess;
 }
 
@@ -133,11 +130,9 @@ vk::Result LveBuffer::flush(vk::DeviceSize size, vk::DeviceSize offset) {
  * @return vk::Result of the invalidate call
  */
 vk::Result LveBuffer::invalidate(vk::DeviceSize size, vk::DeviceSize offset) {
-  vk::MappedMemoryRange mappedRange = {};
-  mappedRange.memory = memory;
-  mappedRange.offset = offset;
-  mappedRange.size = size;
-  lveDevice.device().invalidateMappedMemoryRanges(mappedRange);
+  lveDevice.device().invalidateMappedMemoryRanges(
+      vk::MappedMemoryRange{.memory = memory, .offset = offset, .size = size});
+
   return vk::Result::eSuccess;
 }
 
@@ -150,11 +145,7 @@ vk::Result LveBuffer::invalidate(vk::DeviceSize size, vk::DeviceSize offset) {
  * @return vk::DescriptorBufferInfo of specified offset and range
  */
 vk::DescriptorBufferInfo LveBuffer::descriptorInfo(vk::DeviceSize size, vk::DeviceSize offset) {
-  return vk::DescriptorBufferInfo{
-      buffer,
-      offset,
-      size,
-  };
+  return vk::DescriptorBufferInfo{.buffer = buffer, .offset = offset, .range = size};
 }
 
 /**

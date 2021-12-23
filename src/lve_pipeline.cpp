@@ -68,9 +68,10 @@ void LvePipeline::createGraphicsPipeline(
   shaderStages[0].stage = vk::ShaderStageFlagBits::eVertex;
   shaderStages[0].module = vertShaderModule;
   shaderStages[0].pName = "main";
-  // shaderStages [0].flags               = 0; 
+  // shaderStages [0].flags               = 0;
   shaderStages[0].pNext = nullptr;
   shaderStages[0].pSpecializationInfo = nullptr;
+
   shaderStages[1].stage = vk::ShaderStageFlagBits::eFragment;
   shaderStages[1].module = fragShaderModule;
   shaderStages[1].pName = "main";
@@ -80,31 +81,30 @@ void LvePipeline::createGraphicsPipeline(
 
   auto bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
   auto attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
-  vk::PipelineVertexInputStateCreateInfo vertexInputInfo{};
-  vertexInputInfo.vertexAttributeDescriptionCount =
-      static_cast<uint32_t>(attributeDescriptions.size());
-  vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
-  vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
+  vk::PipelineVertexInputStateCreateInfo vertexInputInfo{
+      .vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size()),
+      .pVertexBindingDescriptions = bindingDescriptions.data(),
+      .vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size()),
+      .pVertexAttributeDescriptions = attributeDescriptions.data()};
 
-  vk::GraphicsPipelineCreateInfo pipelineInfo{};
-  pipelineInfo.stageCount = 2;
-  pipelineInfo.pStages = shaderStages;
-  pipelineInfo.pVertexInputState = &vertexInputInfo;
-  pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-  pipelineInfo.pViewportState = &configInfo.viewportInfo;
-  pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
-  pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
-  pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
-  pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
-  pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;
+  vk::GraphicsPipelineCreateInfo pipelineInfo{
+      .stageCount = 2,
+      .pStages = shaderStages,
+      .pVertexInputState = &vertexInputInfo,
+      .pInputAssemblyState = &configInfo.inputAssemblyInfo,
+      .pViewportState = &configInfo.viewportInfo,
+      .pRasterizationState = &configInfo.rasterizationInfo,
+      .pMultisampleState = &configInfo.multisampleInfo,
+      .pDepthStencilState = &configInfo.depthStencilInfo,
+      .pColorBlendState = &configInfo.colorBlendInfo,
+      .pDynamicState = &configInfo.dynamicStateInfo,
 
-  pipelineInfo.layout = configInfo.pipelineLayout;
-  pipelineInfo.renderPass = configInfo.renderPass;
-  pipelineInfo.subpass = configInfo.subpass;
+      .layout = configInfo.pipelineLayout,
+      .renderPass = configInfo.renderPass,
+      .subpass = configInfo.subpass,
 
-  pipelineInfo.basePipelineIndex = -1;
-  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+      .basePipelineHandle = VK_NULL_HANDLE,
+      .basePipelineIndex = -1};
 
   auto result = lveDevice.device().createGraphicsPipeline(nullptr, pipelineInfo);
   if (result.result != vk::Result::eSuccess) {
@@ -115,9 +115,9 @@ void LvePipeline::createGraphicsPipeline(
 
 void LvePipeline::createShaderModule(
     const std::vector<char>& code, vk::ShaderModule* shaderModule) {
-  vk::ShaderModuleCreateInfo createInfo{};
-  createInfo.codeSize = code.size();
-  createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+  vk::ShaderModuleCreateInfo createInfo{
+      .codeSize = code.size(),
+      .pCode = reinterpret_cast<const uint32_t*>(code.data())};
   *shaderModule = lveDevice.device().createShaderModule(createInfo);
 }
 
