@@ -1,5 +1,7 @@
 # Little Vulkan Engine
 
+**(Prior version of repo has now been moved to the [tut0-22 branch](https://github.com/blurrypiano/littleVulkanEngine/tree/tut0-22))**
+
 A video tutorial series introducing computer graphics for [Vulkan®](https://www.khronos.org/vulkan/), the new generation graphics and compute API from Khronos. The focus of this tutorial is to be approachable to newcomers to computer graphics and graphics APIs, explaining not just the Vulkan API but also computer graphics theory, mathematics and engine architecture.
 
 ## Table of Contents
