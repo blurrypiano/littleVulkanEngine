@@ -102,7 +102,7 @@ This branch is a legacy branch that holds all the older tutorials in the series,
 
 ### <a name="PointLights"></a> Point Lights
 
-Find the [Preliminary Completed Project Here](https://github.com/blurrypiano/littleVulkanEngine/tree/pointLights/littleVulkanEngine/tutorial)
+Find the [Preliminary Completed Project Here](https://github.com/blurrypiano/littleVulkanEngine/tree/pointLights)
 
 #### [21 - Intro to Point Lights](https://github.com/blurrypiano/littleVulkanEngine/tree/master/littleVulkanEngine/tutorial21)
 
