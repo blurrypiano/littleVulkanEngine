@@ -121,6 +121,12 @@ In this tutorial I change the project to use cmake rather than a simple makefile
 In this tutorial we implement a second rendering system that uses the billboard technique to render a spherical point light.
 ([Video](https://youtu.be/91-89b3wlSo))
 
+#### [25 - Multiple Point Lights](https://github.com/blurrypiano/littleVulkanEngine/tree/tut25)
+
+In this tutorial we add support for multiple point light objects in the scene. Lights will still be stored in the GlobalUbo, however for rendering the light objects we will use push constants.
+
+([Video](https://youtu.be/1olS6ayckKM))
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
