@@ -2,6 +2,10 @@
 mkdir -p build
 cd build
 cmake -S ../ -B .
-export MAKEFLAGS=-j$(nproc)
+if [ -z "$MAKEFLAGS" ]
+then
+      export MAKEFLAGS=-j$(nproc)
+fi
+
 make && make Shaders && ./LveEngine
 cd ..
