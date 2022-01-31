@@ -81,7 +81,8 @@ class LveDevice {
   void createCommandPool();
 
   // helper functions
-  bool isDeviceSuitable(VkPhysicalDevice device);
+  bool isSuitableDevice(VkPhysicalDevice device);
+  bool isPreferredDevice(VkPhysicalDevice device);
   std::vector<const char *> getRequiredExtensions();
   bool checkValidationLayerSupport();
   QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
