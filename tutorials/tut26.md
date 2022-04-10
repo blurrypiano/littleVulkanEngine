@@ -10,7 +10,7 @@ Specular lighting represents shiny materials by modelling the reflection of ligh
 
 [View branch](https://github.com/blurrypiano/littleVulkanEngine/tree/tut26)
 
-[View Files Changed](https://github.com/blurrypiano/littleVulkanEngine/pull/28/files)
+[View Files Changed](https://github.com/blurrypiano/littleVulkanEngine/pull/30/files)
 
 [Video Tutorial](https://youtu.be/8CTr0SKQ21U)
 
