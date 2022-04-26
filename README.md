@@ -133,6 +133,12 @@ In this tutorial we add specular lighting to our simple fragment shader.
 
 ([Video](https://youtu.be/8CTr0SKQ21U))
 
+#### [27 - Alpha Blending and Transparency](https://github.com/blurrypiano/littleVulkanEngine/tree/tut27)
+
+In this tutorial we add a limited blending capability to our point light system, allowing them to be rendered with a nicer appearance. 
+
+([Video](https://youtu.be/uZqxj6tLDY4))
+
 ## <a name="Khronossamples"></a> Official Khronos Vulkan Samples
 
 Khronos made an official Vulkan Samples repository available to the public ([press release](https://www.khronos.org/blog/vulkan-releases-unified-samples-repository?utm_source=Khronos%20Blog&utm_medium=Twitter&utm_campaign=Vulkan%20Repository)).
