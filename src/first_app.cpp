@@ -5,6 +5,7 @@
 #include "lve_camera.hpp"
 #include "systems/point_light_system.hpp"
 #include "systems/simple_render_system.hpp"
+#include "systems/texture_render_system.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -26,6 +27,18 @@ FirstApp::FirstApp() {
           .setMaxSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT)
           .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
           .build();
+
+  // build frame descriptor pools
+  framePools.resize(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
+  auto framePoolBuilder = LveDescriptorPool::Builder(lveDevice)
+                              .setMaxSets(1000)
+                              .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000)
+                              .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000)
+                              .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
+  for (int i = 0; i < framePools.size(); i++) {
+    framePools[i] = framePoolBuilder.build();
+  }
+
   loadGameObjects();
 }
 
@@ -64,6 +77,10 @@ void FirstApp::run() {
       lveDevice,
       lveRenderer.getSwapChainRenderPass(),
       globalSetLayout->getDescriptorSetLayout()};
+  TextureRenderSystem textureRenderSystem{
+      lveDevice,
+      lveRenderer.getSwapChainRenderPass(),
+      globalSetLayout->getDescriptorSetLayout()};
   LveCamera camera{};
 
   auto viewerObject = LveGameObject::createGameObject();
@@ -87,12 +104,14 @@ void FirstApp::run() {
 
     if (auto commandBuffer = lveRenderer.beginFrame()) {
       int frameIndex = lveRenderer.getFrameIndex();
+      framePools[frameIndex]->resetPool();
       FrameInfo frameInfo{
           frameIndex,
           frameTime,
           commandBuffer,
           camera,
           globalDescriptorSets[frameIndex],
+          *framePools[frameIndex],
           gameObjects};
 
       // update
@@ -108,6 +127,7 @@ void FirstApp::run() {
       lveRenderer.beginSwapChainRenderPass(commandBuffer);
 
       // order here matters
+      textureRenderSystem.renderGameObjects(frameInfo);
       simpleRenderSystem.renderGameObjects(frameInfo);
       pointLightSystem.render(frameInfo);
 
@@ -136,8 +156,11 @@ void FirstApp::loadGameObjects() {
   gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
+  std::shared_ptr<LveTexture> marbleTexture =
+      LveTexture::createTextureFromFile(lveDevice, "../textures_/heightmap.png");
   auto floor = LveGameObject::createGameObject();
   floor.model = lveModel;
+  floor.diffuseMap = marbleTexture;
   floor.transform.translation = {0.f, .5f, 0.f};
   floor.transform.scale = {3.f, 1.f, 3.f};
   gameObjects.emplace(floor.getId(), std::move(floor));

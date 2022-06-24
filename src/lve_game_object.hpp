@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lve_model.hpp"
+#include "lve_texture.hpp"
 
 // libs
 #include <glm/gtc/matrix_transform.hpp>
@@ -53,6 +54,7 @@ class LveGameObject {
 
   // Optional pointer components
   std::shared_ptr<LveModel> model{};
+  std::shared_ptr<LveTexture> diffuseMap = nullptr;
   std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
  private:

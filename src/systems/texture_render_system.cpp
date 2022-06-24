@@ -1,4 +1,4 @@
-#include "simple_render_system.hpp"
+#include "texture_render_system.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -13,29 +13,36 @@
 
 namespace lve {
 
-struct SimplePushConstantData {
+struct TexturePushConstantData {
   glm::mat4 modelMatrix{1.f};
   glm::mat4 normalMatrix{1.f};
 };
 
-SimpleRenderSystem::SimpleRenderSystem(
+TextureRenderSystem::TextureRenderSystem(
     LveDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
     : lveDevice{device} {
   createPipelineLayout(globalSetLayout);
   createPipeline(renderPass);
 }
 
-SimpleRenderSystem::~SimpleRenderSystem() {
+TextureRenderSystem::~TextureRenderSystem() {
   vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr);
 }
 
-void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
+void TextureRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
   VkPushConstantRange pushConstantRange{};
   pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
   pushConstantRange.offset = 0;
-  pushConstantRange.size = sizeof(SimplePushConstantData);
+  pushConstantRange.size = sizeof(TexturePushConstantData);
 
-  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
+  renderSystemLayout =
+      LveDescriptorSetLayout::Builder(lveDevice)
+          .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+          .build();
+
+  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{
+      globalSetLayout,
+      renderSystemLayout->getDescriptorSetLayout()};
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -49,7 +56,7 @@ void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLay
   }
 }
 
-void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
+void TextureRenderSystem::createPipeline(VkRenderPass renderPass) {
   assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
 
   PipelineConfigInfo pipelineConfig{};
@@ -58,12 +65,12 @@ void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
   pipelineConfig.pipelineLayout = pipelineLayout;
   lvePipeline = std::make_unique<LvePipeline>(
       lveDevice,
-      "shaders/simple_shader.vert.spv",
-      "shaders/simple_shader.frag.spv",
+      "shaders/texture_shader.vert.spv",
+      "shaders/texture_shader.frag.spv",
       pipelineConfig);
 }
 
-void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
+void TextureRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   lvePipeline->bind(frameInfo.commandBuffer);
 
   vkCmdBindDescriptorSets(
@@ -79,11 +86,28 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   for (auto& kv : frameInfo.gameObjects) {
     auto& obj = kv.second;
 
-    // skip objects with textures, they'll be handled by TextureRenderSystem
-    // This is a hacky solution, really we're getting to the point that an ECS
-    // or some better object management solution is needed
-    if (obj.model == nullptr || obj.diffuseMap != nullptr) continue;
-    SimplePushConstantData push{};
+    // skip objects that don't have both a model and texture
+    if (obj.model == nullptr || obj.diffuseMap == nullptr) continue;
+
+    // writing descriptor set each frame can slow performance
+    // would be more efficient to implement some sort of caching
+    auto imageInfo = obj.diffuseMap->getImageInfo();
+    VkDescriptorSet descriptorSet1;
+    LveDescriptorWriter(*renderSystemLayout, frameInfo.frameDescriptorPool)
+        .writeImage(0, &imageInfo)
+        .build(descriptorSet1);
+
+    vkCmdBindDescriptorSets(
+        frameInfo.commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipelineLayout,
+        1,  // first set
+        1,  // set count
+        &descriptorSet1,
+        0,
+        nullptr);
+
+    TexturePushConstantData push{};
     push.modelMatrix = obj.transform.mat4();
     push.normalMatrix = obj.transform.normalMatrix();
 
@@ -92,8 +116,9 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         pipelineLayout,
         VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
         0,
-        sizeof(SimplePushConstantData),
+        sizeof(TexturePushConstantData),
         &push);
+
     obj.model->bind(frameInfo.commandBuffer);
     obj.model->draw(frameInfo.commandBuffer);
   }

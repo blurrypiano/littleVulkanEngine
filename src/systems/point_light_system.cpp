@@ -57,6 +57,11 @@ void PointLightSystem::createPipeline(VkRenderPass renderPass) {
   PipelineConfigInfo pipelineConfig{};
   LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
   LvePipeline::enableAlphaBlending(pipelineConfig);
+
+  // default color blending for this isn't physically accurate, but i like how it looks
+  // in this case better, and are current rendering for this isn't physically accurate anyway
+  // pipelineConfig.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+
   pipelineConfig.attributeDescriptions.clear();
   pipelineConfig.bindingDescriptions.clear();
   pipelineConfig.renderPass = renderPass;

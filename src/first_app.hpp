@@ -33,6 +33,7 @@ class FirstApp {
 
   // note: order of declarations matters
   std::unique_ptr<LveDescriptorPool> globalPool{};
+  std::vector<std::unique_ptr<LveDescriptorPool>> framePools;
   LveGameObject::Map gameObjects;
 };
 }  // namespace lve
