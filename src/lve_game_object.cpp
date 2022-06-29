@@ -86,6 +86,8 @@ LveGameObjectManager::LveGameObjectManager(LveDevice& device) {
         alignment);
     uboBuffers[i]->map();
   }
+
+  textureDefault = LveTexture::createTextureFromFile(device, "../textures/missing.png");
 }
 
 void LveGameObjectManager::updateBuffer(int frameIndex) {

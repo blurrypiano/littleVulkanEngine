@@ -35,12 +35,14 @@ void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLay
   pushConstantRange.offset = 0;
   pushConstantRange.size = sizeof(SimplePushConstantData);
 
-  renderSystemLayout = LveDescriptorSetLayout::Builder(lveDevice)
-                           .addBinding(
-                               0,
-                               VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                               VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
-                           .build();
+  renderSystemLayout =
+      LveDescriptorSetLayout::Builder(lveDevice)
+          .addBinding(
+              0,
+              VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+              VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+          .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+          .build();
 
   std::vector<VkDescriptorSetLayout> descriptorSetLayouts{
       globalSetLayout,
@@ -93,9 +95,11 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
     // writing descriptor set each frame can slow performance
     // would be more efficient to implement some sort of caching
     auto bufferInfo = obj.getBufferInfo(frameInfo.frameIndex);
+    auto imageInfo = obj.diffuseMap->getImageInfo();
     VkDescriptorSet gameObjectDescriptorSet;
     LveDescriptorWriter(*renderSystemLayout, frameInfo.frameDescriptorPool)
         .writeBuffer(0, &bufferInfo)
+        .writeImage(1, &imageInfo)
         .build(gameObjectDescriptorSet);
 
     vkCmdBindDescriptorSets(
