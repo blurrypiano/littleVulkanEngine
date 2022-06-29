@@ -90,7 +90,7 @@ class LveGameObjectManager {
   LveGameObject &makePointLight(
       float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f));
 
-  VkDescriptorBufferInfo getBufferInfoForGameObject(int frameIndex, id_t gameObjectId) const {
+  VkDescriptorBufferInfo getBufferInfoForGameObject(int frameIndex, LveGameObject::id_t gameObjectId) const {
     return uboBuffers[frameIndex]->descriptorInfoForIndex(gameObjectId);
   }
 
@@ -100,7 +100,7 @@ class LveGameObjectManager {
   std::vector<std::unique_ptr<LveBuffer>> uboBuffers{LveSwapChain::MAX_FRAMES_IN_FLIGHT};
 
  private:
-  id_t currentId = 0;
+  LveGameObject::id_t currentId = 0;
   std::shared_ptr<LveTexture> textureDefault;
 };
 
