@@ -35,7 +35,16 @@ void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLay
   pushConstantRange.offset = 0;
   pushConstantRange.size = sizeof(SimplePushConstantData);
 
-  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
+  renderSystemLayout = LveDescriptorSetLayout::Builder(lveDevice)
+                           .addBinding(
+                               0,
+                               VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                               VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+                           .build();
+
+  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{
+      globalSetLayout,
+      renderSystemLayout->getDescriptorSetLayout()};
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -79,10 +88,26 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   for (auto& kv : frameInfo.gameObjects) {
     auto& obj = kv.second;
 
-    // skip objects with textures, they'll be handled by TextureRenderSystem
-    // This is a hacky solution, really we're getting to the point that an ECS
-    // or some better object management solution is needed
-    if (obj.model == nullptr || obj.diffuseMap != nullptr) continue;
+    if (obj.model == nullptr) continue;
+
+    // writing descriptor set each frame can slow performance
+    // would be more efficient to implement some sort of caching
+    auto bufferInfo = obj.getBufferInfo(frameInfo.frameIndex);
+    VkDescriptorSet gameObjectDescriptorSet;
+    LveDescriptorWriter(*renderSystemLayout, frameInfo.frameDescriptorPool)
+        .writeBuffer(0, &bufferInfo)
+        .build(gameObjectDescriptorSet);
+
+    vkCmdBindDescriptorSets(
+        frameInfo.commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipelineLayout,
+        1,  // starting set (0 is the globalDescriptorSet, 1 is the set specific to this system)
+        1,  // set count
+        &gameObjectDescriptorSet,
+        0,
+        nullptr);
+
     SimplePushConstantData push{};
     push.modelMatrix = obj.transform.mat4();
     push.normalMatrix = obj.transform.normalMatrix();

@@ -5,7 +5,6 @@
 #include "lve_camera.hpp"
 #include "systems/point_light_system.hpp"
 #include "systems/simple_render_system.hpp"
-#include "systems/texture_render_system.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -17,6 +16,7 @@
 #include <array>
 #include <cassert>
 #include <chrono>
+#include <iostream>
 #include <stdexcept>
 
 namespace lve {
@@ -69,6 +69,9 @@ void FirstApp::run() {
         .build(globalDescriptorSets[i]);
   }
 
+  std::cout << "Alignment: " << lveDevice.properties.limits.minUniformBufferOffsetAlignment << "\n";
+  std::cout << "atom size: " << lveDevice.properties.limits.nonCoherentAtomSize << "\n";
+
   SimpleRenderSystem simpleRenderSystem{
       lveDevice,
       lveRenderer.getSwapChainRenderPass(),
@@ -77,13 +80,9 @@ void FirstApp::run() {
       lveDevice,
       lveRenderer.getSwapChainRenderPass(),
       globalSetLayout->getDescriptorSetLayout()};
-  TextureRenderSystem textureRenderSystem{
-      lveDevice,
-      lveRenderer.getSwapChainRenderPass(),
-      globalSetLayout->getDescriptorSetLayout()};
   LveCamera camera{};
 
-  auto viewerObject = LveGameObject::createGameObject();
+  auto& viewerObject = gameObjectManager.createGameObject();
   viewerObject.transform.translation.z = -2.5f;
   KeyboardMovementController cameraController{};
 
@@ -112,7 +111,7 @@ void FirstApp::run() {
           camera,
           globalDescriptorSets[frameIndex],
           *framePools[frameIndex],
-          gameObjects};
+          gameObjectManager.gameObjects};
 
       // update
       GlobalUbo ubo{};
@@ -123,11 +122,14 @@ void FirstApp::run() {
       uboBuffers[frameIndex]->writeToBuffer(&ubo);
       uboBuffers[frameIndex]->flush();
 
+      // final step of update is updating the game objects buffer data
+      // The render functions MUST not change a game objects transform data
+      gameObjectManager.updateBuffer(frameIndex);
+
       // render
       lveRenderer.beginSwapChainRenderPass(commandBuffer);
 
       // order here matters
-      textureRenderSystem.renderGameObjects(frameInfo);
       simpleRenderSystem.renderGameObjects(frameInfo);
       pointLightSystem.render(frameInfo);
 
@@ -142,28 +144,25 @@ void FirstApp::run() {
 void FirstApp::loadGameObjects() {
   std::shared_ptr<LveModel> lveModel =
       LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
-  auto flatVase = LveGameObject::createGameObject();
+  auto& flatVase = gameObjectManager.createGameObject();
   flatVase.model = lveModel;
   flatVase.transform.translation = {-.5f, .5f, 0.f};
   flatVase.transform.scale = {3.f, 1.5f, 3.f};
-  gameObjects.emplace(flatVase.getId(), std::move(flatVase));
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
-  auto smoothVase = LveGameObject::createGameObject();
+  auto& smoothVase = gameObjectManager.createGameObject();
   smoothVase.model = lveModel;
   smoothVase.transform.translation = {.5f, .5f, 0.f};
   smoothVase.transform.scale = {3.f, 1.5f, 3.f};
-  gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
   std::shared_ptr<LveTexture> marbleTexture =
       LveTexture::createTextureFromFile(lveDevice, "../textures_/heightmap.png");
-  auto floor = LveGameObject::createGameObject();
+  auto& floor = gameObjectManager.createGameObject();
   floor.model = lveModel;
   floor.diffuseMap = marbleTexture;
   floor.transform.translation = {0.f, .5f, 0.f};
   floor.transform.scale = {3.f, 1.f, 3.f};
-  gameObjects.emplace(floor.getId(), std::move(floor));
 
   std::vector<glm::vec3> lightColors{
       {1.f, .1f, .1f},
@@ -175,14 +174,13 @@ void FirstApp::loadGameObjects() {
   };
 
   for (int i = 0; i < lightColors.size(); i++) {
-    auto pointLight = LveGameObject::makePointLight(0.2f);
+    auto& pointLight = gameObjectManager.makePointLight(0.2f);
     pointLight.color = lightColors[i];
     auto rotateLight = glm::rotate(
         glm::mat4(1.f),
         (i * glm::two_pi<float>()) / lightColors.size(),
         {0.f, -1.f, 0.f});
     pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
-    gameObjects.emplace(pointLight.getId(), std::move(pointLight));
   }
 }
 
