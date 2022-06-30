@@ -42,10 +42,10 @@ class LveGameObject {
   using id_t = unsigned int;
   using Map = std::unordered_map<id_t, LveGameObject>;
 
+  LveGameObject(LveGameObject &&) = default;
   LveGameObject(const LveGameObject &) = delete;
   LveGameObject &operator=(const LveGameObject &) = delete;
-  LveGameObject(LveGameObject &&) = default;
-  LveGameObject &operator=(LveGameObject &&) = default;
+  LveGameObject &operator=(LveGameObject &&) = delete;
 
   id_t getId() { return id; }
 
@@ -90,7 +90,8 @@ class LveGameObjectManager {
   LveGameObject &makePointLight(
       float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f));
 
-  VkDescriptorBufferInfo getBufferInfoForGameObject(int frameIndex, LveGameObject::id_t gameObjectId) const {
+  VkDescriptorBufferInfo getBufferInfoForGameObject(
+      int frameIndex, LveGameObject::id_t gameObjectId) const {
     return uboBuffers[frameIndex]->descriptorInfoForIndex(gameObjectId);
   }
 
