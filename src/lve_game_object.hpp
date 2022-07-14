@@ -105,4 +105,42 @@ class LveGameObjectManager {
   std::shared_ptr<LveTexture> textureDefault;
 };
 
+// template <typename T>
+// class UboArraySystem {
+//  public:
+//   static constexpr int SIZE = 1000;
+
+//   UboArraySystem(LveDevice &device, int length) {
+//     // including nonCoherentAtomSize allows us to flush a specific index at once
+//     int alignment = std::lcm(
+//         device.properties.limits.nonCoherentAtomSize,
+//         device.properties.limits.minUniformBufferOffsetAlignment);
+//     for (int i = 0; i < uboBuffers.size(); i++) {
+//       uboBuffers[i] = std::make_unique<LveBuffer>(
+//           device,
+//           sizeof(T),
+//           length,
+//           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+//           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+//           alignment);
+//       uboBuffers[i]->map();
+//     }
+//   }
+
+//   UboArraySystem(const UboArraySystem &) = delete;
+//   UboArraySystem &operator=(const UboArraySystem &) = delete;
+//   UboArraySystem(UboArraySystem &&) = delete;
+//   UboArraySystem &operator=(UboArraySystem &&) = delete;
+
+//   void updateBuffer(FrameInfo &frameInfo);  // query all with Transform component, write
+//   VkDescriptorBufferInfo getDescriptorInfo(Ent::id_t entID) const;
+
+//   // vector of pairs that we iterator over? or unordered map
+//   // if we're always writing all entries than
+//   std::unordered_map<Ent::id_t, int> entIndexMap{};
+//   std::vector<std::unique_ptr<LveBuffer>> uboBuffers{LveSwapChain::MAX_FRAMES_IN_FLIGHT};
+
+//  private:
+// };
+
 }  // namespace lve

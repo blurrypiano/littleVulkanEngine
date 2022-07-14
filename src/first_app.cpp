@@ -157,7 +157,7 @@ void FirstApp::loadGameObjects() {
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
   std::shared_ptr<LveTexture> marbleTexture =
-      LveTexture::createTextureFromFile(lveDevice, "../textures_/heightmap.png");
+      LveTexture::createTextureFromFile(lveDevice, "../textures/missing.png");
   auto& floor = gameObjectManager.createGameObject();
   floor.model = lveModel;
   floor.diffuseMap = marbleTexture;
