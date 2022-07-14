@@ -8,6 +8,7 @@ layout(location = 3) in vec2 uv;
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec3 fragPosWorld;
 layout(location = 2) out vec3 fragNormalWorld;
+layout(location = 3) out vec2 fragUv;
 
 struct PointLight {
   vec4 position; // ignore w
@@ -23,15 +24,21 @@ layout(set = 0, binding = 0) uniform GlobalUbo {
   int numLights;
 } ubo;
 
+layout(set = 1, binding = 0) uniform GameObjectBufferData {
+  mat4 modelMatrix;
+  mat4 normalMatrix;
+} gameObject;
+
 layout(push_constant) uniform Push {
   mat4 modelMatrix;
   mat4 normalMatrix;
 } push;
 
 void main() {
-  vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
+  vec4 positionWorld = gameObject.modelMatrix * vec4(position, 1.0);
   gl_Position = ubo.projection * ubo.view * positionWorld;
-  fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);
+  fragNormalWorld = normalize(mat3(gameObject.normalMatrix) * normal);
   fragPosWorld = positionWorld.xyz;
   fragColor = color;
+  fragUv = uv;
 }

@@ -7,3 +7,6 @@ set(VULKAN_SDK_PATH  X:/VulkanSDK/1.2.182.0)
 
 # Optional set TINYOBJ_PATH to target specific version, otherwise defaults to external/tinyobjloader
 # set(TINYOBJ_PATH X:/dev/Libraries/tinyobjloader)
+
+# Optional set STB_PATH to target specific version, otherwise defaults to external/stbimage
+# set(STB_PATH X:/dev/Libraries/stbimage)
