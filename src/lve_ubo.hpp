@@ -169,13 +169,10 @@ class LveUbo {
       alignmentPerInstance = instanceSize;
     }
 
-    // calculate region size
+    // regions must always be flushable and provide buffer info
     regionSize = instancesPerRegion * alignmentPerInstance;
-    if (numRegions > 1 && !flushablePerElement) {
-      // when multiple regions and not flushable per element
-      // regionSize must be multiple of nonCoherentAtomSize
-      regionSize = getAlignment(regionSize, nonCoherentAtomSize);
-    }
+    regionSize =
+        getAlignment(regionSize, std::lcm(nonCoherentAtomSize, minUniformBufferOffsetAlignment));
   }
 };
 
