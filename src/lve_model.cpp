@@ -52,8 +52,7 @@ void LveModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
 
   LveBuffer stagingBuffer{
       lveDevice,
-      vertexSize,
-      vertexCount,
+      vertexSize * vertexCount,
       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
   };
@@ -63,8 +62,7 @@ void LveModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
 
   vertexBuffer = std::make_unique<LveBuffer>(
       lveDevice,
-      vertexSize,
-      vertexCount,
+      vertexSize * vertexCount,
       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
@@ -84,8 +82,7 @@ void LveModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
 
   LveBuffer stagingBuffer{
       lveDevice,
-      indexSize,
-      indexCount,
+      indexSize * indexCount,
       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
   };
@@ -95,8 +92,7 @@ void LveModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
 
   indexBuffer = std::make_unique<LveBuffer>(
       lveDevice,
-      indexSize,
-      indexCount,
+      indexSize * indexCount,
       VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 

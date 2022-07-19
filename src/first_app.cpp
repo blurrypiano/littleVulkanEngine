@@ -3,6 +3,7 @@
 #include "keyboard_movement_controller.hpp"
 #include "lve_buffer.hpp"
 #include "lve_camera.hpp"
+#include "lve_ubo.hpp"
 #include "systems/point_light_system.hpp"
 #include "systems/simple_render_system.hpp"
 
@@ -26,23 +27,25 @@ FirstApp::FirstApp() {
           .setMaxSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT)
           .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
           .build();
+
+  // build frame descriptor pools
+  framePools.resize(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
+  auto framePoolBuilder = LveDescriptorPool::Builder(lveDevice)
+                              .setMaxSets(1000)
+                              .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000)
+                              .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
+                              .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000);
+  for (int i = 0; i < framePools.size(); i++) {
+    framePools[i] = framePoolBuilder.build();
+  }
+
   loadGameObjects();
 }
 
 FirstApp::~FirstApp() {}
 
 void FirstApp::run() {
-  std::vector<std::unique_ptr<LveBuffer>> uboBuffers(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
-  for (int i = 0; i < uboBuffers.size(); i++) {
-    uboBuffers[i] = std::make_unique<LveBuffer>(
-        lveDevice,
-        sizeof(GlobalUbo),
-        1,
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-    uboBuffers[i]->map();
-  }
-
+  LveUbo<GlobalUbo> globalUbo{lveDevice, 1, false, false};
   auto globalSetLayout =
       LveDescriptorSetLayout::Builder(lveDevice)
           .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
@@ -50,7 +53,7 @@ void FirstApp::run() {
 
   std::vector<VkDescriptorSet> globalDescriptorSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
   for (int i = 0; i < globalDescriptorSets.size(); i++) {
-    auto bufferInfo = uboBuffers[i]->descriptorInfo();
+    auto bufferInfo = globalUbo.bufferInfoForRegion(i);
     LveDescriptorWriter(*globalSetLayout, *globalPool)
         .writeBuffer(0, &bufferInfo)
         .build(globalDescriptorSets[i]);
@@ -87,22 +90,24 @@ void FirstApp::run() {
 
     if (auto commandBuffer = lveRenderer.beginFrame()) {
       int frameIndex = lveRenderer.getFrameIndex();
+      framePools[frameIndex]->resetPool();
       FrameInfo frameInfo{
           frameIndex,
           frameTime,
           commandBuffer,
           camera,
           globalDescriptorSets[frameIndex],
+          *framePools[frameIndex],
           gameObjects};
 
       // update
-      GlobalUbo ubo{};
+      GlobalUbo &ubo = globalUbo.get(frameIndex);
       ubo.projection = camera.getProjection();
       ubo.view = camera.getView();
       ubo.inverseView = camera.getInverseView();
       pointLightSystem.update(frameInfo, ubo);
-      uboBuffers[frameIndex]->writeToBuffer(&ubo);
-      uboBuffers[frameIndex]->flush();
+      // globalUbo.write(ubo, frameIndex);
+      globalUbo.flushRegion(frameIndex);
 
       // render
       lveRenderer.beginSwapChainRenderPass(commandBuffer);

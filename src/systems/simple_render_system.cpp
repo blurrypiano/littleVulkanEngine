@@ -35,7 +35,16 @@ void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLay
   pushConstantRange.offset = 0;
   pushConstantRange.size = sizeof(SimplePushConstantData);
 
-  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
+  renderSystemLayout = LveDescriptorSetLayout::Builder(lveDevice)
+                           .addBinding(
+                               0,
+                               VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                               VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
+                           .build();
+
+  std::vector<VkDescriptorSetLayout> descriptorSetLayouts{
+      globalSetLayout,
+      renderSystemLayout->getDescriptorSetLayout()};
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -76,9 +85,49 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
       0,
       nullptr);
 
+  // transform ubo system could create a T iterator wrapper
+  // update transformUbo for each game object
+  // LveUboRegion
+
+  // vulkan memory allocator
+  // avoid buffer allocation limit
+  // easier to grow
+
+  int index = 0;
   for (auto& kv : frameInfo.gameObjects) {
     auto& obj = kv.second;
     if (obj.model == nullptr) continue;
+
+    TransformUboData& transform = transformUbo.get(frameInfo.frameIndex, index);
+    transform.modelMatrix = obj.transform.mat4();
+    transform.normalMatrix = obj.transform.normalMatrix();
+
+    index += 1;
+  }
+  transformUbo.flushRegion(frameInfo.frameIndex);
+
+  // render each game object
+  index = 0;
+  for (auto& kv : frameInfo.gameObjects) {
+    auto& obj = kv.second;
+    if (obj.model == nullptr) continue;
+
+    auto bufferInfo = transformUbo.bufferInfoForElement(frameInfo.frameIndex, index);
+    VkDescriptorSet transformDescriptorSet;
+    LveDescriptorWriter(*renderSystemLayout, frameInfo.frameDescriptorPool)
+        .writeBuffer(0, &bufferInfo)
+        .build(transformDescriptorSet);
+
+    vkCmdBindDescriptorSets(
+        frameInfo.commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipelineLayout,
+        1,  // starting set (0 is the globalDescriptorSet, 1 is the set specific to this system)
+        1,  // binding 1 more set
+        &transformDescriptorSet,
+        0,
+        nullptr);
+
     SimplePushConstantData push{};
     push.modelMatrix = obj.transform.mat4();
     push.normalMatrix = obj.transform.normalMatrix();
@@ -92,6 +141,8 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         &push);
     obj.model->bind(frameInfo.commandBuffer);
     obj.model->draw(frameInfo.commandBuffer);
+
+    index += 1;
   }
 }
 
