@@ -132,27 +132,22 @@ void FirstApp::loadGameObjects() {
       LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
 
   auto flatVase = ecs.createEnt();
-  ecs.add<TransformComponent, ModelComponent>(flatVase);
-  auto& flatVaseTransform = ecs.get<TransformComponent>(flatVase);
-  auto& flatVaseModel = ecs.get<ModelComponent>(flatVase);
+  auto [flatVaseTransform, flatVaseModel] = ecs.add<TransformComponent, ModelComponent>(flatVase);
   flatVaseTransform.translation = {-.5f, .5f, 0.f};
   flatVaseTransform.scale = {3.f, 1.5f, 3.f};
   flatVaseModel.model = lveModel;
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
-  auto smothVase = ecs.createEnt();
-  ecs.add<TransformComponent, ModelComponent>(smothVase);
-  auto& smothVaseTransform = ecs.get<TransformComponent>(smothVase);
-  auto& smothVaseModel = ecs.get<ModelComponent>(smothVase);
-  smothVaseTransform.translation = {.5f, .5f, 0.f};
-  smothVaseTransform.scale = {3.f, 1.5f, 3.f};
-  smothVaseModel.model = lveModel;
+  auto smoothVase = ecs.createEnt();
+  auto [smoothVaseTransform, smoothVaseModel] =
+      ecs.add<TransformComponent, ModelComponent>(smoothVase);
+  smoothVaseTransform.translation = {.5f, .5f, 0.f};
+  smoothVaseTransform.scale = {3.f, 1.5f, 3.f};
+  smoothVaseModel.model = lveModel;
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
   auto floor = ecs.createEnt();
-  ecs.add<TransformComponent, ModelComponent>(floor);
-  auto& floorTransform = ecs.get<TransformComponent>(floor);
-  auto& floorModel = ecs.get<ModelComponent>(floor);
+  auto [floorTransform, floorModel] = ecs.add<TransformComponent, ModelComponent>(floor);
   floorTransform.translation = {0.f, .5f, 0.f};
   floorTransform.scale = {3.f, 1.f, 3.f};
   floorModel.model = lveModel;

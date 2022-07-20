@@ -11,6 +11,7 @@
 #include <iterator>  // For std::forward_iterator_tag
 #include <memory>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <typeindex>
 #include <typeinfo>
@@ -178,6 +179,61 @@ class Ent {
   friend class EntQueryResult;
 };
 
+// TODO EntQueryResult.iterate<Components...>();
+// template <typename... Ts>
+// class Iterate {
+//  public:
+//   struct Iterator {
+//     using iterator_category = std::forward_iterator_tag;
+//     using difference_type = std::ptrdiff_t;
+//     using value_type = std::tuple<Ts &...>;
+//     using pointer = value_type *;    // or also value_type*
+//     using reference = value_type &;  // or also value_type&
+
+//     Iterator(std::vector<EntId>::const_iterator iterator, EntManager &manager, bool isValid =
+//     true)
+//         : it{iterator}, entManager{manager}, ent{isValid ? *iterator : NullEntId, manager} {}
+
+//     reference operator*() { return tuple; }
+//     pointer operator->() { return &tuple; }
+
+//     // Prefix increment
+//     Iterator &operator++() {
+//       it++;
+//       ent.id = *it;
+//       tuple = ent.get<Ts...>();
+//       return *this;
+//     }
+
+//     // Postfix increment
+//     Iterator operator++(int) {
+//       Iterator tmp = *this;
+//       ++(*this);
+//       return tmp;
+//     }
+
+//     friend bool operator==(const Iterator &a, const Iterator &b) { return a.it == b.it; };
+//     friend bool operator!=(const Iterator &a, const Iterator &b) { return a.it != b.it; };
+
+//    private:
+//     Ent ent;
+//     value_type tuple;
+//     EntManager &entManager;
+//     std::vector<EntId>::const_iterator it;
+//   };
+
+//   Iterator begin() { return Iterator{results.begin(), entManager, results.size() > 0}; }
+//   Iterator end() { return Iterator{results.end(), entManager, false}; }
+//   size_t size() const { return results.size(); }
+
+//  private:
+//   Iterate(EntManager &manager, const std::vector<EntId> &entIds)
+//       : entManager{manager}, results{entIds} {}
+
+//   const std::vector<EntId> &results;
+//   EntManager &entManager;
+// };
+
 // a query is an index, as its results reference
 // needs to stick around and be valid so long as it exists
 class EntQueryResult {
@@ -323,15 +379,18 @@ class EntManager {
   // rename Ent To EntComponentAccessor?
 
   template <typename... Ts>
-  typename std::enable_if<sizeof...(Ts) == 0>::type add(EntId entId) {
+  typename std::enable_if<sizeof...(Ts) == 0, std::tuple<Ts &...>>::type add(EntId entId) {
     updateTrackedQueries(entId);
+    return std::make_tuple();
   }
 
   template <typename T, typename... Ts>
-  void add(EntId entId) {
+  std::tuple<T &, Ts &...> add(EntId entId) {
     PackedMap<EntId, T> &componentMap = getComponentMap<T>();
     componentMap.add(entId);
-    add<Ts...>(entId);
+    std::tuple<T &> component = std::tie(componentMap.get(entId));
+    std::tuple<Ts &...> otherComponents = add<Ts...>(entId);
+    return std::tuple_cat(component, otherComponents);
   }
 
   template <typename... Ts>
