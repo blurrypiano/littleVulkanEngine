@@ -97,8 +97,7 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   // easier to grow
 
   int index = 0;
-  for (auto ent : ents) {
-    auto& transform = ent.get<TransformComponent>();
+  for (auto [transform, entId] : ents.iterate<TransformComponent>()) {
     TransformUboData& transformData = transformUbo.get(frameInfo.frameIndex, index);
     transformData.modelMatrix = transform.mat4();
     transformData.normalMatrix = transform.normalMatrix();
@@ -108,10 +107,7 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
 
   // render each game object
   index = 0;
-  for (auto ent : ents) {
-    auto& transform = ent.get<TransformComponent>();
-    auto& model = ent.get<ModelComponent>();
-
+  for (auto [transform, model, entId] : ents.iterate<TransformComponent, ModelComponent>()) {
     auto bufferInfo = transformUbo.bufferInfoForElement(frameInfo.frameIndex, index);
     VkDescriptorSet transformDescriptorSet;
     LveDescriptorWriter(*renderSystemLayout, frameInfo.frameDescriptorPool)

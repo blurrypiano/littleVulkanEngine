@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iterator>  // For std::forward_iterator_tag
 #include <memory>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -119,6 +120,9 @@ class PackedSet {
   std::unordered_map<K, size_t> indexFromKey{};
 };
 
+// TODO iterating isn't very fast right now, since memory access will typically be pretty random
+// except when iterationg over components directly. Performance testing for iterating over an
+// EntQueryResult vs direct components is about 10x slower
 template <typename K, typename V>
 class PackedMap {
  public:
@@ -179,60 +183,8 @@ class Ent {
   friend class EntQueryResult;
 };
 
-// TODO EntQueryResult.iterate<Components...>();
-// template <typename... Ts>
-// class Iterate {
-//  public:
-//   struct Iterator {
-//     using iterator_category = std::forward_iterator_tag;
-//     using difference_type = std::ptrdiff_t;
-//     using value_type = std::tuple<Ts &...>;
-//     using pointer = value_type *;    // or also value_type*
-//     using reference = value_type &;  // or also value_type&
-
-//     Iterator(std::vector<EntId>::const_iterator iterator, EntManager &manager, bool isValid =
-//     true)
-//         : it{iterator}, entManager{manager}, ent{isValid ? *iterator : NullEntId, manager} {}
-
-//     reference operator*() { return tuple; }
-//     pointer operator->() { return &tuple; }
-
-//     // Prefix increment
-//     Iterator &operator++() {
-//       it++;
-//       ent.id = *it;
-//       tuple = ent.get<Ts...>();
-//       return *this;
-//     }
-
-//     // Postfix increment
-//     Iterator operator++(int) {
-//       Iterator tmp = *this;
-//       ++(*this);
-//       return tmp;
-//     }
-
-//     friend bool operator==(const Iterator &a, const Iterator &b) { return a.it == b.it; };
-//     friend bool operator!=(const Iterator &a, const Iterator &b) { return a.it != b.it; };
-
-//    private:
-//     Ent ent;
-//     value_type tuple;
-//     EntManager &entManager;
-//     std::vector<EntId>::const_iterator it;
-//   };
-
-//   Iterator begin() { return Iterator{results.begin(), entManager, results.size() > 0}; }
-//   Iterator end() { return Iterator{results.end(), entManager, false}; }
-//   size_t size() const { return results.size(); }
-
-//  private:
-//   Iterate(EntManager &manager, const std::vector<EntId> &entIds)
-//       : entManager{manager}, results{entIds} {}
-
-//   const std::vector<EntId> &results;
-//   EntManager &entManager;
-// };
+template <typename... Ts>
+class Iterate;
 
 // a query is an index, as its results reference
 // needs to stick around and be valid so long as it exists
@@ -281,6 +233,9 @@ class EntQueryResult {
     EntManager &entManager;
     std::vector<EntId>::const_iterator it;
   };
+
+  template <typename... Ts>
+  Iterate<Ts...> iterate();
 
   // needs a signature?
   // allOf, anyOf, noneOf, etc.
@@ -409,6 +364,19 @@ class EntManager {
   T &get(EntId entId) {
     PackedMap<EntId, T> &componentMap = getComponentMap<T>();
     return componentMap.get(entId);
+  }
+
+  template <typename... Ts>
+  typename std::enable_if<sizeof...(Ts) == 0, std::tuple<Ts &...>>::type multiget(EntId entId) {
+    return std::make_tuple();
+  }
+
+  template <typename T, typename... Ts>
+  std::tuple<T &, Ts &...> multiget(EntId entId) {
+    PackedMap<EntId, T> &componentMap = getComponentMap<T>();
+    std::tuple<T &> component = std::tie(componentMap.get(entId));
+    std::tuple<Ts &...> otherComponents = multiget<Ts...>(entId);
+    return std::tuple_cat(component, otherComponents);
   }
 
   template <typename T>
@@ -596,6 +564,72 @@ class EntQuery {
   friend class EntManager;
 };
 
+template <typename... Ts>
+class Iterate {
+ public:
+  struct Iterator {
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = std::tuple<Ts &..., EntId>;
+    using pointer = value_type *;    // or also value_type*
+    using reference = value_type &;  // or also value_type&
+
+    Iterator(std::vector<EntId>::const_iterator iterator, EntManager &manager)
+        : it{iterator}, entManager{manager} {}
+
+    reference operator*() {
+      lazyUpdateValue();
+      return tuple.value();
+    }
+    pointer operator->() {
+      lazyUpdateValue();
+      return &(tuple.value());
+    }
+
+    // Prefix increment
+    Iterator &operator++() {
+      it++;
+      tuple.reset();
+      return *this;
+    }
+
+    // Postfix increment
+    Iterator operator++(int) {
+      Iterator tmp = *this;
+      ++(*this);
+      return tmp;
+    }
+
+    friend bool operator==(const Iterator &a, const Iterator &b) { return a.it == b.it; };
+    friend bool operator!=(const Iterator &a, const Iterator &b) { return a.it != b.it; };
+
+   private:
+    std::optional<value_type> tuple;
+    EntManager &entManager;
+    std::vector<EntId>::const_iterator it;
+
+    void lazyUpdateValue() {
+      if (!tuple.has_value()) {
+        auto components = entManager.multiget<Ts...>(*it);
+        tuple = std::tuple_cat(components, std::make_tuple(*it));
+      }
+    }
+  };
+
+  Iterator begin() { return Iterator{results.begin(), entManager}; }
+  Iterator end() { return Iterator{results.end(), entManager}; }
+  size_t size() const { return results.size(); }
+
+ private:
+  Iterate(EntManager &manager, const std::vector<EntId> &entIds)
+      : entManager{manager}, results{entIds} {}
+
+  const std::vector<EntId> &results;
+  EntManager &entManager;
+
+  friend class EntQueryResult;
+};
+
 template <typename T>
 T &Ent::get() {
   return entManager.get<T>(id);
@@ -653,6 +687,11 @@ inline EntQueryResult::EntQueryResult(const EntQueryResult &q)
 inline EntQueryResult::EntQueryResult(EntQueryResult &&q) noexcept
     : entManager{q.entManager}, results{q.results}, id{q.id} {
   entManager.retain(id);
+}
+
+template <typename... Ts>
+inline Iterate<Ts...> EntQueryResult::iterate() {
+  return Iterate<Ts...>{entManager, results};
 }
 
 }  // namespace lve
