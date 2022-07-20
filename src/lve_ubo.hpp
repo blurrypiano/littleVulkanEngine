@@ -62,6 +62,8 @@ class LveUbo {
   LveUbo(LveUbo &&) = delete;
   LveUbo &operator=(LveUbo &&) = delete;
 
+  // TODO add iterators over region?
+
   T &get(int frameIndex, int elementIndex = 0) {
     assert(frameIndex < numRegions && "Trying to write to region outside ubo range");
     assert(elementIndex < instancesPerRegion && "Trying to write to instance outside ubo range");

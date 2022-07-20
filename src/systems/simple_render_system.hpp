@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ecs/lve_ecs.hpp"
 #include "lve_camera.hpp"
 #include "lve_descriptors.hpp"
 #include "lve_device.hpp"
@@ -22,7 +23,10 @@ struct TransformUboData {
 class SimpleRenderSystem {
  public:
   SimpleRenderSystem(
-      LveDevice &device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
+      LveDevice &device,
+      EntManager &ecs,
+      VkRenderPass renderPass,
+      VkDescriptorSetLayout globalSetLayout);
   ~SimpleRenderSystem();
 
   SimpleRenderSystem(const SimpleRenderSystem &) = delete;
@@ -41,5 +45,7 @@ class SimpleRenderSystem {
   VkPipelineLayout pipelineLayout;
 
   std::unique_ptr<LveDescriptorSetLayout> renderSystemLayout;
+
+  EntQueryResult ents;
 };
 }  // namespace lve

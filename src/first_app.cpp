@@ -61,6 +61,7 @@ void FirstApp::run() {
 
   SimpleRenderSystem simpleRenderSystem{
       lveDevice,
+      ecs,
       lveRenderer.getSwapChainRenderPass(),
       globalSetLayout->getDescriptorSetLayout()};
   PointLightSystem pointLightSystem{
@@ -69,8 +70,10 @@ void FirstApp::run() {
       globalSetLayout->getDescriptorSetLayout()};
   LveCamera camera{};
 
-  auto viewerObject = LveGameObject::createGameObject();
-  viewerObject.transform.translation.z = -2.5f;
+  // create a Transform component to store the viewer location
+  TransformComponent viewerTransform{};
+  viewerTransform.translation.z = -2.5f;
+
   KeyboardMovementController cameraController{};
 
   auto currentTime = std::chrono::high_resolution_clock::now();
@@ -82,8 +85,8 @@ void FirstApp::run() {
         std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
     currentTime = newTime;
 
-    cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
-    camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+    cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerTransform);
+    camera.setViewYXZ(viewerTransform.translation, viewerTransform.rotation);
 
     float aspect = lveRenderer.getAspectRatio();
     camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 100.f);
@@ -98,10 +101,10 @@ void FirstApp::run() {
           camera,
           globalDescriptorSets[frameIndex],
           *framePools[frameIndex],
-          gameObjects};
+          ecs};
 
       // update
-      GlobalUbo &ubo = globalUbo.get(frameIndex);
+      GlobalUbo& ubo = globalUbo.get(frameIndex);
       ubo.projection = camera.getProjection();
       ubo.view = camera.getView();
       ubo.inverseView = camera.getInverseView();
@@ -127,25 +130,32 @@ void FirstApp::run() {
 void FirstApp::loadGameObjects() {
   std::shared_ptr<LveModel> lveModel =
       LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
-  auto flatVase = LveGameObject::createGameObject();
-  flatVase.model = lveModel;
-  flatVase.transform.translation = {-.5f, .5f, 0.f};
-  flatVase.transform.scale = {3.f, 1.5f, 3.f};
-  gameObjects.emplace(flatVase.getId(), std::move(flatVase));
+
+  auto flatVase = ecs.createEnt();
+  ecs.add<TransformComponent, ModelComponent>(flatVase);
+  auto& flatVaseTransform = ecs.get<TransformComponent>(flatVase);
+  auto& flatVaseModel = ecs.get<ModelComponent>(flatVase);
+  flatVaseTransform.translation = {-.5f, .5f, 0.f};
+  flatVaseTransform.scale = {3.f, 1.5f, 3.f};
+  flatVaseModel.model = lveModel;
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
-  auto smoothVase = LveGameObject::createGameObject();
-  smoothVase.model = lveModel;
-  smoothVase.transform.translation = {.5f, .5f, 0.f};
-  smoothVase.transform.scale = {3.f, 1.5f, 3.f};
-  gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
+  auto smothVase = ecs.createEnt();
+  ecs.add<TransformComponent, ModelComponent>(smothVase);
+  auto& smothVaseTransform = ecs.get<TransformComponent>(smothVase);
+  auto& smothVaseModel = ecs.get<ModelComponent>(smothVase);
+  smothVaseTransform.translation = {.5f, .5f, 0.f};
+  smothVaseTransform.scale = {3.f, 1.5f, 3.f};
+  smothVaseModel.model = lveModel;
 
   lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
-  auto floor = LveGameObject::createGameObject();
-  floor.model = lveModel;
-  floor.transform.translation = {0.f, .5f, 0.f};
-  floor.transform.scale = {3.f, 1.f, 3.f};
-  gameObjects.emplace(floor.getId(), std::move(floor));
+  auto floor = ecs.createEnt();
+  ecs.add<TransformComponent, ModelComponent>(floor);
+  auto& floorTransform = ecs.get<TransformComponent>(floor);
+  auto& floorModel = ecs.get<ModelComponent>(floor);
+  floorTransform.translation = {0.f, .5f, 0.f};
+  floorTransform.scale = {3.f, 1.f, 3.f};
+  floorModel.model = lveModel;
 
   std::vector<glm::vec3> lightColors{
       {1.f, .1f, .1f},
@@ -157,14 +167,15 @@ void FirstApp::loadGameObjects() {
   };
 
   for (int i = 0; i < lightColors.size(); i++) {
-    auto pointLight = LveGameObject::makePointLight(0.2f);
-    pointLight.color = lightColors[i];
+    auto pointLight = makePointLight(ecs, 0.2f);
+    auto& pointLightColor = ecs.get<ColorComponent>(pointLight);
+    auto& pointLightTransform = ecs.get<TransformComponent>(pointLight);
+    pointLightColor.color = lightColors[i];
     auto rotateLight = glm::rotate(
         glm::mat4(1.f),
         (i * glm::two_pi<float>()) / lightColors.size(),
         {0.f, -1.f, 0.f});
-    pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
-    gameObjects.emplace(pointLight.getId(), std::move(pointLight));
+    pointLightTransform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
   }
 }
 

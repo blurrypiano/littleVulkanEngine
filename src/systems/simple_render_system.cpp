@@ -19,8 +19,11 @@ struct SimplePushConstantData {
 };
 
 SimpleRenderSystem::SimpleRenderSystem(
-    LveDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-    : lveDevice{device} {
+    LveDevice& device,
+    EntManager& ecs,
+    VkRenderPass renderPass,
+    VkDescriptorSetLayout globalSetLayout)
+    : lveDevice{device}, ents{ecs.allOf<TransformComponent, ModelComponent>()} {
   createPipelineLayout(globalSetLayout);
   createPipeline(renderPass);
 }
@@ -94,23 +97,20 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
   // easier to grow
 
   int index = 0;
-  for (auto& kv : frameInfo.gameObjects) {
-    auto& obj = kv.second;
-    if (obj.model == nullptr) continue;
-
-    TransformUboData& transform = transformUbo.get(frameInfo.frameIndex, index);
-    transform.modelMatrix = obj.transform.mat4();
-    transform.normalMatrix = obj.transform.normalMatrix();
-
+  for (auto ent : ents) {
+    auto& transform = ent.get<TransformComponent>();
+    TransformUboData& transformData = transformUbo.get(frameInfo.frameIndex, index);
+    transformData.modelMatrix = transform.mat4();
+    transformData.normalMatrix = transform.normalMatrix();
     index += 1;
   }
   transformUbo.flushRegion(frameInfo.frameIndex);
 
   // render each game object
   index = 0;
-  for (auto& kv : frameInfo.gameObjects) {
-    auto& obj = kv.second;
-    if (obj.model == nullptr) continue;
+  for (auto ent : ents) {
+    auto& transform = ent.get<TransformComponent>();
+    auto& model = ent.get<ModelComponent>();
 
     auto bufferInfo = transformUbo.bufferInfoForElement(frameInfo.frameIndex, index);
     VkDescriptorSet transformDescriptorSet;
@@ -129,8 +129,8 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         nullptr);
 
     SimplePushConstantData push{};
-    push.modelMatrix = obj.transform.mat4();
-    push.normalMatrix = obj.transform.normalMatrix();
+    push.modelMatrix = transform.mat4();
+    push.normalMatrix = transform.normalMatrix();
 
     vkCmdPushConstants(
         frameInfo.commandBuffer,
@@ -139,8 +139,8 @@ void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         0,
         sizeof(SimplePushConstantData),
         &push);
-    obj.model->bind(frameInfo.commandBuffer);
-    obj.model->draw(frameInfo.commandBuffer);
+    model.model->bind(frameInfo.commandBuffer);
+    model.model->draw(frameInfo.commandBuffer);
 
     index += 1;
   }

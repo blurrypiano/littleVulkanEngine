@@ -32,6 +32,6 @@ struct FrameInfo {
   LveCamera &camera;
   VkDescriptorSet globalDescriptorSet;
   LveDescriptorPool &frameDescriptorPool;  // pool of descriptors that is cleared each frame
-  LveGameObject::Map &gameObjects;
+  EntManager &ecs;
 };
 }  // namespace lve

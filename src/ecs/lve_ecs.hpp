@@ -182,7 +182,7 @@ class Ent {
 // needs to stick around and be valid so long as it exists
 class EntQueryResult {
  public:
-  const EntQueryId id;
+  const EntQueryId id;  // can do assignment if we don't make this const
 
   ~EntQueryResult();
   EntQueryResult(const EntQueryResult &);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ecs/lve_ecs.hpp"
 #include "lve_descriptors.hpp"
 #include "lve_device.hpp"
 #include "lve_game_object.hpp"
@@ -34,6 +35,6 @@ class FirstApp {
   // note: order of declarations matters
   std::unique_ptr<LveDescriptorPool> globalPool{};
   std::vector<std::unique_ptr<LveDescriptorPool>> framePools;
-  LveGameObject::Map gameObjects;
+  EntManager ecs{};
 };
 }  // namespace lve
