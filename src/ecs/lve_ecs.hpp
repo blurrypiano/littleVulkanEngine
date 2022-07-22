@@ -413,6 +413,19 @@ class EntManager {
     return std::any_cast<PackedMap<EntId, T> &>(componentMaps[componentType]);
   }
 
+  template <typename... Ts>
+  typename std::enable_if<sizeof...(Ts) == 0, std::tuple<PackedMap<EntId, Ts> &...>>::type
+  getComponentMaps() {
+    return std::make_tuple();
+  }
+
+  template <typename T, typename... Ts>
+  std::tuple<PackedMap<EntId, T> &, PackedMap<EntId, Ts> &...> getComponentMaps() {
+    PackedMap<EntId, T> &componentMap = getComponentMap<T>();
+    auto otherMaps = getComponentMaps<Ts...>();
+    return std::tuple_cat(std::tie(componentMap), otherMaps);
+  }
+
   EntQuery query();
 
   EntQueryResult getAllEnts() { return EntQueryResult{*this, allEntIds.getKeys()}; }
@@ -564,10 +577,27 @@ class EntQuery {
   friend class EntManager;
 };
 
+class ApplyMaps {
+ public:
+  template <typename T>
+  static std::tuple<T &> get(EntId entId, PackedMap<EntId, T> &componentMap) {
+    return std::tie(componentMap.get(entId));
+  }
+
+  template <typename T, typename... Ts>
+  static std::tuple<T &, Ts &...> get(
+      EntId entId, PackedMap<EntId, T> &componentMap, PackedMap<EntId, Ts> &...otherMaps) {
+    std::tuple<T &> component = std::tie(componentMap.get(entId));
+    std::tuple<Ts &...> otherComponents = ApplyMaps::get<Ts...>(entId, otherMaps...);
+    return std::tuple_cat(component, otherComponents);
+  }
+};
+
 template <typename... Ts>
 class Iterate {
  public:
   struct Iterator {
+    using packed_map_list = std::tuple<PackedMap<EntId, Ts> &...>;
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = std::tuple<Ts &..., EntId>;
@@ -575,7 +605,7 @@ class Iterate {
     using reference = value_type &;  // or also value_type&
 
     Iterator(std::vector<EntId>::const_iterator iterator, EntManager &manager)
-        : it{iterator}, entManager{manager} {}
+        : it{iterator}, entManager{manager}, componentMaps{manager.getComponentMaps<Ts...>()} {}
 
     reference operator*() {
       lazyUpdateValue();
@@ -605,12 +635,14 @@ class Iterate {
 
    private:
     std::optional<value_type> tuple;
-    EntManager &entManager;
     std::vector<EntId>::const_iterator it;
+    packed_map_list componentMaps;
+    EntManager &entManager;
 
     void lazyUpdateValue() {
       if (!tuple.has_value()) {
-        auto components = entManager.multiget<Ts...>(*it);
+        auto args = std::tuple_cat(std::make_tuple(*it), componentMaps);
+        auto components = std::apply(ApplyMaps::get<Ts...>, args);
         tuple = std::tuple_cat(components, std::make_tuple(*it));
       }
     }
