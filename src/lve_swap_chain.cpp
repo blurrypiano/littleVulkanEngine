@@ -135,8 +135,10 @@ void LveSwapChain::createSwapChain() {
   VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
   VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
   VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
-
-  uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+  
+  // hardcoded so that devices with minImageCount = 3 have the right number of sync objects
+  uint32_t imageCount = swapChainSupport.capabilities.minImageCount = 3;
+    
   if (swapChainSupport.capabilities.maxImageCount > 0 &&
       imageCount > swapChainSupport.capabilities.maxImageCount) {
     imageCount = swapChainSupport.capabilities.maxImageCount;
