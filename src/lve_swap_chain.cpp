@@ -137,7 +137,7 @@ void LveSwapChain::createSwapChain() {
   VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
   
   // hardcoded so that devices with minImageCount = 3 have the right number of sync objects
-  uint32_t imageCount = swapChainSupport.capabilities.minImageCount = 3;
+  uint32_t imageCount = 3;
     
   if (swapChainSupport.capabilities.maxImageCount > 0 &&
       imageCount > swapChainSupport.capabilities.maxImageCount) {
