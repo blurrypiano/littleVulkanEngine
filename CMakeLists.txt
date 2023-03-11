@@ -14,6 +14,8 @@ if (CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
     set(CMAKE_C_COMPILER ${MINGW_PATH}/bin/gcc.exe)
     set(CMAKE_CXX_COMPILER  ${MINGW_PATH}/bin/g++.exe)
 endif()
+message(STATUS "using C_Compiler ${CMAKE_C_COMPILER}")
+message(STATUS "using CXX_Compiler ${CMAKE_CXX_COMPILER}")
 
 project(${NAME} VERSION 0.23.0)
 
