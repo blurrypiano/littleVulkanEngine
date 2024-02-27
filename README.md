@@ -60,14 +60,6 @@ A video tutorial series introducing computer graphics for [Vulkan®](https://www
    ./unixBuild.sh
   ```
 
-  Also need a modern version of g++/gcc compilers (support tuple)
-
-  ```
-  brew install gcc
-  ```
-
-  then set in .env.cmake the C/C++ compiler to the installed location
-
 ### <a name="WindowsBuild"></a> Windows build instructions
 
 - [Download and install Windows Vulkan sdk](https://vulkan.lunarg.com/)

@@ -642,7 +642,12 @@ class Iterate {
     void lazyUpdateValue() {
       if (!tuple.has_value()) {
         auto args = std::tuple_cat(std::make_tuple(*it), componentMaps);
-        auto components = std::apply(ApplyMaps::get<Ts...>, args);
+        // Use a lambda to explicitly call ApplyMaps::get with template arguments.
+        auto components = std::apply(
+            [&](auto &&...args) -> decltype(auto) {
+              return ApplyMaps::get<Ts...>(std::forward<decltype(args)>(args)...);
+            },
+            args);
         tuple = std::tuple_cat(components, std::make_tuple(*it));
       }
     }
