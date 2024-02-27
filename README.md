@@ -54,10 +54,19 @@ A video tutorial series introducing computer graphics for [Vulkan®](https://www
   ```
 
 - To Build
+
   ```
    cd littleVulkanEngine
    ./unixBuild.sh
   ```
+
+  Also need a modern version of g++/gcc compilers (support tuple)
+
+  ```
+  brew install gcc
+  ```
+
+  then set in .env.cmake the C/C++ compiler to the installed location
 
 ### <a name="WindowsBuild"></a> Windows build instructions
 
@@ -136,7 +145,7 @@ In this tutorial we add specular lighting to our simple fragment shader.
 
 #### [27 - Alpha Blending and Transparency](https://github.com/blurrypiano/littleVulkanEngine/tree/tut27)
 
-In this tutorial we add a limited blending capability to our point light system, allowing them to be rendered with a nicer appearance. 
+In this tutorial we add a limited blending capability to our point light system, allowing them to be rendered with a nicer appearance.
 
 ([Video](https://youtu.be/uZqxj6tLDY4))
 

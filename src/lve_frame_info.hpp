@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lve_camera.hpp"
+#include "lve_descriptors.hpp"
 #include "lve_game_object.hpp"
 
 // lib
@@ -30,6 +31,7 @@ struct FrameInfo {
   VkCommandBuffer commandBuffer;
   LveCamera &camera;
   VkDescriptorSet globalDescriptorSet;
-  LveGameObject::Map &gameObjects;
+  LveDescriptorPool &frameDescriptorPool;  // pool of descriptors that is cleared each frame
+  EntManager &ecs;
 };
 }  // namespace lve
