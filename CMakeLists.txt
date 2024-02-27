@@ -25,6 +25,7 @@ if (DEFINED VULKAN_SDK_PATH)
 else()
   find_package(Vulkan REQUIRED) # throws error if could not find Vulkan
   message(STATUS "Found Vulkan: $ENV{VULKAN_SDK}")
+  include_directories(${Vulkan_INCLUDE_DIRS})
 endif()
 if (NOT Vulkan_FOUND)
 	message(FATAL_ERROR "Could not find Vulkan library!")

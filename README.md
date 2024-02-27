@@ -44,6 +44,7 @@ A video tutorial series introducing computer graphics for [Vulkan®](https://www
 - [Download and install MacOS Vulkan sdk](https://vulkan.lunarg.com/)
 - [Download and install Homebrew](https://brew.sh/)
 
+- If desired add `source /path/to/vulkan/setup-env.sh` to your shell configuration
 - Then in a terminal window
 
   ```
