@@ -13,36 +13,15 @@
 
 namespace lve {
 
-/**
- * Returns the minimum instance size required to be compatible with devices minOffsetAlignment
- *
- * @param instanceSize The size of an instance
- * @param minOffsetAlignment The minimum required alignment, in bytes, for the offset member (eg
- * minUniformBufferOffsetAlignment)
- *
- * @return VkResult of the buffer mapping call
- */
-VkDeviceSize LveBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment) {
-  if (minOffsetAlignment > 0) {
-    return (instanceSize + minOffsetAlignment - 1) & ~(minOffsetAlignment - 1);
-  }
-  return instanceSize;
-}
-
 LveBuffer::LveBuffer(
     LveDevice &device,
-    VkDeviceSize instanceSize,
-    uint32_t instanceCount,
+    VkDeviceSize bufferSize,
     VkBufferUsageFlags usageFlags,
-    VkMemoryPropertyFlags memoryPropertyFlags,
-    VkDeviceSize minOffsetAlignment)
+    VkMemoryPropertyFlags memoryPropertyFlags)
     : lveDevice{device},
-      instanceSize{instanceSize},
-      instanceCount{instanceCount},
+      bufferSize{bufferSize},
       usageFlags{usageFlags},
       memoryPropertyFlags{memoryPropertyFlags} {
-  alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
-  bufferSize = alignmentSize * instanceCount;
   device.createBuffer(bufferSize, usageFlags, memoryPropertyFlags, buffer, memory);
 }
 
@@ -154,48 +133,4 @@ VkDescriptorBufferInfo LveBuffer::descriptorInfo(VkDeviceSize size, VkDeviceSize
       size,
   };
 }
-
-/**
- * Copies "instanceSize" bytes of data to the mapped buffer at an offset of index * alignmentSize
- *
- * @param data Pointer to the data to copy
- * @param index Used in offset calculation
- *
- */
-void LveBuffer::writeToIndex(void *data, int index) {
-  writeToBuffer(data, instanceSize, index * alignmentSize);
-}
-
-/**
- *  Flush the memory range at index * alignmentSize of the buffer to make it visible to the device
- *
- * @param index Used in offset calculation
- *
- */
-VkResult LveBuffer::flushIndex(int index) { return flush(alignmentSize, index * alignmentSize); }
-
-/**
- * Create a buffer info descriptor
- *
- * @param index Specifies the region given by index * alignmentSize
- *
- * @return VkDescriptorBufferInfo for instance at index
- */
-VkDescriptorBufferInfo LveBuffer::descriptorInfoForIndex(int index) {
-  return descriptorInfo(alignmentSize, index * alignmentSize);
-}
-
-/**
- * Invalidate a memory range of the buffer to make it visible to the host
- *
- * @note Only required for non-coherent memory
- *
- * @param index Specifies the region to invalidate: index * alignmentSize
- *
- * @return VkResult of the invalidate call
- */
-VkResult LveBuffer::invalidateIndex(int index) {
-  return invalidate(alignmentSize, index * alignmentSize);
-}
-
 }  // namespace lve
