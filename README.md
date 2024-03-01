@@ -44,6 +44,7 @@ A video tutorial series introducing computer graphics for [Vulkan®](https://www
 - [Download and install MacOS Vulkan sdk](https://vulkan.lunarg.com/)
 - [Download and install Homebrew](https://brew.sh/)
 
+- If desired add `source /path/to/vulkan/setup-env.sh` to your shell configuration
 - Then in a terminal window
 
   ```
@@ -53,6 +54,7 @@ A video tutorial series introducing computer graphics for [Vulkan®](https://www
   ```
 
 - To Build
+
   ```
    cd littleVulkanEngine
    ./unixBuild.sh
@@ -135,7 +137,7 @@ In this tutorial we add specular lighting to our simple fragment shader.
 
 #### [27 - Alpha Blending and Transparency](https://github.com/blurrypiano/littleVulkanEngine/tree/tut27)
 
-In this tutorial we add a limited blending capability to our point light system, allowing them to be rendered with a nicer appearance. 
+In this tutorial we add a limited blending capability to our point light system, allowing them to be rendered with a nicer appearance.
 
 ([Video](https://youtu.be/uZqxj6tLDY4))
 
